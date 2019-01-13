@@ -37,6 +37,15 @@ defmodule Stripe.API do
     Application.get_env(:stripity_stripe, :json_library, Poison)
   end
 
+  @doc """
+  In config.exs your implicit or expicit configuration is:
+    config :stripity_stripe,
+      json_library: Jason # defaults to Poison but can be configured to Jason
+  """
+  def json_library() do
+    Application.get_env(:stripity_stripe, :json_library, Poison)
+  end
+
   def supervisor_children do
     if use_pool?() do
       [:hackney_pool.child_spec(@pool_name, get_pool_options())]
