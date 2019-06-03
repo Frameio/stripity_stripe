@@ -25,22 +25,13 @@ defmodule Stripe.API do
   @default_max_backoff 2_000
 
   @doc """
-  In config.exs your implicit or expicit configuration is:
+  In config.exs your implicit or explicit configuration is:
     config :stripity_stripe,
       json_library: Poison # defaults to Jason but can be configured to Poison
   """
   @spec json_library() :: module
   def json_library() do
     Config.resolve(:json_library, Jason)
-  end
-
-  @doc """
-  In config.exs your implicit or expicit configuration is:
-    config :stripity_stripe,
-      json_library: Jason # defaults to Poison but can be configured to Jason
-  """
-  def json_library() do
-    Application.get_env(:stripity_stripe, :json_library, Poison)
   end
 
   def supervisor_children do
