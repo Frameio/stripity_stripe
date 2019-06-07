@@ -12,6 +12,12 @@ defmodule Stripe.Types do
           state: String.t() | nil
         }
 
+  @type dob :: %{
+          day: 1..31 | nil,
+          month: 1..12 | nil,
+          year: pos_integer | nil
+        }
+
   @type fee :: %{
           amount: integer,
           application: String.t() | nil,
@@ -20,10 +26,14 @@ defmodule Stripe.Types do
           type: String.t()
         }
 
-  @type location :: %{
-          country: String.t(),
-          source: String.t(),
-          state: String.t()
+  @type japan_address :: %{
+          city: String.t() | nil,
+          country: String.t() | nil,
+          line1: String.t() | nil,
+          line2: String.t() | nil,
+          postal_code: String.t() | nil,
+          state: String.t() | nil,
+          town: String.t() | nil
         }
 
   @type metadata :: %{
