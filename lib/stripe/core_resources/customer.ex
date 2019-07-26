@@ -92,7 +92,7 @@ defmodule Stripe.Customer do
                  optional(:invoice_settings) => Stripe.Invoice.invoice_settings(),
                  optional(:metadata) => Stripe.Types.metadata(),
                  optional(:shipping) => Stripe.Types.shipping(),
-                 optional(:source) => Stripe.Source.t(),
+                 optional(:source) => Stripe.id() | Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
