@@ -38,6 +38,7 @@ defmodule Stripe.SubscriptionSchedule do
           created: Stripe.timestamp(),
           canceled_at: Stripe.timestamp() | nil,
           released_at: Stripe.timestamp() | nil,
+          collection_method: String.t(),
           completed_at: Stripe.timestamp() | nil,
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
@@ -52,6 +53,7 @@ defmodule Stripe.SubscriptionSchedule do
           subscription: Stripe.id() | Stripe.Subscription.t(),
           customer: Stripe.id() | Stripe.Customer.t(),
           released_subscription: Stripe.id() | Stripe.Subscription.t() | nil,
+          default_payment_method: Stripe.id() | Stripe.PaymentMethod.t(),
           phases: list(phases)
         }
 
@@ -60,9 +62,11 @@ defmodule Stripe.SubscriptionSchedule do
     :object,
     :created,
     :canceled_at,
+    :collection_method,
     :completed_at,
     :current_phase,
     :customer,
+    :default_payment_method,
     :phases,
     :released_at,
     :released_subscription,
@@ -97,6 +101,7 @@ defmodule Stripe.SubscriptionSchedule do
                    optional(:days_until_due) => non_neg_integer
                  }
                },
+               optional(:default_payment_method) => Stripe.id(),
                optional(:phases) => [
                  %{
                    :plans => [
@@ -151,6 +156,7 @@ defmodule Stripe.SubscriptionSchedule do
                    optional(:days_until_due) => non_neg_integer
                  }
                },
+               optional(:default_payment_method) => Stripe.id(),
                optional(:phases) => [
                  %{
                    :plans => [
