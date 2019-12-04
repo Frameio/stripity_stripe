@@ -57,7 +57,7 @@ defmodule Stripe.Types do
           tracking_url: String.t() | nil
         }
 
-  @type subscription_billing_thresholds :: %{
+  @type collection_method_thresholds :: %{
           amount_gte: integer | nil,
           reset_billing_cycle_anchor: boolean | nil
         }

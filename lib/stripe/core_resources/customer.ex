@@ -18,7 +18,6 @@ defmodule Stripe.Customer do
   @type t :: %__MODULE__{
           id: Stripe.id(),
           object: String.t(),
-          account_balance: integer,
           address: Stripe.Types.address() | nil,
           balance: integer,
           created: Stripe.timestamp(),
@@ -49,7 +48,6 @@ defmodule Stripe.Customer do
   defstruct [
     :id,
     :object,
-    :account_balance,
     :address,
     :balance,
     :created,
@@ -85,7 +83,6 @@ defmodule Stripe.Customer do
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
-                 optional(:account_balance) => integer,
                  optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
@@ -126,7 +123,6 @@ defmodule Stripe.Customer do
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
-                 optional(:account_balance) => integer,
                  optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
