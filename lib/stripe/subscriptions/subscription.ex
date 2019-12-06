@@ -116,10 +116,13 @@ defmodule Stripe.Subscription do
                optional(:collection_method) => String.t(),
                optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
-               optional(:items) => [
+               :items => [
                  %{
                    :plan => Stripe.id() | Stripe.Plan.t(),
-                   optional(:quantity) => non_neg_integer
+                   optional(:billing_methods) => map,
+                   optional(:metadata) => map,
+                   optional(:quantity) => non_neg_integer,
+                   optional(:tax_rates) => list
                  }
                ],
                optional(:metadata) => Stripe.Types.metadata(),
@@ -129,7 +132,7 @@ defmodule Stripe.Subscription do
                optional(:trial_from_plan) => boolean,
                optional(:trial_period_days) => non_neg_integer
              }
-  def create(%{customer: _} = params, opts \\ []) do
+  def create(%{customer: _, items: _} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
     |> put_params(params)
@@ -169,7 +172,10 @@ defmodule Stripe.Subscription do
                optional(:items) => [
                  %{
                    :plan => Stripe.id() | Stripe.Plan.t(),
-                   optional(:quantity) => non_neg_integer
+                   optional(:billing_methods) => map,
+                   optional(:metadata) => map,
+                   optional(:quantity) => non_neg_integer,
+                   optional(:tax_rates) => list
                  }
                ],
                optional(:metadata) => Stripe.Types.metadata(),
