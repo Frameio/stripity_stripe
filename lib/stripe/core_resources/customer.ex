@@ -72,9 +72,7 @@ defmodule Stripe.Customer do
     :subscriptions,
     :tax,
     :tax_exempt,
-    :tax_ids,
-    :tax_info,
-    :tax_info_verification
+    :tax_ids
   ]
 
   @plural_endpoint "customers"

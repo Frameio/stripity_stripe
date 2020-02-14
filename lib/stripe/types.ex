@@ -62,6 +62,7 @@ defmodule Stripe.Types do
           reset_billing_cycle_anchor: boolean | nil
         }
 
+<<<<<<< HEAD
   @type tax :: %{
           automatic_tax: String.t(),
           ip_address: String.t(),
@@ -78,6 +79,8 @@ defmodule Stripe.Types do
           verified_name: String.t() | nil
         }
 
+=======
+>>>>>>> dc49e40 (Stripe API 2019-12-03 Remove deprecated Customer tax_info)
   @type transfer_schedule :: %{
           delay_days: non_neg_integer,
           interval: String.t(),
