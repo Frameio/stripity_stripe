@@ -97,6 +97,7 @@ defmodule Stripe.Customer do
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.id() | Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
+                 optional(:tax_id_data) => Stripe.TaxID.tax_id_data(),
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}
@@ -137,6 +138,7 @@ defmodule Stripe.Customer do
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
+                 optional(:tax_id_data) => Stripe.TaxID.tax_id_data(),
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}
