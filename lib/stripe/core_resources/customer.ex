@@ -85,6 +85,7 @@ defmodule Stripe.Customer do
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
+                 optional(:address) => Stripe.Types.address(),
                  optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
@@ -127,6 +128,7 @@ defmodule Stripe.Customer do
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
+                 optional(:address) => Stripe.Types.address(),
                  optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
