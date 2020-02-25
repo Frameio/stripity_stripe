@@ -125,6 +125,7 @@ defmodule Stripe.Subscription do
                    optional(:tax_rates) => list
                  }
                ],
+               optional(:default_payment_method) => Stripe.id(),
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:tax_percent) => float,
@@ -178,6 +179,7 @@ defmodule Stripe.Subscription do
                    optional(:tax_rates) => list
                  }
                ],
+               optional(:default_payment_method) => Stripe.id(),
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:proration_date) => Stripe.timestamp(),
