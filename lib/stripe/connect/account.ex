@@ -168,6 +168,7 @@ defmodule Stripe.Account do
     :country,
     :created,
     :default_currency,
+    :deleted,
     :details_submitted,
     :email,
     :external_accounts,
