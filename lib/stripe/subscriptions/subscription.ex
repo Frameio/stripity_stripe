@@ -155,6 +155,7 @@ defmodule Stripe.Subscription do
                  }
                ],
                optional(:default_payment_method) => Stripe.id(),
+               optional(:default_tax_rates) => [Stripe.id()],
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:proration_behavior) => String.t(),
@@ -212,6 +213,7 @@ defmodule Stripe.Subscription do
                  }
                ],
                optional(:default_payment_method) => Stripe.id(),
+               optional(:default_tax_rates) => [Stripe.id()],
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:proration_behavior) => String.t(),
