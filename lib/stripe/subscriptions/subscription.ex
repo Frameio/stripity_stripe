@@ -74,6 +74,7 @@ defmodule Stripe.Subscription do
           start_date: Stripe.timestamp(),
           status: String.t(),
           tax_percent: float | nil,
+          transfer_data: map,
           trial_end: Stripe.timestamp() | nil,
           trial_start: Stripe.timestamp() | nil,
           trial_settings: map
@@ -122,6 +123,7 @@ defmodule Stripe.Subscription do
     :start_date,
     :status,
     :tax_percent,
+    :transfer_data,
     :trial_end,
     :trial_start,
     :trial_settings
