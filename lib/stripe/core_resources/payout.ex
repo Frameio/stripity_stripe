@@ -2,7 +2,7 @@ defmodule Stripe.Payout do
   @moduledoc """
   Work with Stripe payouts.
 
-  Stripe API reference: https://stripe.com/docs/api#payouts
+  Stripe API reference: https://stripe.com/docs/api/payouts
   """
 
   use Stripe.Entity
@@ -65,19 +65,22 @@ defmodule Stripe.Payout do
   payoutd, though everything else will occur as if in live mode.
   (Stripe assumes that the payout would have completed successfully).
 
-  See the [Stripe docs](https://stripe.com/docs/api#create_payout).
+  See the [Stripe docs](https://stripe.com/docs/api/payouts/create).
   """
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               :amount => pos_integer,
-               :currency => String.t(),
-               optional(:description) => String.t(),
-               optional(:destination) => Stripe.id() | Stripe.Card.t() | Stripe.BankAccount.t() | String.t(),
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:method) => String.t(),
-               optional(:source_type) => String.t(),
-               optional(:statement_descriptor) => String.t()
-             } | %{}
+        when params:
+               %{
+                 :amount => pos_integer,
+                 :currency => String.t(),
+                 optional(:description) => String.t(),
+                 optional(:destination) =>
+                   Stripe.id() | Stripe.Card.t() | Stripe.BankAccount.t() | String.t(),
+                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:method) => String.t(),
+                 optional(:source_type) => String.t(),
+                 optional(:statement_descriptor) => String.t()
+               }
+               | %{}
   def create(params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -89,7 +92,7 @@ defmodule Stripe.Payout do
   @doc """
   Retrieve a payout.
 
-  See the [Stripe docs](https://stripe.com/docs/api#retrieve_payout).
+  See the [Stripe docs](https://stripe.com/docs/api/payouts/retrieve).
   """
   @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def retrieve(id, opts \\ []) do
@@ -109,12 +112,14 @@ defmodule Stripe.Payout do
 
   The payout to be updated may either be passed in as a struct or an ID.
 
-  See the [Stripe docs](https://stripe.com/docs/api#update_payout).
+  See the [Stripe docs](https://stripe.com/docs/api/payouts/update).
   """
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:metadata) => Stripe.Types.metadata()
-             } | %{}
+        when params:
+               %{
+                 optional(:metadata) => Stripe.Types.metadata()
+               }
+               | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -129,18 +134,20 @@ defmodule Stripe.Payout do
   Returns a list of payouts. The payouts are returned in sorted order,
   with the most recent payouts appearing first.
 
-  See the [Stripe docs](https://stripe.com/docs/api#list_payouts).
+  See the [Stripe docs](https://stripe.com/docs/api/payouts/list).
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:arrival_date) => Stripe.date_query(),
-               optional(:created) => Stripe.date_query(),
-               optional(:destination) => String.t(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
-               optional(:status) => String.t()
-             } | %{}
+        when params:
+               %{
+                 optional(:arrival_date) => Stripe.date_query(),
+                 optional(:created) => Stripe.date_query(),
+                 optional(:destination) => String.t(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id(),
+                 optional(:status) => String.t()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> prefix_expansions()
@@ -154,7 +161,7 @@ defmodule Stripe.Payout do
   @doc """
   Cancel a payout.
 
-  See the [Stripe docs](https://stripe.com/docs/api#cancel_payout).
+  See the [Stripe docs](https://stripe.com/docs/api/payouts/cancel).
   """
   @spec cancel(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def cancel(id, opts \\ []) do

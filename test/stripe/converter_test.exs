@@ -12,7 +12,6 @@ defmodule Stripe.ConverterTest do
         object: %Stripe.Customer{
           id: "cus_9ryX7lUQ4Dcpf7",
           object: "customer",
-          account_balance: 0,
           created: 1_483_535_628,
           currency: nil,
           default_source: nil,
@@ -34,8 +33,7 @@ defmodule Stripe.ConverterTest do
             has_more: false,
             total_count: 0,
             url: "/v1/customers/cus_9ryX7lUQ4Dcpf7/subscriptions"
-          },
-          tax_info: nil
+          }
         },
         previous_attributes: %{
           description: "testcustomer",
@@ -52,6 +50,57 @@ defmodule Stripe.ConverterTest do
     }
 
     fixture = Helper.load_fixture("event_with_customer.json")
+    result = Converter.convert_result(fixture)
+
+    assert result == expected_result
+  end
+
+  test "converts review.opened event properly" do
+    expected_result = %Stripe.Event{
+      account: "acct_445dwy73iNyGMfgu",
+      api_version: "2019-02-19",
+      created: 1_551_702_604,
+      data: %{
+        object: %Stripe.Review{
+          billing_zip: nil,
+          charge: "ch_1EAFvj73iNyGMfgutk44a8nD",
+          closed_reason: nil,
+          created: 1_551_702_603,
+          id: "prv_1EAFvj73iNyGMfgu81yzEb0D",
+          ip_address: "172.16.1.4",
+          ip_address_location: %{
+            city: "Samara",
+            country: "RU",
+            latitude: 34,
+            longitude: 33,
+            region: "65"
+          },
+          livemode: false,
+          object: "review",
+          open: true,
+          opened_reason: "rule",
+          payment_intent: nil,
+          reason: "rule",
+          session: %{
+            browser: "Firefox",
+            device: "Other",
+            platform: "Mac OS X 10.14",
+            version: "65.0"
+          }
+        }
+      },
+      id: "evt_1EAFvk73iNyGMfguDACcQT5X",
+      livemode: false,
+      object: "event",
+      pending_webhooks: 4,
+      request: %{
+        id: "req_3zmMCPEWZ2R24x",
+        idempotency_key: "1551702602859892291_xgpCTQ"
+      },
+      type: "review.opened"
+    }
+
+    fixture = Helper.load_fixture("review_opened.json")
     result = Converter.convert_result(fixture)
 
     assert result == expected_result
@@ -125,7 +174,6 @@ defmodule Stripe.ConverterTest do
     expected_result = %Stripe.Customer{
       id: "cus_9ryX7lUQ4Dcpf7",
       object: "customer",
-      account_balance: 0,
       created: 1_483_535_628,
       currency: "usd",
       default_source: nil,
@@ -180,7 +228,8 @@ defmodule Stripe.ConverterTest do
       end: 1_595_517_288,
       object: "discount",
       start: 1_532_358_888,
-      subscription: "sub_DG9Uq9WOevR9Uo"
+      subscription: "sub_DG9Uq9WOevR9Uo",
+      promotion_code: "promo_1HuRNuKKEsQW5O8UAfIZ33ox"
     }
 
     fixture = Helper.load_fixture("discount.json")
@@ -239,6 +288,19 @@ defmodule Stripe.ConverterTest do
     }
 
     fixture = Helper.load_fixture("card_deleted.json")
+    result = Converter.convert_result(fixture)
+
+    assert result == expected_result
+  end
+
+  test "converts a checkout.session response properly" do
+    expected_result = %Stripe.Session{
+      id: "CdWP8EBmSp1tJNIw4ZLF6w3XKd8MNKkEvlnSK7QmwFlDZ8rrjqBn9VI9vKiVdhfE",
+      livemode: false,
+      object: "checkout.session"
+    }
+
+    fixture = Helper.load_fixture("session.json")
     result = Converter.convert_result(fixture)
 
     assert result == expected_result

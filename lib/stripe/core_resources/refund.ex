@@ -1,12 +1,12 @@
 defmodule Stripe.Refund do
   @moduledoc """
-  Work with [Stripe `refund` objects](https://stripe.com/docs/api#refund_object).
+  Work with [Stripe `refund` objects](https://stripe.com/docs/api/refunds/object).
 
   You can:
-  - [Create a refund](https://stripe.com/docs/api#create_refund)
-  - [Retrieve a refund](https://stripe.com/docs/api#retrieve_refund)
-  - [Update a refund](https://stripe.com/docs/api#update_refund)
-  - [List all refunds](https://stripe.com/docs/api#list_refunds)
+  - [Create a refund](https://stripe.com/docs/api/refunds/create)
+  - [Retrieve a refund](https://stripe.com/docs/api/refunds/retrieve)
+  - [Update a refund](https://stripe.com/docs/api/update)
+  - [List all refunds](https://stripe.com/docs/api/refunds/list)
   """
 
   use Stripe.Entity
@@ -23,10 +23,12 @@ defmodule Stripe.Refund do
           failure_balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
           failure_reason: String.t() | nil,
           metadata: Stripe.Types.metadata(),
-          payment: Stripe.id() | Stripe.Charge.t() | nil,
+          payment_intent: Stripe.id() | Stripe.PaymentIntent.t() | nil,
           reason: String.t() | nil,
           receipt_number: String.t() | nil,
-          status: String.t() | nil
+          source_transfer_reversal: Stripe.id() | Stripe.TransferReversal.t() | nil,
+          status: String.t() | nil,
+          transfer_reversal: Stripe.id() | Stripe.TransferReversal.t() | nil
         }
 
   defstruct [
@@ -40,10 +42,12 @@ defmodule Stripe.Refund do
     :failure_balance_transaction,
     :failure_reason,
     :metadata,
-    :payment,
+    :payment_intent,
     :reason,
     :receipt_number,
-    :status
+    :source_transfer_reversal,
+    :status,
+    :transfer_reversal
   ]
 
   @plural_endpoint "refunds"
@@ -64,23 +68,26 @@ defmodule Stripe.Refund do
   return an error when called on an already-refunded charge, or when trying to
   refund more money than is left on a charge.
 
-  See the [Stripe docs](https://stripe.com/docs/api#create_refund).
+  See the [Stripe docs](https://stripe.com/docs/api/refunds/create).
   """
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               :charge => Stripe.Charge.t() | Stripe.id(),
-               optional(:amount) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:reason) => String.t(),
-               optional(:refund_application_fee) => boolean,
-               optional(:reverse_transfer) => boolean
-             } | %{}
+        when params:
+               %{
+                 optional(:charge) => Stripe.Charge.t() | Stripe.id(),
+                 optional(:payment_intent) => Stripe.PaymentIntent.t() | Stripe.id(),
+                 optional(:amount) => pos_integer,
+                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:reason) => String.t(),
+                 optional(:refund_application_fee) => boolean,
+                 optional(:reverse_transfer) => boolean
+               }
+               | %{}
   def create(params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
     |> put_method(:post)
     |> put_params(params)
-    |> cast_to_id([:charge])
+    |> cast_to_id([:charge, :payment_intent])
     |> make_request()
   end
 
@@ -89,7 +96,7 @@ defmodule Stripe.Refund do
 
   Retrieves the details of an existing refund.
 
-  See the [Stripe docs](https://stripe.com/docs/api#retrieve_refund).
+  See the [Stripe docs](https://stripe.com/docs/api/refunds/retrieve).
   """
   @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def retrieve(id, opts \\ []) do
@@ -107,12 +114,14 @@ defmodule Stripe.Refund do
 
   This request only accepts `:metadata` as an argument.
 
-  See the [Stripe docs](https://stripe.com/docs/api#update_refund).
+  See the [Stripe docs](https://stripe.com/docs/api/refunds/update).
   """
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:metadata) => Stripe.Types.metadata()
-             } | %{}
+        when params:
+               %{
+                 optional(:metadata) => Stripe.Types.metadata()
+               }
+               | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -129,15 +138,17 @@ defmodule Stripe.Refund do
   convenience, the 10 most recent refunds are always available by default on
   the charge object.
 
-  See the [Stripe docs](https://stripe.com/docs/api#list_refunds).
+  See the [Stripe docs](https://stripe.com/docs/api/refunds/list).
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:charget) => Stripe.id() | Stripe.Charge.t(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
-             } | %{}
+        when params:
+               %{
+                 optional(:charget) => Stripe.id() | Stripe.Charge.t(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> prefix_expansions()

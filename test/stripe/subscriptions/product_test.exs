@@ -3,7 +3,7 @@ defmodule Stripe.ProductTest do
 
   describe "create/2" do
     test "creates an product" do
-      assert {:ok, %Stripe.Product{}} = Stripe.Product.create(%{name: "Plus", type: "service"})
+      assert {:ok, %Stripe.Product{}} = Stripe.Product.create(%{name: "Plus"})
       assert_stripe_requested(:post, "/v1/products")
     end
   end
@@ -35,6 +35,8 @@ defmodule Stripe.ProductTest do
   describe "delete/1" do
     test "deletes a product" do
       {:ok, product} = Stripe.Product.retrieve("Plus")
+      assert_stripe_requested(:get, "/v1/products/#{product.id}")
+
       assert {:ok, _} = Stripe.Product.delete("Plus")
       assert_stripe_requested(:delete, "/v1/products/#{product.id}")
     end

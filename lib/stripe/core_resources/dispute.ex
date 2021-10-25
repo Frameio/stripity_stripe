@@ -9,7 +9,7 @@ defmodule Stripe.Dispute do
   - Close a dispute
   - List disputes
 
-  Stripe API reference: https://stripe.com/docs/api#disputes
+  Stripe API reference: https://stripe.com/docs/api/disputes
   """
 
   use Stripe.Entity
@@ -71,6 +71,7 @@ defmodule Stripe.Dispute do
           metadata: %{
             optional(String.t()) => String.t()
           },
+          payment_intent: Stripe.id() | Stripe.PaymentIntent.t() | nil,
           reason: dispute_reason,
           status: dispute_status
         }
@@ -88,6 +89,7 @@ defmodule Stripe.Dispute do
     :is_charge_refundable,
     :livemode,
     :metadata,
+    :payment_intent,
     :reason,
     :status
   ]
@@ -109,11 +111,13 @@ defmodule Stripe.Dispute do
   Update a dispute.
   """
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:evidence) => dispute_evidence,
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:submit) => boolean
-             } | %{}
+        when params:
+               %{
+                 optional(:evidence) => dispute_evidence,
+                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:submit) => boolean
+               }
+               | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -137,12 +141,14 @@ defmodule Stripe.Dispute do
   List all disputes.
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:created) => String.t() | Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
-             } | %{}
+        when params:
+               %{
+                 optional(:created) => String.t() | Stripe.date_query(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> prefix_expansions()

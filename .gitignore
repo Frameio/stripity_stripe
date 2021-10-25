@@ -5,12 +5,15 @@ erl_crash.dump
 config/config.secret.exs
 /doc
 .DS_Store
+tags
 
 # elixir LS files
 
 /.elixir_ls
+/.devcontainer
 # IntelliJ IDEA files
 
 /.idea
 *.iml
-priv/plts/*.plt
+priv/plts/*
+/cover

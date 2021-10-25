@@ -12,49 +12,111 @@ defmodule Stripe.Converter do
 
   @supported_objects ~w(
     account
+    account_link
     application_fee
     fee_refund
     balance
     balance_transaction
     bank_account
+    billing_portal.session
+    capability
     card
     charge
+    checkout.session
     country_spec
     coupon
+    credit_note
+    credit_note_line_item
     customer
+    customer_balance_transaction
     discount
     dispute
+    ephemeral_key
     event
     external_account
-    file_upload
+    file
+    file_link
+    identity.verification_session
+    identity.verification_report
     invoice
     invoiceitem
+    issuing.authorization
+    issuing.card
+    issuing.cardholder
+    issuing.transaction
     line_item
     list
+    login_link
+    mandate
     oauth
     order
+    order_item
     order_return
+    payment_intent
+    payment_method
     payout
+    person
     plan
+    price
     product
+    promotion_code
     recipient
     refund
+    review
+    setup_intent
     sku
     source
     subscription
     subscription_item
+    subscription_schedule
+    tax_rate
+    tax_id
+    topup
+    terminal.connection_token
+    terminal.location
+    terminal.reader
     transfer
     transfer_reversal
     token
+    usage_record
+    usage_record_summary
+    webhook_endpoint
   )
 
   @no_convert_maps ~w(metadata supported_bank_account_currencies)
 
+  @doc """
+  Returns a list of structs to be used for providing JSON-encoders.
+
+  ## Examples
+
+  Say you are using Jason to encode your JSON, you can provide the following protocol,
+  to directly encode all structs of this library into JSON.
+
+  ```
+  for struct <- Stripe.Converter.structs() do
+    defimpl Jason.Encoder, for: struct do
+      def encode(value, opts) do
+        Jason.Encode.map(Map.delete(value, :__struct__), opts)
+      end
+    end
+  end
+  ```
+  """
+  def structs() do
+    (@supported_objects -- @no_convert_maps)
+    |> Enum.map(&Stripe.Util.object_name_to_module/1)
+  end
+
   @spec convert_value(any) :: any
   defp convert_value(%{"object" => object_name} = value) when is_binary(object_name) do
     case Enum.member?(@supported_objects, object_name) do
-      true -> convert_stripe_object(value)
-      false -> convert_map(value)
+      true ->
+        convert_stripe_object(value)
+
+      false ->
+        warn_unknown_object(value)
+        convert_map(value)
     end
   end
 
@@ -78,16 +140,16 @@ defmodule Stripe.Converter do
     processed_map =
       struct_keys
       |> Enum.reduce(%{}, fn key, acc ->
-           string_key = to_string(key)
+        string_key = to_string(key)
 
-           converted_value =
-             case string_key do
-               string_key when string_key in @no_convert_maps -> Map.get(value, string_key)
-               _ -> Map.get(value, string_key) |> convert_value()
-             end
+        converted_value =
+          case string_key do
+            string_key when string_key in @no_convert_maps -> Map.get(value, string_key)
+            _ -> Map.get(value, string_key) |> convert_value()
+          end
 
-           Map.put(acc, key, converted_value)
-         end)
+        Map.put(acc, key, converted_value)
+      end)
       |> module.__from_json__()
 
     struct(module, processed_map)
@@ -96,7 +158,17 @@ defmodule Stripe.Converter do
   @spec convert_list(list) :: list
   defp convert_list(list), do: list |> Enum.map(&convert_value/1)
 
-  if Mix.env() == "prod" do
+  if Mix.env() == :prod do
+    defp warn_unknown_object(_), do: :ok
+  else
+    defp warn_unknown_object(%{"object" => object_name}) do
+      require Logger
+
+      Logger.warn("Unknown object received: #{object_name}")
+    end
+  end
+
+  if Mix.env() == :prod do
     defp check_for_extra_keys(_, _), do: :ok
   else
     defp check_for_extra_keys(struct_keys, map) do
@@ -127,7 +199,7 @@ defmodule Stripe.Converter do
 
         details = "#{module_name}: #{inspect(extra_keys)}"
         message = "Extra keys were received but ignored when converting #{details}"
-        Logger.debug(message)
+        Logger.warn(message)
       end
 
       :ok

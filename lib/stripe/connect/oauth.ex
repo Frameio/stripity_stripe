@@ -11,7 +11,7 @@ defmodule Stripe.Connect.OAuth do
   Stripe API reference: https://stripe.com/docs/connect/reference
   """
 
-  alias Stripe.Converter
+  alias Stripe.{Config, Converter}
 
   @callback token(code :: String.t()) :: {:ok, map}
   @callback authorize_url(map) :: String.t()
@@ -76,12 +76,13 @@ defmodule Stripe.Connect.OAuth do
   }
   ```
   """
-  @spec token(String.t()) :: {:ok, map} | {:error, %Stripe.Error{}}
-  def token(code) do
+  @spec token(String.t(), Stripe.options()) :: {:ok, map} | {:error, %Stripe.Error{}}
+  def token(code, opts \\ []) do
     endpoint = "token"
+    {api_key, _} = Keyword.pop(opts, :api_key)
 
     body = %{
-      client_secret: get_client_secret(),
+      client_secret: api_key || get_client_secret(),
       code: code,
       grant_type: "authorization_code"
     }
@@ -173,13 +174,22 @@ defmodule Stripe.Connect.OAuth do
   url = Stripe.Connect.OAuth.authorize_url(connect_opts)
   ```
   """
-  @spec authorize_url(map) :: String.t()
-  def authorize_url(options \\ %{}) do
-    base_url = "https://connect.stripe.com/oauth/authorize?"
+  @spec authorize_url(map, :standard | :express) :: String.t()
+  def authorize_url(param_options \\ %{}, account_type \\ :standard) do
+    domain = "https://connect.stripe.com"
+
+    base_url =
+      case account_type do
+        :standard ->
+          domain <> "/oauth/authorize?"
+
+        :express ->
+          domain <> "/express/oauth/authorize?"
+      end
 
     param_string =
       get_default_authorize_map()
-      |> Map.merge(options)
+      |> Map.merge(param_options)
       |> Map.take(@authorize_url_valid_keys)
       |> Stripe.URI.encode_query()
 
@@ -188,12 +198,12 @@ defmodule Stripe.Connect.OAuth do
 
   @spec get_client_id() :: String.t()
   defp get_client_id() do
-    Application.get_env(:stripity_stripe, :connect_client_id)
+    Config.resolve(:connect_client_id)
   end
 
   @spec get_client_secret() :: String.t()
   defp get_client_secret() do
-    Application.get_env(:stripity_stripe, :api_key)
+    Config.resolve(:api_key)
   end
 
   @spec get_default_authorize_map() :: map

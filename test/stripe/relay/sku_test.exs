@@ -3,7 +3,15 @@ defmodule Stripe.SkuTest do
 
   test "is creatable" do
     inventory = %{type: "finite", quantity: 500}
-    assert {:ok, %Stripe.Sku{}} = Stripe.Sku.create(%{currency: "USD", product: "prod_123", price: 100, inventory: inventory})
+
+    assert {:ok, %Stripe.Sku{}} =
+             Stripe.Sku.create(%{
+               currency: "USD",
+               product: "prod_123",
+               price: 100,
+               inventory: inventory
+             })
+
     assert_stripe_requested(:post, "/v1/skus")
   end
 
@@ -26,7 +34,7 @@ defmodule Stripe.SkuTest do
 
   test "is deletable" do
     assert {:ok, %Stripe.Sku{}} = Stripe.Sku.delete("sku_123")
-    assert_stripe_requested(:delete, "/v1/skus/sku_123/delete")
+    assert_stripe_requested(:delete, "/v1/skus/sku_123")
   end
 
   test "is listable" do
@@ -39,7 +47,6 @@ defmodule Stripe.SkuTest do
   test "is listable with params" do
     params = %{active: false, in_stock: false}
     assert {:ok, %Stripe.List{data: _skus}} = Stripe.Sku.list(params)
-    assert_stripe_requested(:get, "/v1/skus")
+    assert_stripe_requested(:get, "/v1/skus", query: params)
   end
 end
-

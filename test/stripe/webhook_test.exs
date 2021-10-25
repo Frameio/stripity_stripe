@@ -11,8 +11,15 @@ defmodule Stripe.WebhookTest do
   @secret "secret"
 
   defp generate_signature(timestamp, payload, secret \\ @secret) do
-    :crypto.hmac(:sha256, secret, "#{timestamp}.#{payload}")
+    hmac(:sha256, secret, "#{timestamp}.#{payload}")
     |> Base.encode16(case: :lower)
+  end
+
+  # TODO: remove when we require OTP 22
+  if System.otp_release() >= "22" do
+    defp hmac(digest, key, data), do: :crypto.mac(:hmac, digest, key, data)
+  else
+    defp hmac(digest, key, data), do: :crypto.hmac(digest, key, data)
   end
 
   defp create_signature_header(timestamp, scheme, signature) do
@@ -20,7 +27,7 @@ defmodule Stripe.WebhookTest do
   end
 
   test "payload with a valid signature should return event" do
-    timestamp = System.system_time(:seconds)
+    timestamp = System.system_time(:second)
     payload = @valid_payload
     signature = generate_signature(timestamp, payload)
     signature_header = create_signature_header(timestamp, @valid_scheme, signature)
@@ -29,7 +36,7 @@ defmodule Stripe.WebhookTest do
   end
 
   test "payload with an invalid signature should fail" do
-    timestamp = System.system_time(:seconds)
+    timestamp = System.system_time(:second)
     payload = @valid_payload
     signature = generate_signature(timestamp, "random")
     signature_header = create_signature_header(timestamp, @valid_scheme, signature)
@@ -38,7 +45,7 @@ defmodule Stripe.WebhookTest do
   end
 
   test "payload with wrong secret should fail" do
-    timestamp = System.system_time(:seconds)
+    timestamp = System.system_time(:second)
     payload = @valid_payload
     signature = generate_signature(timestamp, payload, "wrong")
     signature_header = create_signature_header(timestamp, @valid_scheme, signature)
@@ -47,7 +54,7 @@ defmodule Stripe.WebhookTest do
   end
 
   test "payload with missing signature scheme should fail" do
-    timestamp = System.system_time(:seconds)
+    timestamp = System.system_time(:second)
     payload = @valid_payload
     signature = generate_signature(timestamp, payload)
     signature_header = create_signature_header(timestamp, @invalid_scheme, signature)

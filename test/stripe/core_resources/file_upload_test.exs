@@ -4,25 +4,27 @@ defmodule Stripe.FileUploadTest do
   describe "create/2" do
     @tag :skip
     test "creates a file" do
-      assert {:ok, %Stripe.FileUpload{}} = Stripe.FileUpload.create(%{
-        file: "@/path/to/a/file.jpg",
-        purpose: "dispute_evidence"
-      })
-      assert_stripe_requested :post, "/v1/files"
+      assert {:ok, %Stripe.FileUpload{}} =
+               Stripe.FileUpload.create(%{
+                 file: "@/path/to/a/file.jpg",
+                 purpose: "dispute_evidence"
+               })
+
+      assert_stripe_requested(:post, "/v1/files")
     end
   end
 
   describe "retrieve/2" do
     test "retrieves an file" do
-      assert {:ok, %Stripe.FileUpload{}} = Stripe.FileUpload.retrieve("file_123")
-      assert_stripe_requested :get, "/v1/files/file_123"
+      assert {:ok, _} = Stripe.FileUpload.retrieve("file_19yVPO2eZvKYlo2CIrGjfyCO")
+      assert_stripe_requested(:get, "/v1/files/file_19yVPO2eZvKYlo2CIrGjfyCO")
     end
   end
 
   describe "list/2" do
     test "lists all files" do
-      assert {:ok, %Stripe.List{data: [%Stripe.FileUpload{}]}} = Stripe.FileUpload.list()
-      assert_stripe_requested :get, "/v1/files"
+      assert {:ok, _} = Stripe.FileUpload.list()
+      assert_stripe_requested(:get, "/v1/files")
     end
   end
 end

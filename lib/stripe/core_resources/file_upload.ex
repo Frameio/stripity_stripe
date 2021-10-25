@@ -8,30 +8,36 @@ defmodule Stripe.FileUpload do
   - Retrieve a file
   - List all files
 
-  Stripe API reference: https://stripe.com/docs/api#file_uploads
+  Stripe API reference: https://stripe.com/docs/api/files
   """
 
   use Stripe.Entity
   import Stripe.Request
 
   @type t :: %__MODULE__{
-    id: Stripe.id,
-    object: String.t,
-    created: Stripe.timestamp,
-    filename: String.t | nil,
-    purpose: String.t,
-    size: integer,
-    type: String.t | nil,
-    url: String.t | nil
-  }
+          id: Stripe.id(),
+          object: String.t(),
+          created: Stripe.timestamp(),
+          expires_at: Stripe.timestamp(),
+          filename: String.t() | nil,
+          links: Stripe.List.t(Stripe.FileLink.t()),
+          purpose: String.t(),
+          size: integer,
+          title: String.t() | nil,
+          type: String.t() | nil,
+          url: String.t() | nil
+        }
 
   defstruct [
     :id,
     :object,
     :created,
+    :expires_at,
     :filename,
+    :links,
     :purpose,
     :size,
+    :title,
     :type,
     :url
   ]
@@ -43,7 +49,7 @@ defmodule Stripe.FileUpload do
 
   Takes the filepath and the purpose.
   """
-  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Stripe.Error.t}
+  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def create(%{file: _, purpose: _} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -55,30 +61,32 @@ defmodule Stripe.FileUpload do
   @doc """
   Retrieve a file_upload.
   """
-  @spec retrieve(Stripe.id | t, Stripe.options) :: {:ok, t} | {:error, Stripe.Error.t}
+  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
     |> put_method(:get)
-    |> make_file_upload_request()
+    |> make_request()
   end
 
   @doc """
   List all file uploads, going back up to 30 days.
   """
-  @spec list(params, Stripe.options) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t}
-        when params: %{
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:purpose) => String.t(),
-               optional(:starting_after) => t | Stripe.id()
-             } | %{}
+  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+        when params:
+               %{
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:purpose) => String.t(),
+                 optional(:starting_after) => t | Stripe.id()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
     |> put_method(:get)
     |> put_params(params)
     |> cast_to_id([:ending_before, :starting_after, :limit, :purpose])
-    |> make_file_upload_request()
+    |> make_request()
   end
 end

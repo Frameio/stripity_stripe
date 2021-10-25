@@ -10,7 +10,7 @@ defmodule Stripe.Mixfile do
         plt_add_apps: [:mix],
         plt_file: {:no_warn, "priv/plts/stripity_stripe.plt"}
       ],
-      elixir: "~> 1.5",
+      elixir: "~> 1.10",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: [
@@ -20,8 +20,14 @@ defmodule Stripe.Mixfile do
         "coveralls.html": :test
       ],
       test_coverage: [tool: ExCoveralls],
-      version: "2.2.1",
-      source_url: "https://github.com/code-corps/stripity_stripe/"
+      version: "2.12.1",
+      source_url: "https://github.com/code-corps/stripity_stripe/",
+      docs: [
+        main: "readme",
+        extras: ["README.md"],
+        groups_for_modules: groups_for_modules(),
+        nest_modules_by_prefix: nest_modules_by_prefix()
+      ]
     ]
   end
 
@@ -29,6 +35,7 @@ defmodule Stripe.Mixfile do
   def application do
     [
       applications: apps(Mix.env()),
+      extra_applications: [:plug],
       env: env(),
       mod: {Stripe, []}
     ]
@@ -50,22 +57,22 @@ defmodule Stripe.Mixfile do
     ]
   end
 
-  defp apps(:test), do: [:bypass | apps()]
+  defp apps(:test), do: apps()
   defp apps(_), do: apps()
-  defp apps(), do: [:hackney, :logger, :poison, :uri_query]
+  defp apps(), do: [:hackney, :logger, :jason, :uri_query]
 
   defp deps do
     [
-      {:bypass, "~> 1.0", only: :test},
-      {:dialyxir, "1.0.0-rc.6", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.20", only: :dev},
-      {:excoveralls, "~> 0.8.1", only: :test},
-      {:hackney, "~> 1.13"},
+      {:dialyxir, "1.1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.23.0", only: :dev},
+      {:excoveralls, "~> 0.14.1", only: :test},
+      {:hackney, "~> 1.15"},
       {:inch_ex, "~> 2.0", only: [:dev, :test]},
-      {:mox, "~> 0.5", only: :test},
-      {:poison, ">= 3.0.0"},
+      {:mox, "~> 0.4", only: :test},
+      {:jason, "~> 1.1"},
       {:uri_query, "~> 0.1.2"},
-      {:exexec, "~> 0.1.0", only: :test}
+      {:exexec, "~> 0.1.0", only: :test},
+      {:plug, "~> 1.0", optional: true}
     ]
   end
 
@@ -83,6 +90,116 @@ defmodule Stripe.Mixfile do
         "GitHub" => "https://github.com/code-corps/stripity_stripe"
       },
       maintainers: ["Dan Matthews", "Josh Smith", "Nikola Begedin", "Scott Newcomer"]
+    ]
+  end
+
+  defp groups_for_modules do
+    [
+      "Core Resources": [
+        Stripe.Balance,
+        Stripe.BalanceTransaction,
+        Stripe.Charge,
+        Stripe.Customer,
+        Stripe.Dispute,
+        Stripe.Event,
+        Stripe.FileUpload,
+        Stripe.FileLink,
+        Stripe.Mandate,
+        Stripe.PaymentIntent,
+        Stripe.Payout,
+        Stripe.Price,
+        Stripe.Product,
+        Stripe.Refund,
+        Stripe.SetupIntent,
+        Stripe.TaxID,
+        Stripe.Token
+      ],
+      "Payment Methods": [
+        Stripe.BankAccount,
+        Stripe.Card,
+        Stripe.PaymentMethod,
+        Stripe.Source
+      ],
+      Checkout: [
+        Stripe.Session
+      ],
+      Billing: [
+        Stripe.Coupon,
+        Stripe.CreditNote,
+        Stripe.CreditNoteLineItem,
+        Stripe.CustomerTransactionBalance,
+        Stripe.Discount,
+        Stripe.Invoice,
+        Stripe.Invoiceitem,
+        Stripe.LineItem,
+        Stripe.Product,
+        Stripe.Plan,
+        Stripe.Subscription,
+        Stripe.SubscriptionItem,
+        Stripe.SubscriptionItem.Usage,
+        Stripe.SubscriptionSchedule,
+        Stripe.TaxRate
+      ],
+      "Billing Portal": [
+        Stripe.BillingPortal.Session
+      ],
+      Connect: [
+        Stripe.Account,
+        Stripe.ApplicationFee,
+        Stripe.Capability,
+        Stripe.Connect.OAuth,
+        Stripe.Connect.OAuth.AuthorizeResponse,
+        Stripe.Connect.OAuth.DeauthorizeResponse,
+        Stripe.Connect.OAuth.TokenResponse,
+        Stripe.CountrySpec,
+        Stripe.ExternalAccount,
+        Stripe.FeeRefund,
+        Stripe.LoginLink,
+        Stripe.Recipient,
+        Stripe.Topup,
+        Stripe.Transfer,
+        Stripe.TransferReversal
+      ],
+      Fraud: [
+        Stripe.Review
+      ],
+      Identity: [
+        Stripe.Identity.VerificationSession,
+        Stripe.Identity.VerificationReport
+      ],
+      Issuing: [
+        Stripe.Issuing.Authorization,
+        Stripe.Issuing.Card,
+        Stripe.Issuing.Cardholder,
+        Stripe.Issuing.Transaction,
+        Stripe.Issuing.Types
+      ],
+      "Relay/Orders": [
+        Stripe.Order,
+        Stripe.OrderItem,
+        Stripe.OrderReturn,
+        Stripe.Relay.Product,
+        Stripe.Sku
+      ],
+      Terminal: [
+        Stripe.Terminal.ConnectionToken,
+        Stripe.Terminal.Location,
+        Stripe.Terminal.Reader
+      ],
+      Utilities: [
+        Stripe.Config,
+        Stripe.Converter,
+        Stripe.Types
+      ]
+    ]
+  end
+
+  def nest_modules_by_prefix() do
+    [
+      Stripe.Connect.OAuth,
+      Stripe.Connect.OAuth.AuthorizeResponse,
+      Stripe.Connect.OAuth.TokenResponse,
+      Stripe.Connect.OAuth.DeauthorizeResponse
     ]
   end
 end

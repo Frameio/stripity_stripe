@@ -6,15 +6,15 @@ defmodule Stripe.Event do
   - Retrieve an event
   - List all events
 
-  Stripe API reference: https://stripe.com/docs/api#event
+  Stripe API reference: https://stripe.com/docs/api/events
   """
 
   use Stripe.Entity
   import Stripe.Request
 
   @type event_data :: %{
-          object: event_data_object,
-          previous_attributes: map
+          :object => event_data_object,
+          optional(:previous_attributes) => map
         }
 
   # TODO: add Scheduled query run
@@ -32,6 +32,7 @@ defmodule Stripe.Event do
           | Stripe.Payout.t()
           | Stripe.Plan.t()
           | Stripe.Relay.Product.t()
+          | Stripe.Price.t()
           | Stripe.Product.t()
           | Stripe.Recipient.t()
           | Stripe.Review.t()
@@ -87,14 +88,16 @@ defmodule Stripe.Event do
   List all events, going back up to 30 days.
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
-               optional(:type) => String.t(),
-               optional(:types) => list
-             } | %{}
+        when params:
+               %{
+                 optional(:created) => Stripe.date_query(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id(),
+                 optional(:type) => String.t(),
+                 optional(:types) => list
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)

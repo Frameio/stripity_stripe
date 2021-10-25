@@ -47,9 +47,9 @@ defmodule Stripe.ApplicationFee do
   @doc """
   Retrieves the details of the application fees
   """
-  @spec retrieve(Stripe.id()) :: {:ok, t} | {:error, Stripe.Error.t()}
-  def retrieve(id) do
-    new_request()
+  @spec retrieve(Stripe.id(), Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  def retrieve(id, opts \\ []) do
+    new_request(opts)
     |> put_endpoint(@endpoint <> "/#{get_id!(id)}")
     |> put_method(:get)
     |> make_request()
@@ -59,13 +59,15 @@ defmodule Stripe.ApplicationFee do
   List all application fees
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:charge) => Stripe.id(),
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
-             } | %{}
+        when params:
+               %{
+                 optional(:charge) => Stripe.id(),
+                 optional(:created) => Stripe.date_query(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> prefix_expansions()

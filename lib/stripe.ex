@@ -17,6 +17,23 @@ defmodule Stripe do
 
       config :stripity_stripe, api_key: System.get_env("STRIPE_API_KEY")
 
+  ### Shared Options
+
+  Almost all of the requests that can be sent accept the following options:
+
+    * `:api_key` - The Stripe API key to use for the request. See
+      [https://stripe.com/docs/api/authentication](https://stripe.com/docs/api/authentication)
+    * `:api_version` - The version of the api that is being used, defaults to the
+      version the library is written for. See [https://stripe.com/docs/api/versioning](https://stripe.com/docs/api/versioning)
+    * `:connect_account` - The ID of a Stripe Connect account for which the
+      request should be made, passed through as the "Stripe-Account" header. The
+      preferred authentication method for Stripe Connect. See
+      [https://stripe.com/docs/connect/authentication#stripe-account-header](https://stripe.com/docs/connect/authentication#stripe-account-header)
+    * `:expand` - Takes a list of fields that should be expanded in the response
+      from Stripe. See [https://stripe.com/docs/api/expanding_objects](https://stripe.com/docs/api/expanding_objects)
+    * `:idempotency_key` - A string that is passed through as the "Idempotency-Key" header on all POST requests. This is used by Stripe's idempotency layer to manage
+      duplicate requests to the stripe API. See [https://stripe.com/docs/api/idempotent_requests](https://stripe.com/docs/api/idempotent_requests)
+
   ### HTTP Connection Pool
 
   Stripity Stripe is set up to use an HTTP connection pool by default. This
@@ -49,11 +66,17 @@ defmodule Stripe do
 
   @type id :: String.t()
   @type date_query :: %{
-                   optional(:gt) => timestamp,
-                   optional(:gte) => timestamp,
-                   optional(:lt) => timestamp,
-                   optional(:lte) => timestamp
-                 }
+          optional(:gt) => timestamp,
+          optional(:gte) => timestamp,
+          optional(:lt) => timestamp,
+          optional(:lte) => timestamp
+        }
+  @type integer_query :: %{
+          optional(:gt) => integer,
+          optional(:gte) => integer,
+          optional(:lt) => integer,
+          optional(:lte) => integer
+        }
   @type options :: Keyword.t()
   @type timestamp :: pos_integer
 

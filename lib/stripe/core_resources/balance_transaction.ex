@@ -1,10 +1,10 @@
 defmodule Stripe.BalanceTransaction do
   @moduledoc """
-  Work with [Stripe `balance_transaction` objects]  (https://stripe.com/docs/api#balance_transaction_object).
+  Work with [Stripe `balance_transaction` objects]  (https://stripe.com/docs/api#balance_transactions/object).
 
   You can:
-  - [Retrieve a balance transaction](https://stripe.com/docs/api#balance_transaction_retrieve)
-  - [List all balance history](https://stripe.com/docs/api#balance_history)
+  - [Retrieve a balance transaction](https://stripe.com/docs/api/balance_transactions/retrieve)
+  - [List all balance history](https://stripe.com/docs/api/balance_transactions/list)
   """
 
   use Stripe.Entity
@@ -22,6 +22,7 @@ defmodule Stripe.BalanceTransaction do
           fee: integer,
           fee_details: list(Stripe.Types.fee()) | [],
           net: integer,
+          reporting_category: String.t(),
           source: Stripe.id() | Stripe.Source.t() | nil,
           status: String.t(),
           type: String.t()
@@ -39,6 +40,7 @@ defmodule Stripe.BalanceTransaction do
     :fee,
     :fee_details,
     :net,
+    :reporting_category,
     :source,
     :status,
     :type
@@ -51,7 +53,7 @@ defmodule Stripe.BalanceTransaction do
 
   Requires the ID of the balance transaction to retrieve and takes no other parameters.
 
-  See the [Stripe docs](https://stripe.com/docs/api#balance_transaction_retrieve).
+  See the [Stripe docs](https://stripe.com/docs/api/balance_transactions/retrieve).
   """
   @spec retrieve(Stripe.id(), Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def retrieve(id, opts \\ []) do
@@ -68,7 +70,7 @@ defmodule Stripe.BalanceTransaction do
   The transactions are returned in sorted order, with the most recent transactions appearing first.
 
   See `t:Stripe.BalanceTransaction.All.t/0` or the
-  [Stripe docs](https://stripe.com/docs/api#balance_history) for parameter structure.
+  [Stripe docs](https://stripe.com/docs/api/balance_transactions/list) for parameter structure.
   """
   @spec all(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
         when params: %{

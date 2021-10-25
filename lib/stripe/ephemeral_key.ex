@@ -12,12 +12,13 @@ defmodule Stripe.EphemeralKey do
   but is required for iOS and Android SDK functionality.
 
   Explained in
-  https://stripe.com/docs/mobile/ios/standard#prepare-your-api
-  https://stripe.com/docs/mobile/android/customer-information#prepare-your-api
+  https://stripe.com/docs/mobile/ios/basic#ephemeral-key
+  https://stripe.com/docs/mobile/android/basic#set-up-ephemeral-key
 
   Stripe API reference: https://stripe.com/docs/api#customer
   """
 
+  use Stripe.Entity
   import Stripe.Request
 
   defstruct [
@@ -37,11 +38,9 @@ defmodule Stripe.EphemeralKey do
   Create an ephemeral key.
   """
   @spec create(params, String.t(), Keyword.t()) :: {:ok, t} | {:error, %Stripe.Error{}}
-        when params: %{
-               :customer => Stripe.id(),
-            }
+        when params: %{:customer => Stripe.id()} | %{issuing_card: Stripe.id()}
   def create(params, api_version, opts \\ []) do
-    new_request(opts, %{"Stripe-Version": api_version})
+    new_request([api_version: api_version] ++ opts)
     |> put_endpoint(@plural_endpoint)
     |> put_params(params)
     |> put_method(:post)
