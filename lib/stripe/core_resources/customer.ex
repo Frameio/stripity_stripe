@@ -20,6 +20,7 @@ defmodule Stripe.Customer do
           object: String.t(),
           account_balance: integer,
           address: Stripe.Types.address() | nil,
+          balance: integer,
           created: Stripe.timestamp(),
           currency: String.t() | nil,
           default_source: Stripe.id() | Stripe.Source.t() | nil,
@@ -29,12 +30,18 @@ defmodule Stripe.Customer do
           discount: Stripe.Discount.t() | nil,
           email: String.t() | nil,
           invoice_prefix: String.t() | nil,
+          invoice_settings: Stripe.Invoice.invoice_settings() | nil,
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
+          name: String.t(),
+          phone: String.t(),
+          preferred_locales: list(String.t()),
           shipping: Stripe.Types.shipping() | nil,
           sources: Stripe.List.t(Stripe.Source.t()),
           subscriptions: Stripe.List.t(Stripe.Subscription.t()),
           tax: Stripe.Types.tax() | nil,
+          tax_exempt: String.t() | nil,
+          tax_ids: Stripe.List.t(Stripe.TaxID.t()),
           tax_info: Stripe.Types.tax_info() | nil,
           tax_info_verification: Stripe.Types.tax_info_verification() | nil
         }
@@ -44,6 +51,7 @@ defmodule Stripe.Customer do
     :object,
     :account_balance,
     :address,
+    :balance,
     :created,
     :currency,
     :default_source,
@@ -53,12 +61,18 @@ defmodule Stripe.Customer do
     :discount,
     :email,
     :invoice_prefix,
+    :invoice_settings,
     :livemode,
     :metadata,
+    :name,
+    :phone,
+    :preferred_locales,
     :shipping,
     :sources,
     :subscriptions,
     :tax,
+    :tax_exempt,
+    :tax_ids,
     :tax_info,
     :tax_info_verification
   ]
@@ -72,14 +86,16 @@ defmodule Stripe.Customer do
         when params:
                %{
                  optional(:account_balance) => integer,
+                 optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
                  optional(:description) => String.t(),
                  optional(:email) => String.t(),
                  optional(:invoice_prefix) => String.t(),
+                 optional(:invoice_settings) => Stripe.Invoice.invoice_settings(),
                  optional(:metadata) => Stripe.Types.metadata(),
                  optional(:shipping) => Stripe.Types.shipping(),
-                 optional(:source) => Stripe.Source.t(),
+                 optional(:source) => Stripe.id() | Stripe.Source.t(),
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}
@@ -110,11 +126,13 @@ defmodule Stripe.Customer do
         when params:
                %{
                  optional(:account_balance) => integer,
+                 optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
                  optional(:description) => String.t(),
                  optional(:email) => String.t(),
                  optional(:invoice_prefix) => String.t(),
+                 optional(:invoice_settings) => Stripe.Invoice.invoice_settings(),
                  optional(:metadata) => Stripe.Types.metadata(),
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.Source.t(),

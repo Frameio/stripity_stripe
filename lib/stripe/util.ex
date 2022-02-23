@@ -31,7 +31,7 @@ defmodule Stripe.Util do
   def map_keys_to_atoms(m) do
     Enum.into(m, %{}, fn
       {k, v} when is_binary(k) ->
-        a = String.to_existing_atom(k)
+        a = String.to_atom(k)
         {a, v}
 
       entry ->
@@ -51,13 +51,23 @@ defmodule Stripe.Util do
   def atomize_key(k), do: k
 
   @spec object_name_to_module(String.t()) :: module
+  def object_name_to_module("checkout.session"), do: Stripe.Session
+  def object_name_to_module("file"), do: Stripe.FileUpload
+  def object_name_to_module("issuing.authorization"), do: Stripe.Issuing.Authorization
+  def object_name_to_module("issuing.card"), do: Stripe.Issuing.Card
+  def object_name_to_module("issuing.card_details"), do: Stripe.Issuing.CardDetails
+  def object_name_to_module("issuing.cardholder"), do: Stripe.Issuing.Cardholder
+  def object_name_to_module("issuing.dispute"), do: Stripe.Issuing.Dispute
+  def object_name_to_module("issuing.transaction"), do: Stripe.Issuing.Transaction
+  def object_name_to_module("tax_id"), do: Stripe.TaxID
+
   def object_name_to_module(object_name) do
     module_name =
       object_name
       |> String.split("_")
       |> Enum.map_join("", &String.capitalize/1)
 
-    Module.concat("Stripe", module_name)
+    Module.concat(Stripe, module_name)
   end
 
   @spec module_to_string(module) :: String.t()

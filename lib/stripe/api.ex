@@ -5,7 +5,7 @@ defmodule Stripe.API do
   Usually the utilities in `Stripe.Request` are a better way to write custom interactions with
   the API.
   """
-  alias Stripe.Error
+  alias Stripe.{Config, Error}
 
   @callback oauth_request(method, String.t(), map) :: {:ok, map}
 
@@ -16,8 +16,23 @@ defmodule Stripe.API do
   @typep http_failure :: {:error, term}
 
   @pool_name __MODULE__
-  @api_version "2018-08-23"
-  @http_module Application.get_env(:stripity_stripe, :http_module) || :hackney
+  @api_version "2019-05-16"
+
+  @idempotency_key_header "Idempotency-Key"
+
+  @default_max_attempts 3
+  @default_base_backoff 500
+  @default_max_backoff 2_000
+
+  @doc """
+  In config.exs your implicit or expicit configuration is:
+    config :stripity_stripe,
+      json_library: Poison # defaults to Jason but can be configured to Poison
+  """
+  @spec json_library() :: module
+  def json_library() do
+    Config.resolve(:json_library, Jason)
+  end
 
   def supervisor_children do
     if use_pool?() do
@@ -29,34 +44,73 @@ defmodule Stripe.API do
 
   @spec get_pool_options() :: Keyword.t()
   defp get_pool_options() do
-    Application.get_env(:stripity_stripe, :pool_options)
+    Config.resolve(:pool_options)
   end
 
   @spec get_base_url() :: String.t()
   defp get_base_url() do
-    Application.get_env(:stripity_stripe, :api_base_url)
+    Config.resolve(:api_base_url)
   end
 
   @spec get_upload_url() :: String.t()
   defp get_upload_url() do
-    Application.get_env(:stripity_stripe, :api_upload_url)
+    Config.resolve(:api_upload_url)
   end
 
   @spec get_default_api_key() :: String.t()
   defp get_default_api_key() do
-    case Application.get_env(:stripity_stripe, :api_key) do
-      nil ->
-        # use an empty string and let Stripe produce an error
-        ""
-
-      key ->
-        key
-    end
+    # if no API key is set default to `""` which will raise a Stripe API error
+    Config.resolve(:api_key, "")
   end
 
   @spec use_pool?() :: boolean
   defp use_pool?() do
-    Application.get_env(:stripity_stripe, :use_connection_pool)
+    Config.resolve(:use_connection_pool)
+  end
+
+  @spec http_module() :: module
+  defp http_module() do
+    Config.resolve(:http_module, :hackney)
+  end
+
+  @spec retry_config() :: Keyword.t()
+  defp retry_config() do
+    Config.resolve(:retries, [])
+  end
+
+  @doc """
+  Checks if an error is a problem that we should retry on. This includes both
+  socket errors that may represent an intermittent problem and some special
+  HTTP statuses.
+  """
+  @spec should_retry?(
+          http_success | http_failure,
+          attempts :: non_neg_integer,
+          config :: Keyword.t()
+        ) :: boolean
+  def should_retry?(response, attempts \\ 0, config \\ []) do
+    max_attempts = Keyword.get(config, :max_attempts) || @default_max_attempts
+
+    if attempts >= max_attempts do
+      false
+    else
+      retry_response?(response)
+    end
+  end
+
+  @doc """
+  A low level utility function to generate a new idempotency key for
+  `#{@idempotency_key_header}` request header value.
+  """
+  @spec generate_idempotency_key() :: binary
+  def generate_idempotency_key do
+    binary = <<
+      System.system_time(:nanosecond)::64,
+      :erlang.phash2({node(), self()}, 16_777_216)::24,
+      System.unique_integer([:positive])::32
+    >>
+
+    Base.hex_encode32(binary, case: :lower, padding: false)
   end
 
   @spec add_common_headers(headers) :: headers
@@ -64,9 +118,7 @@ defmodule Stripe.API do
     Map.merge(existing_headers, %{
       "Accept" => "application/json; charset=utf8",
       "Accept-Encoding" => "gzip",
-      "Connection" => "keep-alive",
-      "User-Agent" => "Stripe/v1 stripity-stripe/#{@api_version}",
-      "Stripe-Version" => @api_version
+      "Connection" => "keep-alive"
     })
   end
 
@@ -85,6 +137,24 @@ defmodule Stripe.API do
     existing_headers
     |> Map.put("Content-Type", "multipart/form-data")
   end
+
+  @spec add_idempotency_headers(headers, method) :: headers
+  defp add_idempotency_headers(existing_headers, method) when method in [:get, :head] do
+    existing_headers
+  end
+
+  defp add_idempotency_headers(existing_headers, _method) do
+    # By using `Map.put_new/3` instead of `Map.put/3`, we allow users to
+    # provide their own idempotency key.
+    existing_headers
+    |> Map.put_new(@idempotency_key_header, generate_idempotency_key())
+  end
+
+  @spec maybe_add_auth_header_oauth(headers, String.t(), String.t() | nil) :: headers
+  defp maybe_add_auth_header_oauth(headers, "deauthorize", api_key),
+    do: add_auth_header(headers, api_key)
+
+  defp maybe_add_auth_header_oauth(headers, _endpoint, _api_key), do: headers
 
   @spec add_auth_header(headers, String.t() | nil) :: headers
   defp add_auth_header(existing_headers, api_key) do
@@ -107,6 +177,16 @@ defmodule Stripe.API do
     Map.put(existing_headers, "Stripe-Account", account_id)
   end
 
+  @spec add_api_version(headers, String.t() | nil) :: headers
+  defp add_api_version(existing_headers, nil), do: add_api_version(existing_headers, @api_version)
+
+  defp add_api_version(existing_headers, api_version) do
+    Map.merge(existing_headers, %{
+      "User-Agent" => "Stripe/v1 stripity-stripe/#{api_version}",
+      "Stripe-Version" => api_version
+    })
+  end
+
   @spec add_default_options(list) :: list
   defp add_default_options(opts) do
     [:with_body | opts]
@@ -121,8 +201,28 @@ defmodule Stripe.API do
     end
   end
 
+  @spec add_options_from_config(list) :: list
+  defp add_options_from_config(opts) do
+    if is_list(Stripe.Config.resolve(:hackney_opts)) do
+      opts ++ Stripe.Config.resolve(:hackney_opts)
+    else
+      opts
+    end
+  end
+
   @doc """
   A low level utility function to make a direct request to the Stripe API
+
+  ## Setting the api key
+
+      request(%{}, :get, "/customers", %{}, api_key: "bogus key")
+
+  ## Setting api version
+
+  The api version defaults to #{@api_version} but a custom version can be passed
+  in as follows:
+
+      request(%{}, :get, "/customers", %{}, api_version: "2018-11-04")
 
   ## Connect Accounts
 
@@ -151,9 +251,11 @@ defmodule Stripe.API do
 
   def request(body, method, endpoint, headers, opts) do
     {expansion, opts} = Keyword.pop(opts, :expand)
-    base_url = get_base_url()
+    {idempotency_key, opts} = Keyword.pop(opts, :idempotency_key)
 
+    base_url = get_base_url()
     req_url = add_object_expansion("#{base_url}#{endpoint}", expansion)
+    headers = add_idempotency_header(idempotency_key, headers, method)
 
     req_body =
       body
@@ -200,30 +302,36 @@ defmodule Stripe.API do
   @doc """
   A low level utility function to make an OAuth request to the Stripe API
   """
-  @spec oauth_request(method, String.t(), map) :: {:ok, map} | {:error, Stripe.Error.t()}
-  def oauth_request(method, endpoint, body) do
+  @spec oauth_request(method, String.t(), map, String.t() | nil) ::
+          {:ok, map} | {:error, Stripe.Error.t()}
+  def oauth_request(method, endpoint, body, api_key \\ nil, opts \\ []) do
     base_url = "https://connect.stripe.com/oauth/"
     req_url = base_url <> endpoint
     req_body = Stripe.URI.encode_query(body)
+    {api_version, _opts} = Keyword.pop(opts, :api_version)
 
     req_headers =
       %{}
       |> add_default_headers()
+      |> maybe_add_auth_header_oauth(endpoint, api_key)
+      |> add_api_version(api_version)
+      |> add_idempotency_headers(method)
       |> Map.to_list()
 
     req_opts =
       []
       |> add_default_options()
       |> add_pool_option()
+      |> add_options_from_config()
 
-    @http_module.request(method, req_url, req_headers, req_body, req_opts)
-    |> handle_response()
+    do_perform_request(method, req_url, req_headers, req_body, req_opts)
   end
 
   @spec perform_request(String.t(), method, body, headers, list) ::
           {:ok, map} | {:error, Stripe.Error.t()}
   defp perform_request(req_url, method, body, headers, opts) do
     {connect_account_id, opts} = Keyword.pop(opts, :connect_account)
+    {api_version, opts} = Keyword.pop(opts, :api_version)
     {api_key, opts} = Keyword.pop(opts, :api_key)
 
     req_headers =
@@ -231,23 +339,103 @@ defmodule Stripe.API do
       |> add_default_headers()
       |> add_auth_header(api_key)
       |> add_connect_header(connect_account_id)
+      |> add_api_version(api_version)
+      |> add_idempotency_headers(method)
       |> Map.to_list()
 
     req_opts =
       opts
       |> add_default_options()
       |> add_pool_option()
+      |> add_options_from_config()
 
-    @http_module.request(method, req_url, req_headers, body, req_opts)
-    |> handle_response()
+    do_perform_request(method, req_url, req_headers, body, req_opts)
   end
+
+  @spec do_perform_request(method, String.t(), [headers], body, list) ::
+          {:ok, map} | {:error, Stripe.Error.t()}
+  defp do_perform_request(method, url, headers, body, opts) do
+    do_perform_request_and_retry(method, url, headers, body, opts, {:attempts, 0})
+  end
+
+  @spec do_perform_request_and_retry(
+          method,
+          String.t(),
+          [headers],
+          body,
+          list,
+          {:attempts, non_neg_integer} | {:response, http_success | http_failure}
+        ) :: {:ok, map} | {:error, Stripe.Error.t()}
+  defp do_perform_request_and_retry(_method, _url, _headers, _body, _opts, {:response, response}) do
+    handle_response(response)
+  end
+
+  defp do_perform_request_and_retry(method, url, headers, body, opts, {:attempts, attempts}) do
+    response = http_module().request(method, url, headers, body, opts)
+
+    do_perform_request_and_retry(
+      method,
+      url,
+      headers,
+      body,
+      opts,
+      add_attempts(response, attempts, retry_config())
+    )
+  end
+
+  @spec add_attempts(http_success | http_failure, non_neg_integer, Keyword.t()) ::
+          {:attempts, non_neg_integer} | {:response, http_success | http_failure}
+  defp add_attempts(response, attempts, retry_config) do
+    if should_retry?(response, attempts, retry_config) do
+      attempts
+      |> backoff(retry_config)
+      |> :timer.sleep()
+
+      {:attempts, attempts + 1}
+    else
+      {:response, response}
+    end
+  end
+
+  @doc """
+  Returns backoff in milliseconds.
+  """
+  @spec backoff(attempts :: non_neg_integer, config :: Keyword.t()) :: non_neg_integer
+  def backoff(attempts, config) do
+    base_backoff = Keyword.get(config, :base_backoff) || @default_base_backoff
+    max_backoff = Keyword.get(config, :max_backoff) || @default_max_backoff
+
+    (base_backoff * :math.pow(2, attempts))
+    |> min(max_backoff)
+    |> backoff_jitter()
+    |> max(base_backoff)
+    |> trunc()
+  end
+
+  @spec backoff_jitter(float) :: float
+  defp backoff_jitter(n) do
+    # Apply some jitter by randomizing the value in the range of (n / 2) to n
+    n * (0.5 * (1 + :rand.uniform()))
+  end
+
+  @spec retry_response?(http_success | http_failure) :: boolean
+  # 409 conflict
+  defp retry_response?({:ok, 409, _headers, _body}), do: true
+  # Destination refused the connection, the connection was reset, or a
+  # variety of other connection failures. This could occur from a single
+  # saturated server, so retry in case it's intermittent.
+  defp retry_response?({:error, :econnrefused}), do: true
+  # Retry on timeout-related problems (either on open or read).
+  defp retry_response?({:error, :connect_timeout}), do: true
+  defp retry_response?({:error, :timeout}), do: true
+  defp retry_response?(_response), do: false
 
   @spec handle_response(http_success | http_failure) :: {:ok, map} | {:error, Stripe.Error.t()}
   defp handle_response({:ok, status, headers, body}) when status >= 200 and status <= 299 do
     decoded_body =
       body
       |> decompress_body(headers)
-      |> Poison.decode!()
+      |> json_library().decode!()
 
     {:ok, decoded_body}
   end
@@ -256,7 +444,7 @@ defmodule Stripe.API do
     request_id = headers |> List.keyfind("Request-Id", 0)
 
     error =
-      case Poison.decode(body) do
+      case json_library().decode(body) do
         {:ok, %{"error_description" => _} = api_error} ->
           Error.from_stripe_error(status, api_error, request_id)
 
@@ -301,4 +489,12 @@ defmodule Stripe.API do
   end
 
   defp add_object_expansion(url, _), do: url
+
+  defp add_idempotency_header(nil, headers, _), do: headers
+
+  defp add_idempotency_header(idempotency_key, headers, :post) do
+    Map.put(headers, "Idempotency-Key", idempotency_key)
+  end
+
+  defp add_idempotency_header(_, headers, _), do: headers
 end

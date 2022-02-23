@@ -18,11 +18,16 @@ The old `1.x.x` line of releases has been kept and is being published separately
 
 The actively developed line of releases is `2.x.x` and is contained within the `master` branch. New features are being added to this line of releases, so to develop this library further, create pull requests against the master branch.
 
+Below is a list of which Stripe API version recent releases of Stripity Stripe use. It only indicates the API version being called, not necessarily its compatibility. See the [Stripe API Upgrades page](https://stripe.com/docs/upgrades) for more details.
+
 `:stripity_stripe` | Stripe API Version
 ------------ | -------------
 `2.0.x` | `2018-02-28`
-`2.1.x - 2.2.x` | `2018-05-21`
-`master` | `2018-08-23`
+`2.1.0 - 2.2.0` | `2018-05-21`
+`2.2.2` | `2018-08-23`
+`2.2.3 - 2.3.0` | `2018-11-08`
+`2.4.0` | `2019-05-16`
+`master` | `2019-05-16`
 
 # Documentation
 
@@ -32,10 +37,16 @@ The actively developed line of releases is `2.x.x` and is contained within the `
 
 ## Installation
 
-Install the dependency:
+Install the dependency by version:
 
 ```ex
 {:stripity_stripe, "~> 2.0.0"}
+```
+
+Or by commit reference (still awaiting hex publish rights so this is your best best for now):
+
+```ex
+{:stripity_stripe, git: "https://github.com/code-corps/stripity_stripe", ref: "8c091d4278d29a917bacef7bb2f0606317fcc025"}
 ```
 
 Next, add to your applications:
@@ -55,7 +66,31 @@ To make API calls, it is necessary to configure your Stripe secret key.
 ```ex
 use Mix.Config
 
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
+# OR
 config :stripity_stripe, api_key: "YOUR SECRET KEY"
+```
+
+It's possible to use a function or a tuple to resolve the secret:
+
+```ex
+config :stripity_stripe, api_key: {MyApp.Secrets, :stripe_secret, []}
+# OR
+config :stripity_stripe, api_key: fn -> System.get_env("STRIPE_SECRET") end
+```
+
+Moreover, if you are using Poison instead of Jason, you can configure the library to use Poison like so:
+
+```ex
+config :stripity_stripe, json_library: Poison
+```
+
+### Timeout
+
+To set timeouts, pass opts for the http client. The default one is Hackney.
+
+```ex
+config :stripity_stripe, hackney_opts: [{:connect_timeout, 1000}, {:recv_timeout, 5000}])
 ```
 
 ## Note: Object Expansion
@@ -95,6 +130,12 @@ We will get the full object back as well.
 
 For details on which objects can be expanded check out the [stripe object expansion](https://stripe.com/docs/api#expanding_objects) docs.
 
+# Testing
+
+To run the tests you'll need to install [`stripe-mock`](https://github.com/stripe/stripe-mock) It is a mock HTTP server that responds like the real Stripe API. It's powered by the [Stripe OpenAPI specification](https://github.com/stripe/openapi), which is generated from within Stripe's API.
+
+Start `stripe-mock` before running the tests with `mix test`.
+
 # Documentation for 1.x.x
 
 <details><summary>Click to expand</summary>
@@ -131,11 +172,6 @@ config :stripity_stripe, secret_key: "YOUR SECRET KEY"
 config :stripity_stripe, platform_client_id: "YOUR CONNECT PLATFORM CLIENT ID"
 ```
 
-To customize the underlying HTTPoison library, you may optionally add an `:httpoison_options` key to the stripity_stripe configuration.  For a full list of configuration options, please refer to the [HTTPoison documentation](https://github.com/edgurgel/httpoison).
-
-```ex
-config :stripity_stripe, httpoison_options: [timeout: 10000, recv_timeout: 10000, proxy: {"proxy.mydomain.com", 8080}]
-```
 
 ## Testing
 
@@ -275,4 +311,4 @@ As I began digging things up with these other libraries it became rather apparen
 
 ## Update
 
-As of October 18th, Rob has graciously handed over the reins to the teams at [Code Corps](https://www.codecorps.org/) and [Strumber](https://strumber.com/). To addresses the concerns Rob mentioned above and update the high level api to work with all of the Stripe API Endpoints, they have since worked to release and stripity_stripe 2.0, which is now the actively developed line of releases.
+As of October 18th, Rob has graciously handed over the reins to the teams at [Code Corps](https://www.codecorps.org/) and [Strumber](https://strumber.com/). To address the concerns Rob mentioned above and update the high level api to work with all of the Stripe API Endpoints, they have since worked to release stripity_stripe 2.0, which is now the actively developed line of releases.

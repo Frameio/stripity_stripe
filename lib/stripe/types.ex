@@ -12,6 +12,12 @@ defmodule Stripe.Types do
           state: String.t() | nil
         }
 
+  @type dob :: %{
+          day: 1..31 | nil,
+          month: 1..12 | nil,
+          year: pos_integer | nil
+        }
+
   @type fee :: %{
           amount: integer,
           application: String.t() | nil,
@@ -26,6 +32,16 @@ defmodule Stripe.Types do
           state: String.t()
         }
 
+  @type japan_address :: %{
+          city: String.t() | nil,
+          country: String.t() | nil,
+          line1: String.t() | nil,
+          line2: String.t() | nil,
+          postal_code: String.t() | nil,
+          state: String.t() | nil,
+          town: String.t() | nil
+        }
+
   @type metadata :: %{
           optional(String.t()) => String.t()
         }
@@ -33,9 +49,17 @@ defmodule Stripe.Types do
   @type shipping :: %{
           address: Stripe.Types.address(),
           carrier: String.t() | nil,
+          eta: Stripe.timestamp() | nil,
           name: String.t(),
           phone: String.t() | nil,
-          tracking_number: String.t() | nil
+          status: String.t() | nil,
+          tracking_number: String.t() | nil,
+          tracking_url: String.t() | nil
+        }
+
+  @type subscription_billing_thresholds :: %{
+          amount_gte: integer | nil,
+          reset_billing_cycle_anchor: boolean | nil
         }
 
   @type tax :: %{
@@ -46,13 +70,13 @@ defmodule Stripe.Types do
 
   @type tax_info :: %{
           type: String.t(),
-          tax_id: String.t() | nil,
-  }
+          tax_id: String.t() | nil
+        }
 
   @type tax_info_verification :: %{
           status: String.t() | nil,
-          verified_name: String.t() | nil,
-  }
+          verified_name: String.t() | nil
+        }
 
   @type transfer_schedule :: %{
           delay_days: non_neg_integer,

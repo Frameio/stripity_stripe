@@ -11,23 +11,27 @@ defmodule Stripe.SubscriptionItem do
   @type t :: %__MODULE__{
           id: Stripe.id(),
           object: String.t(),
+          billing_thresholds: Stripe.Types.subscription_billing_thresholds() | nil,
           created: Stripe.timestamp(),
           deleted: boolean | nil,
           metadata: Stripe.Types.metadata(),
           plan: Stripe.Plan.t(),
           quantity: non_neg_integer,
-          subscription: Stripe.id() | Stripe.Subscription.t() | nil
+          subscription: Stripe.id() | Stripe.Subscription.t() | nil,
+          tax_rates: list(Stripe.TaxRate.t())
         }
 
   defstruct [
     :id,
     :object,
+    :billing_thresholds,
     :created,
     :deleted,
     :metadata,
     :plan,
     :quantity,
-    :subscription
+    :subscription,
+    :tax_rates
   ]
 
   @plural_endpoint "subscription_items"
@@ -42,7 +46,8 @@ defmodule Stripe.SubscriptionItem do
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:proration_date) => Stripe.timestamp(),
-               optional(:quantity) => float
+               optional(:quantity) => float,
+               optional(:tax_rates) => list(String.t())
              }
   def create(%{plan: _, subscription: _} = params, opts \\ []) do
     new_request(opts)
@@ -75,7 +80,8 @@ defmodule Stripe.SubscriptionItem do
                optional(:plan) => Stripe.id() | Stripe.Plan.t(),
                optional(:prorate) => boolean,
                optional(:proration_date) => Stripe.timestamp(),
-               optional(:quantity) => float
+               optional(:quantity) => float,
+               optional(:tax_rates) => list(String.t())
              }
   def update(id, params, opts \\ []) do
     new_request(opts)
@@ -108,7 +114,8 @@ defmodule Stripe.SubscriptionItem do
   @doc """
   List all subscriptions.
   """
-  @spec list(Stripe.id(), params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(Stripe.id(), params, Stripe.options()) ::
+          {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
         when params: %{
                optional(:ending_before) => t | Stripe.id(),
                optional(:limit) => 1..100,
