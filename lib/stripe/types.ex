@@ -36,6 +36,12 @@ defmodule Stripe.Types do
           town: String.t() | nil
         }
 
+  @type location :: %{
+          country: String.t(),
+          source: String.t(),
+          state: String.t()
+        }
+
   @type metadata :: %{
           optional(String.t()) => String.t()
         }

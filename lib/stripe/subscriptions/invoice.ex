@@ -12,9 +12,6 @@ defmodule Stripe.Invoice do
   Does not take options yet.
 
   Stripe API reference: https://stripe.com/docs/api#invoice
-
-  DEPRECATED BUT STILL IN USE:
-    closed
   """
 
   use Stripe.Entity
