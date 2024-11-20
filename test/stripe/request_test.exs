@@ -30,11 +30,11 @@ defmodule Stripe.RequestTest do
 
   describe "new_request/2" do
     test "new_request/1 extracts headers from options and puts it on headers" do
-      new_request = Request.new_request([headers: %{foo: "bar"}])
+      new_request = Request.new_request(headers: %{foo: "bar"})
 
       assert new_request.headers == %{
-        foo: "bar"
-      }
+               foo: "bar"
+             }
     end
   end
 end

@@ -15,4 +15,5 @@ tags
 
 /.idea
 *.iml
-priv/plts/*.plt
+priv/plts/*
+/cover
