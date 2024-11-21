@@ -39,16 +39,14 @@ defmodule Stripe.Subscription do
           object: String.t(),
           application_fee_percent: float | nil,
           automatic_tax: map,
-          billing: String.t() | nil,
           billing_cycle_anchor: Stripe.timestamp() | nil,
           billing_thresholds: map | nil,
-          cancel_at: Stripe.timestamp() | nil,
-          cancel_at_period_end: boolean,
-          canceled_at: Stripe.timestamp() | nil,
-          cancellation_details: map,
           collection_method: String.t() | nil,
           collection_method_cycle_anchor: Stripe.timestamp() | nil,
           collection_method_thresholds: Stripe.Types.collection_method_thresholds() | nil,
+          cancel_at: Stripe.timestamp() | nil,
+          cancel_at_period_end: boolean,
+          canceled_at: Stripe.timestamp() | nil,
           created: Stripe.timestamp(),
           current_period_end: Stripe.timestamp() | nil,
           current_period_start: Stripe.timestamp() | nil,
@@ -76,8 +74,7 @@ defmodule Stripe.Subscription do
           tax_percent: float | nil,
           transfer_data: map,
           trial_end: Stripe.timestamp() | nil,
-          trial_start: Stripe.timestamp() | nil,
-          trial_settings: map
+          trial_start: Stripe.timestamp() | nil
         }
 
   defstruct [
@@ -85,7 +82,6 @@ defmodule Stripe.Subscription do
     :object,
     :application_fee_percent,
     :automatic_tax,
-    :billing,
     :billing_cycle_anchor,
     :billing_thresholds,
     :collection_method,
@@ -94,10 +90,6 @@ defmodule Stripe.Subscription do
     :cancel_at,
     :cancel_at_period_end,
     :canceled_at,
-    :cancellation_details,
-    :collection_method,
-    :collection_method_cycle_anchor,
-    :collection_method_thresholds,
     :created,
     :current_period_end,
     :current_period_start,
@@ -125,8 +117,7 @@ defmodule Stripe.Subscription do
     :tax_percent,
     :transfer_data,
     :trial_end,
-    :trial_start,
-    :trial_settings
+    :trial_start
   ]
 
   @plural_endpoint "subscriptions"
@@ -140,10 +131,11 @@ defmodule Stripe.Subscription do
                optional(:application_fee_percent) => integer,
                optional(:billing_cycle_anchor) => Stripe.timestamp(),
                optional(:billing_thresholds) => map,
+               optional(:collection_method) => String.t(),
+               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
                optional(:cancel_at) => Stripe.timestamp(),
                optional(:cancel_at_period_end) => boolean,
                optional(:collection_method) => String.t(),
-               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
                optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
                :items => [
@@ -199,10 +191,11 @@ defmodule Stripe.Subscription do
                optional(:application_fee_percent) => float,
                optional(:billing_cycle_anchor) => Stripe.timestamp(),
                optional(:billing_thresholds) => map,
+               optional(:collection_method) => String.t(),
+               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
                optional(:cancel_at) => Stripe.timestamp(),
                optional(:cancel_at_period_end) => boolean(),
                optional(:collection_method) => String.t(),
-               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
                optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
                optional(:items) => [
