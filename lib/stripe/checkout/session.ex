@@ -47,41 +47,56 @@ defmodule Stripe.Session do
 
   @type subscription_data :: %{
           :items => list(item),
-          :metadata => Stripe.Types.metadata(),
-          :trial_end => integer(),
-          :trial_period_days => integer()
+          optional(:application_fee_percent) => float(),
+          optional(:coupon) => String.t(),
+          optional(:default_tax_rates) => list(String.t()),
+          optional(:metadata) => Stripe.Types.metadata(),
+          optional(:trial_end) => integer(),
+          optional(:trial_from_plan) => boolean(),
+          optional(:trial_period_days) => integer()
         }
 
   @type create_params :: %{
           :cancel_url => String.t(),
           :payment_method_types => list(String.t()),
           :success_url => String.t(),
+          optional(:mode) => String.t(),
           optional(:client_reference_id) => String.t(),
+          optional(:customer) => String.t(),
           optional(:customer_email) => String.t(),
           optional(:line_items) => list(line_item),
           optional(:locale) => String.t(),
+          optional(:metadata) => Stripe.Types.metadata(),
           optional(:payment_intent_data) => payment_intent_data,
           optional(:subscription_data) => subscription_data
         }
 
   @type t :: %__MODULE__{
-          :id => Stripe.id(),
-          :object => String.t(),
-          :billing_address_collection => String.t(),
-          :cancel_url => boolean(),
-          :client_reference_id => String.t(),
-          :customer => Stripe.id() | Stripe.Customer.t() | nil,
-          :customer_email => String.t(),
-          :display_items => list(line_item),
-          :livemode => boolean(),
-          :locale => boolean(),
-          :mode => String.t(),
-          :payment_intent => Stripe.id() | Stripe.PaymentIntent.t() | nil,
-          :payment_method_types => list(String.t()),
-          :setup_intent => Stripe.id() | Stripe.SetupIntent.t() | nil,
-          :submit_type => String.t(),
-          :subscription => Stripe.id() | Stripe.Subscription.t() | nil,
-          :success_url => String.t()
+          id: Stripe.id(),
+          object: String.t(),
+          billing_address_collection: String.t(),
+          cancel_url: boolean(),
+          client_reference_id: String.t(),
+          customer: Stripe.id() | Stripe.Customer.t() | nil,
+          customer_email: String.t(),
+          display_items: list(line_item),
+          livemode: boolean(),
+          locale: boolean(),
+          metadata: Stripe.Types.metadata(),
+          mode: String.t(),
+          payment_intent: Stripe.id() | Stripe.PaymentIntent.t() | nil,
+          payment_method_types: list(String.t()),
+          setup_intent: Stripe.id() | Stripe.SetupIntent.t() | nil,
+          shipping: %{
+            address: Stripe.Types.shipping(),
+            name: String.t()
+          },
+          shipping_address_collection: %{
+            allowed_countries: [String.t()]
+          },
+          submit_type: String.t() | nil,
+          subscription: Stripe.id() | Stripe.Subscription.t() | nil,
+          success_url: String.t()
         }
 
   defstruct [
@@ -95,10 +110,13 @@ defmodule Stripe.Session do
     :display_items,
     :livemode,
     :locale,
+    :metadata,
     :mode,
     :payment_intent,
     :payment_method_types,
     :setup_intent,
+    :shipping,
+    :shipping_address_collection,
     :submit_type,
     :subscription,
     :success_url
@@ -125,4 +143,6 @@ defmodule Stripe.Session do
     |> put_method(:get)
     |> make_request()
   end
+
+  defdelegate list_line_items(id, opts \\ []), to: Stripe.Checkout.Session.LineItems, as: :list
 end

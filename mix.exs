@@ -20,7 +20,7 @@ defmodule Stripe.Mixfile do
         "coveralls.html": :test
       ],
       test_coverage: [tool: ExCoveralls],
-      version: "2.8.0",
+      version: "2.9.0",
       source_url: "https://github.com/code-corps/stripity_stripe/",
       docs: [
         main: "readme",
@@ -101,8 +101,11 @@ defmodule Stripe.Mixfile do
         Stripe.Dispute,
         Stripe.Event,
         Stripe.FileUpload,
+        Stripe.FileLink,
+        Stripe.Mandate,
         Stripe.PaymentIntent,
         Stripe.Payout,
+        Stripe.Price,
         Stripe.Product,
         Stripe.Refund,
         Stripe.SetupIntent,
@@ -121,6 +124,8 @@ defmodule Stripe.Mixfile do
       Billing: [
         Stripe.Coupon,
         Stripe.CreditNote,
+        Stripe.CreditNoteLineItem,
+        Stripe.CustomerTransactionBalance,
         Stripe.Discount,
         Stripe.Invoice,
         Stripe.Invoiceitem,
@@ -133,17 +138,21 @@ defmodule Stripe.Mixfile do
         Stripe.SubscriptionSchedule,
         Stripe.TaxRate
       ],
+      "Billing Portal": [
+        Stripe.BillingPortal.Session
+      ],
       Connect: [
         Stripe.Account,
         Stripe.ApplicationFee,
+        Stripe.Capability,
+        Stripe.Connect.OAuth,
+        Stripe.Connect.OAuth.AuthorizeResponse,
+        Stripe.Connect.OAuth.DeauthorizeResponse,
+        Stripe.Connect.OAuth.TokenResponse,
         Stripe.CountrySpec,
         Stripe.ExternalAccount,
         Stripe.FeeRefund,
         Stripe.LoginLink,
-        Stripe.Connect.OAuth,
-        Stripe.Connect.OAuth.AuthorizeResponse,
-        Stripe.Connect.OAuth.TokenResponse,
-        Stripe.Connect.OAuth.DeauthorizeResponse,
         Stripe.Recipient,
         Stripe.Topup,
         Stripe.Transfer,
@@ -155,9 +164,7 @@ defmodule Stripe.Mixfile do
       Issuing: [
         Stripe.Issuing.Authorization,
         Stripe.Issuing.Card,
-        Stripe.Issuing.CardDetails,
         Stripe.Issuing.Cardholder,
-        Stripe.Issuing.Dispute,
         Stripe.Issuing.Transaction,
         Stripe.Issuing.Types
       ],
@@ -167,6 +174,11 @@ defmodule Stripe.Mixfile do
         Stripe.OrderReturn,
         Stripe.Relay.Product,
         Stripe.Sku
+      ],
+      Terminal: [
+        Stripe.Terminal.ConnectionToken,
+        Stripe.Terminal.Location,
+        Stripe.Terminal.Reader
       ],
       Utilities: [
         Stripe.Config,

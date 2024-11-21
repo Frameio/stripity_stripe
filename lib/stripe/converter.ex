@@ -18,37 +18,46 @@ defmodule Stripe.Converter do
     balance
     balance_transaction
     bank_account
+    billing_portal.session
+    capability
     card
     charge
     checkout.session
     country_spec
     coupon
     credit_note
+    credit_note_line_item
     customer
+    customer_balance_transaction
     discount
     dispute
+    ephemeral_key
     event
     external_account
     file
+    file_link
     invoice
     invoiceitem
     issuing.authorization
     issuing.card
-    issuing.card_details
     issuing.cardholder
-    issuing.dispute
     issuing.transaction
     line_item
     list
+    login_link
+    mandate
     oauth
     order
+    order_item
     order_return
     payment_intent
     payment_method
     payout
     person
     plan
+    price
     product
+    promotion_code
     recipient
     refund
     review
@@ -61,9 +70,15 @@ defmodule Stripe.Converter do
     tax_rate
     tax_id
     topup
+    terminal.connection_token
+    terminal.location
+    terminal.reader
     transfer
     transfer_reversal
     token
+    usage_record
+    usage_record_summary
+    webhook_endpoint
   )
 
   @no_convert_maps ~w(metadata supported_bank_account_currencies)

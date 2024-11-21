@@ -42,7 +42,7 @@ Starting with stripity_stripe version 2.5.0, you can specify the Stripe API Vers
 Install the dependency by version:
 
 ```ex
-{:stripity_stripe, "~> 2.0.0"}
+{:stripity_stripe, "~> 2.0"}
 ```
 
 Or by commit reference (still awaiting hex publish rights so this is your best best for now):
@@ -92,7 +92,7 @@ config :stripity_stripe, json_library: Poison
 To set timeouts, pass opts for the http client. The default one is Hackney.
 
 ```ex
-config :stripity_stripe, hackney_opts: [{:connect_timeout, 1000}, {:recv_timeout, 5000}])
+config :stripity_stripe, hackney_opts: [{:connect_timeout, 1000}, {:recv_timeout, 5000}]
 ```
 
 ### Request Retries
@@ -127,7 +127,7 @@ stripe.confirmCardSetup(setupIntentId, {
   }
 })
 .then(result => {
-  const setupIntentId = result.setupIntent.id,
+  const setupIntentId = result.setupIntent.id
   const paymentMethodId = result.setupIntent.payment_method
 
   // send the paymentMethodId and optionally (if needed) the setupIntentId
@@ -150,7 +150,7 @@ new_customer = %{
   email: email,
 }
 
-{:ok, stripe_customer} = Stripe.Customer.create(customer)
+{:ok, stripe_customer} = Stripe.Customer.create(new_customer)
 ```
 
 Attach the payment method to the customer.
@@ -214,6 +214,15 @@ For details on which objects can be expanded check out the [stripe object expans
 To run the tests you'll need to install [`stripe-mock`](https://github.com/stripe/stripe-mock) It is a mock HTTP server that responds like the real Stripe API. It's powered by the [Stripe OpenAPI specification](https://github.com/stripe/openapi), which is generated from within Stripe's API.
 
 Start `stripe-mock` before running the tests with `mix test`.
+
+To configure your test environment to use the local stripe-mock server, you'll
+need to set the `api_base_url` field in your config:
+
+```
+config :stripity_stripe,
+  api_key: "sk_test_thisisaboguskey",
+  api_base_url: "http://localhost:12111/v1/"
+```
 
 # Documentation for 1.x.x
 
