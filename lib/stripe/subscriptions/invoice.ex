@@ -22,6 +22,7 @@ defmodule Stripe.Invoice do
           object: String.t(),
           account_country: String.t(),
           account_name: String.t(),
+          account_tax_ids: list(String.t()),
           amount_due: integer,
           amount_paid: integer,
           amount_remaining: integer,
@@ -29,6 +30,7 @@ defmodule Stripe.Invoice do
           attempt_count: non_neg_integer,
           attempted: boolean,
           auto_advance: boolean,
+          automatic_tax: map,
           billing_reason: String.t() | nil,
           charge: Stripe.id() | Stripe.Charge.t() | nil,
           closed: boolean,
@@ -50,19 +52,22 @@ defmodule Stripe.Invoice do
           deleted: boolean | nil,
           description: String.t() | nil,
           discount: Stripe.Discount.t() | nil,
+          discounts: list(String.t()),
           due_date: Stripe.timestamp() | nil,
           ending_balance: integer | nil,
           footer: String.t() | nil,
-          forgiven: boolean,
           hosted_invoice_url: String.t() | nil,
           invoice_pdf: String.t() | nil,
+          last_finalization_error: map,
           lines: Stripe.List.t(Stripe.LineItem.t()),
           livemode: boolean,
           metadata: Stripe.Types.metadata() | nil,
           next_payment_attempt: Stripe.timestamp() | nil,
           number: String.t() | nil,
+          on_behalf_of: String.t(),
           paid: boolean,
           payment_intent: String.t() | nil,
+          payment_settings: map,
           period_end: Stripe.timestamp(),
           period_start: Stripe.timestamp(),
           post_payment_credit_notes_amount: integer,
@@ -89,7 +94,9 @@ defmodule Stripe.Invoice do
                 ]
               },
           total: integer,
+          total_discount_amounts: Stripe.List.t(map) | nil,
           total_tax_amounts: Stripe.List.t(map) | nil,
+          transfer_data: map,
           webhooks_delivered_at: Stripe.timestamp() | nil
         }
 
@@ -118,6 +125,7 @@ defmodule Stripe.Invoice do
     :object,
     :account_country,
     :account_name,
+    :account_tax_ids,
     :amount_due,
     :amount_paid,
     :amount_remaining,
@@ -125,6 +133,7 @@ defmodule Stripe.Invoice do
     :attempt_count,
     :attempted,
     :auto_advance,
+    :automatic_tax,
     :billing_reason,
     :charge,
     :closed,
@@ -146,19 +155,22 @@ defmodule Stripe.Invoice do
     :deleted,
     :description,
     :discount,
+    :discounts,
     :due_date,
     :ending_balance,
     :footer,
-    :forgiven,
     :hosted_invoice_url,
     :invoice_pdf,
+    :last_finalization_error,
     :lines,
     :livemode,
     :metadata,
     :next_payment_attempt,
     :number,
+    :on_behalf_of,
     :paid,
     :payment_intent,
+    :payment_settings,
     :period_end,
     :period_start,
     :post_payment_credit_notes_amount,
@@ -175,7 +187,9 @@ defmodule Stripe.Invoice do
     :tax_percent,
     :threshold_reason,
     :total,
+    :total_discount_amounts,
     :total_tax_amounts,
+    :transfer_data,
     :webhooks_delivered_at
   ]
 
@@ -286,6 +300,7 @@ defmodule Stripe.Invoice do
   @spec upcoming(map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
   def upcoming(params, opts \\ [])
   def upcoming(params = %{customer: _customer}, opts), do: get_upcoming(params, opts)
+  def upcoming(params = %{customer_details: _customer_details}, opts), do: get_upcoming(params, opts)
   def upcoming(params = %{subscription: _subscription}, opts), do: get_upcoming(params, opts)
 
   defp get_upcoming(params, opts) do
