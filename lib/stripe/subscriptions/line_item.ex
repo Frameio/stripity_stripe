@@ -8,6 +8,12 @@ defmodule Stripe.LineItem do
   use Stripe.Entity
   import Stripe.Request
 
+  @type tax_amount :: %{
+          amount: integer,
+          inclusive: boolean,
+          tax_rate: Stripe.id() | Stripe.TaxRate.t()
+        }
+
   @type t :: %__MODULE__{
           id: Stripe.id(),
           object: String.t(),
@@ -27,6 +33,8 @@ defmodule Stripe.LineItem do
           quantity: integer,
           subscription: Stripe.id() | nil,
           subscription_item: Stripe.id() | nil,
+          tax_amounts: list(tax_amount),
+          tax_rates: list(Stripe.TaxRate.t()),
           type: String.t()
         }
 
@@ -46,30 +54,35 @@ defmodule Stripe.LineItem do
     :quantity,
     :subscription,
     :subscription_item,
+    :tax_rates,
+    :tax_amounts,
     :type
   ]
 
   @doc """
   Retrieve an invoice line item.
   """
-  @spec retrieve(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
-               optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
-               optional(:subscription) => Stripe.id() | Stripe.Subscription.t(),
-               optional(:subscription_billing_cycle_anchor) => integer,
-               optional(:subscription_items) => Stripe.List.t(Stripe.SubscriptionItem.t()),
-               optional(:subscription_prorate) => boolean,
-               optional(:subscription_proration_date) => Stripe.timestamp(),
-               optional(:subscription_tax_percent) => integer,
-               optional(:subscription_trial_from_plan) => boolean
-             } | %{}
+  @spec retrieve(Stripe.id() | t, params, Stripe.options()) ::
+          {:ok, t} | {:error, Stripe.Error.t()}
+        when params:
+               %{
+                 optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
+                 optional(:customer) => Stripe.id() | Stripe.Customer.t(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id(),
+                 optional(:subscription) => Stripe.id() | Stripe.Subscription.t(),
+                 optional(:subscription_billing_cycle_anchor) => integer,
+                 optional(:subscription_items) => Stripe.List.t(Stripe.SubscriptionItem.t()),
+                 optional(:subscription_prorate) => boolean,
+                 optional(:subscription_proration_date) => Stripe.timestamp(),
+                 optional(:subscription_tax_percent) => integer,
+                 optional(:subscription_trial_from_plan) => boolean
+               }
+               | %{}
   def retrieve(id, params \\ %{}, opts \\ []) do
     new_request(opts)
-    |> put_endpoint("invoices" <> "/#{get_id!(id)}" <> "lines")
+    |> put_endpoint("invoices" <> "/#{get_id!(id)}/" <> "lines")
     |> put_method(:get)
     |> put_params(params)
     |> make_request()

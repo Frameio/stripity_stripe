@@ -16,7 +16,9 @@ defmodule Stripe.TransferReversal do
           created: Stripe.timestamp(),
           currency: String.t(),
           description: boolean,
+          destination_payment_refund: Stripe.id() | Stripe.Refund.t() | nil,
           metadata: Stripe.Types.metadata(),
+          source_refund: Stripe.id() | Stripe.Refund.t() | nil,
           transfer: Stripe.id() | Stripe.Transfer.t()
         }
 
@@ -28,7 +30,9 @@ defmodule Stripe.TransferReversal do
     :created,
     :currency,
     :description,
+    :destination_payment_refund,
     :metadata,
+    :source_refund,
     :transfer
   ]
 
@@ -55,7 +59,8 @@ defmodule Stripe.TransferReversal do
   @doc """
   Retrieve a transfer reversal.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(Stripe.id() | t, Stripe.id() | t, Stripe.options()) ::
+          {:ok, t} | {:error, Stripe.Error.t()}
   def retrieve(id, reversal_id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{id}/reversals/#{reversal_id}")
@@ -68,7 +73,8 @@ defmodule Stripe.TransferReversal do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(Stripe.id() | t, Stripe.id() | t, params, Stripe.options()) ::
+          {:ok, t} | {:error, Stripe.Error.t()}
         when params: %{
                optional(:metadata) => Stripe.Types.metadata()
              }
@@ -83,7 +89,8 @@ defmodule Stripe.TransferReversal do
   @doc """
   List all transfers.
   """
-  @spec list(Stripe.id() | t, params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(Stripe.id() | t, params, Stripe.options()) ::
+          {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
         when params: %{
                optional(:ending_before) => t | Stripe.id(),
                optional(:limit) => 1..100,

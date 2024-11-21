@@ -5,6 +5,7 @@ erl_crash.dump
 config/config.secret.exs
 /doc
 .DS_Store
+tags
 
 # elixir LS files
 
@@ -13,4 +14,4 @@ config/config.secret.exs
 
 /.idea
 *.iml
-priv/plts/*.plt
+priv/plts/*

@@ -26,7 +26,9 @@ defmodule Stripe.Refund do
           payment: Stripe.id() | Stripe.Charge.t() | nil,
           reason: String.t() | nil,
           receipt_number: String.t() | nil,
-          status: String.t() | nil
+          source_transfer_reversal: Stripe.id() | Stripe.TransferReversal.t() | nil,
+          status: String.t() | nil,
+          transfer_reversal: Stripe.id() | Stripe.TransferReversal.t() | nil
         }
 
   defstruct [
@@ -43,7 +45,9 @@ defmodule Stripe.Refund do
     :payment,
     :reason,
     :receipt_number,
-    :status
+    :source_transfer_reversal,
+    :status,
+    :transfer_reversal
   ]
 
   @plural_endpoint "refunds"
@@ -67,14 +71,16 @@ defmodule Stripe.Refund do
   See the [Stripe docs](https://stripe.com/docs/api#create_refund).
   """
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               :charge => Stripe.Charge.t() | Stripe.id(),
-               optional(:amount) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:reason) => String.t(),
-               optional(:refund_application_fee) => boolean,
-               optional(:reverse_transfer) => boolean
-             } | %{}
+        when params:
+               %{
+                 :charge => Stripe.Charge.t() | Stripe.id(),
+                 optional(:amount) => pos_integer,
+                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:reason) => String.t(),
+                 optional(:refund_application_fee) => boolean,
+                 optional(:reverse_transfer) => boolean
+               }
+               | %{}
   def create(params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -110,9 +116,11 @@ defmodule Stripe.Refund do
   See the [Stripe docs](https://stripe.com/docs/api#update_refund).
   """
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:metadata) => Stripe.Types.metadata()
-             } | %{}
+        when params:
+               %{
+                 optional(:metadata) => Stripe.Types.metadata()
+               }
+               | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -132,12 +140,14 @@ defmodule Stripe.Refund do
   See the [Stripe docs](https://stripe.com/docs/api#list_refunds).
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
-        when params: %{
-               optional(:charget) => Stripe.id() | Stripe.Charge.t(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
-             } | %{}
+        when params:
+               %{
+                 optional(:charget) => Stripe.id() | Stripe.Charge.t(),
+                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:limit) => 1..100,
+                 optional(:starting_after) => t | Stripe.id()
+               }
+               | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
     |> prefix_expansions()

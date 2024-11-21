@@ -22,7 +22,7 @@ The actively developed line of releases is `2.x.x` and is contained within the `
 ------------ | -------------
 `2.0.x` | `2018-02-28`
 `2.1.x - 2.2.x` | `2018-05-21`
-`master` | `2018-08-23`
+`master` | `2019-03-14`
 
 # Documentation
 
@@ -32,10 +32,16 @@ The actively developed line of releases is `2.x.x` and is contained within the `
 
 ## Installation
 
-Install the dependency:
+Install the dependency by version:
 
 ```ex
 {:stripity_stripe, "~> 2.0.0"}
+```
+
+Or by commit reference (still awaiting hex publish rights so this is your best best for now):
+
+```ex
+{:stripity_stripe, git: "https://github.com/code-corps/stripity_stripe", ref: "8c091d4278d29a917bacef7bb2f0606317fcc025"}
 ```
 
 Next, add to your applications:
@@ -55,7 +61,23 @@ To make API calls, it is necessary to configure your Stripe secret key.
 ```ex
 use Mix.Config
 
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
+# OR
 config :stripity_stripe, api_key: "YOUR SECRET KEY"
+```
+
+It's possible to use a function or a tuple to resolve the secret:
+
+```ex
+config :stripity_stripe, api_key: {MyApp.Secrets, :stripe_secret, []}
+# OR
+config :stripity_stripe, api_key: fn -> System.get_env("STRIPE_SECRET") end
+```
+
+Moreover, if you are using Poison instead of Jason, you can configure the library to use Poison like so:
+
+```ex
+config :stripity_stripe, json_library: Poison
 ```
 
 ## Note: Object Expansion
@@ -95,6 +117,12 @@ We will get the full object back as well.
 
 For details on which objects can be expanded check out the [stripe object expansion](https://stripe.com/docs/api#expanding_objects) docs.
 
+# Testing
+
+To run the tests you'll need to install [`stripe-mock`](https://github.com/stripe/stripe-mock) It is a mock HTTP server that responds like the real Stripe API. It's powered by the [Stripe OpenAPI specification](https://github.com/stripe/openapi), which is generated from within Stripe's API.
+
+Start `stripe-mock` before running the tests with `mix test`.
+
 # Documentation for 1.x.x
 
 <details><summary>Click to expand</summary>
@@ -131,11 +159,6 @@ config :stripity_stripe, secret_key: "YOUR SECRET KEY"
 config :stripity_stripe, platform_client_id: "YOUR CONNECT PLATFORM CLIENT ID"
 ```
 
-To customize the underlying HTTPoison library, you may optionally add an `:httpoison_options` key to the stripity_stripe configuration.  For a full list of configuration options, please refer to the [HTTPoison documentation](https://github.com/edgurgel/httpoison).
-
-```ex
-config :stripity_stripe, httpoison_options: [timeout: 10000, recv_timeout: 10000, proxy: {"proxy.mydomain.com", 8080}]
-```
 
 ## Testing
 

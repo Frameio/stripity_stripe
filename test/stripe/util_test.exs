@@ -15,13 +15,14 @@ defmodule Stripe.UtilTest do
       assert object_name_to_module("dispute") == Stripe.Dispute
       assert object_name_to_module("event") == Stripe.Event
       assert object_name_to_module("external_account") == Stripe.ExternalAccount
-      assert object_name_to_module("file_upload") == Stripe.FileUpload
+      assert object_name_to_module("file") == Stripe.FileUpload
       assert object_name_to_module("invoice") == Stripe.Invoice
       assert object_name_to_module("invoiceitem") == Stripe.Invoiceitem
       assert object_name_to_module("line_item") == Stripe.LineItem
       assert object_name_to_module("list") == Stripe.List
       assert object_name_to_module("order") == Stripe.Order
       assert object_name_to_module("order_return") == Stripe.OrderReturn
+      assert object_name_to_module("payment_intent") == Stripe.PaymentIntent
       assert object_name_to_module("plan") == Stripe.Plan
       assert object_name_to_module("product") == Stripe.Product
       assert object_name_to_module("refund") == Stripe.Refund
