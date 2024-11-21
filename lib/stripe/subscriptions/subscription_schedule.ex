@@ -21,25 +21,30 @@ defmodule Stripe.SubscriptionSchedule do
           plans: list(plans)
         }
 
+  @type default_settings :: %{
+          billing_thresholds: Stripe.Types.collection_method_thresholds() | nil,
+          collection_method: String.t(),
+          default_payment_method: Stripe.id() | Stripe.PaymentMethod.t(),
+          invoice_settings: %{
+            days_until_due: integer
+          }
+        }
+
   @type t :: %__MODULE__{
           id: Stripe.id(),
           object: String.t(),
-          billing_thresholds: Stripe.Types.subscription_billing_thresholds() | nil,
           created: Stripe.timestamp(),
           canceled_at: Stripe.timestamp() | nil,
           released_at: Stripe.timestamp() | nil,
           completed_at: Stripe.timestamp() | nil,
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
-          invoice_settings: %{
-            days_until_due: integer
-          },
+          default_settings: default_settings,
           current_phase: %{
             start_date: Stripe.timestamp(),
             end_date: Stripe.timestamp()
           },
-          renewal_behavior: String.t(),
-          renewal_interval: String.t(),
+          end_behavior: String.t(),
           revision: String.t(),
           status: String.t(),
           subscription: Stripe.id() | Stripe.Subscription.t(),
@@ -51,8 +56,6 @@ defmodule Stripe.SubscriptionSchedule do
   defstruct [
     :id,
     :object,
-    :billing,
-    :billing_thresholds,
     :created,
     :canceled_at,
     :completed_at,
@@ -63,11 +66,10 @@ defmodule Stripe.SubscriptionSchedule do
     :released_subscription,
     :status,
     :subscription,
-    :invoice_settings,
+    :default_settings,
     :livemode,
     :metadata,
-    :renewal_behavior,
-    :renewal_interval,
+    :end_behavior,
     :revision
   ]
 
@@ -85,10 +87,13 @@ defmodule Stripe.SubscriptionSchedule do
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params: %{
                optional(:customer) => Stripe.id(),
-               optional(:billing) => String.t(),
                optional(:from_subscription) => Stripe.id(),
-               optional(:invoice_settings) => %{
-                 optional(:days_until_due) => non_neg_integer
+               optional(:default_settings) => %{
+                 optional(:collection_method) => String.t(),
+                 optional(:default_payment_method) => Stripe.id(),
+                 optional(:invoice_settings) => %{
+                   optional(:days_until_due) => non_neg_integer
+                 }
                },
                optional(:phases) => [
                  %{
@@ -108,11 +113,7 @@ defmodule Stripe.SubscriptionSchedule do
                    optional(:trial_end) => Stripe.timestamp()
                  }
                ],
-               optional(:renewal_behavior) => String.t(),
-               optional(:renewal_interval) => %{
-                 :renewal_interval => String.t(),
-                 :length => non_neg_integer
-               },
+               optional(:end_behavior) => String.t(),
                optional(:start_date) => Stripe.timestamp()
              }
   def create(params, opts \\ []) do
@@ -140,9 +141,12 @@ defmodule Stripe.SubscriptionSchedule do
   """
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params: %{
-               optional(:billing) => String.t(),
-               optional(:invoice_settings) => %{
-                 optional(:days_until_due) => non_neg_integer
+               optional(:default_settings) => %{
+                 optional(:collection_method) => String.t(),
+                 optional(:default_payment_method) => Stripe.id(),
+                 optional(:invoice_settings) => %{
+                   optional(:days_until_due) => non_neg_integer
+                 }
                },
                optional(:phases) => [
                  %{
@@ -162,12 +166,8 @@ defmodule Stripe.SubscriptionSchedule do
                    optional(:trial_end) => Stripe.timestamp()
                  }
                ],
-               optional(:renewal_behavior) => String.t(),
-               optional(:prorate) => boolean(),
-               optional(:renewal_interval) => %{
-                 :renewal_interval => String.t(),
-                 :length => non_neg_integer
-               }
+               optional(:end_behavior) => String.t(),
+               optional(:prorate) => boolean()
              }
   def update(id, params, opts \\ []) do
     new_request(opts)

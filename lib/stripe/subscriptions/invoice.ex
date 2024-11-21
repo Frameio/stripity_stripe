@@ -29,10 +29,11 @@ defmodule Stripe.Invoice do
           attempt_count: non_neg_integer,
           attempted: boolean,
           auto_advance: boolean,
-          billing: String.t() | nil,
+          collection_method: String.t() | nil,
           billing_reason: String.t() | nil,
           charge: Stripe.id() | Stripe.Charge.t() | nil,
           closed: boolean,
+          collection_method: String.t(),
           currency: String.t(),
           customer_address: Stripe.Types.address() | nil,
           customer_email: String.t() | nil,
@@ -89,6 +90,7 @@ defmodule Stripe.Invoice do
           })
 
   @type invoice_settings :: %{
+          default_payment_method: String.t() | nil,
           custom_fields: custom_fields | nil,
           footer: String.t() | nil
         }
@@ -113,11 +115,12 @@ defmodule Stripe.Invoice do
     :attempt_count,
     :attempted,
     :auto_advance,
-    :billing,
+    :collection_method,
     :billing_reason,
     :charge,
     :closed,
     :created,
+    :collection_method,
     :customer_address,
     :customer_email,
     :customer_name,
@@ -182,7 +185,7 @@ defmodule Stripe.Invoice do
                %{
                  optional(:application_fee_amount) => integer,
                  optional(:auto_advance) => boolean,
-                 optional(:billing) => String.t(),
+                 optional(:collection_method) => String.t(),
                  :customer => Stripe.id() | Stripe.Customer.t(),
                  optional(:custom_fields) => custom_fields,
                  optional(:days_until_due) => integer,
@@ -225,7 +228,7 @@ defmodule Stripe.Invoice do
   Update an invoice.
 
   Takes the `id` and a map of changes. Draft invoices are fully editable. Once
-  an invoice is finalized, monetary values, as well as billing, become
+  an invoice is finalized, monetary values, as well as collection_method, become
   uneditable.
 
   See [Stripe docs](https://stripe.com/docs/api/invoices/update)
@@ -293,7 +296,7 @@ defmodule Stripe.Invoice do
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
         when params:
                %{
-                 optional(:billing) => String.t(),
+                 optional(:collection_method) => String.t(),
                  optional(:customer) => Stripe.id() | Stripe.Customer.t(),
                  optional(:created) => Stripe.date_query(),
                  optional(:due_date) => Stripe.timestamp(),

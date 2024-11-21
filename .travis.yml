@@ -3,17 +3,21 @@ dist: trusty
 elixir:
   - 1.7
   - 1.8
+  - 1.9
 otp_release:
   - 19.3
   - 20.1
+  - 21.1
 matrix:
   exclude:
     - otp_release: 19.3
       elixir: 1.8
+    - otp_release: 19.3
+      elixir: 1.9
 sudo: false
 env:
   global:
-    - STRIPE_MOCK_VERSION=0.55.0
+    - STRIPE_MOCK_VERSION=0.70.0
     - MIX_ENV=test STRIPE_SECRET_KEY=non_empty_secret_key_string
 cache:
   directories:

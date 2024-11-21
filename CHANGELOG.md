@@ -1,5 +1,48 @@
 # Latest
 
+## 2.8.0
+
+## 2.7.2
+
+- [Add documentation for usage of the setup intents and setup payments A...](https://github.com/code-corps/stripity_stripe/pull/570)
+- [Add missing params to Stripe.Customer.create typespecs](https://github.com/code-corps/stripity_stripe/pull/569)
+- [add account links](https://github.com/code-corps/stripity_stripe/pull/562)
+- [Subscription :items is required](https://github.com/code-corps/stripity_stripe/pull/555)
+- [2019-10-17 API update](https://github.com/code-corps/stripity_stripe/pull/556)
+- [DOCUMENTATION: retries](https://github.com/code-corps/stripity_stripe/pull/565)
+
+## 2.7.1
+
+- [Add setup_intent to checkout session ](https://github.com/code-corps/stripity_stripe/pull/554)
+- [update Read Me](https://github.com/code-corps/stripity_stripe/pull/553)
+- [Fix production env check for additional Stripe response converter logging](https://github.com/code-corps/stripity_stripe/pull/552)
+- [Include person in @supported_objects](https://github.com/code-corps/stripity_stripe/pull/548)
+- [fix: Remove 'id' from the Card update payload](https://github.com/code-corps/stripity_stripe/pull/551)
+- [Update hackney to work around Erlang/OTP 22.1 issue ](https://github.com/code-corps/stripity_stripe/pull/549)
+
+## 2.7.0
+
+- 💜 @ishikawa [Add idempotent requests](https://github.com/code-corps/stripity_stripe/pull/546)
+- [Fix source amount field type](https://github.com/code-corps/stripity_stripe/pull/545)
+
+## 2.6.0
+
+- [Add support for SetupIntent](https://github.com/code-corps/stripity_stripe/pull/522)
+
+## 2.5.0
+
+- [Checkout Session retrieval and missing attributes](https://github.com/code-corps/stripity_stripe/pull/532)
+- [Add missing fields](https://github.com/code-corps/stripity_stripe/pull/537)
+- [Add balance to customer entity](https://github.com/code-corps/stripity_stripe/pull/536)
+- [Add payment intent to session](https://github.com/code-corps/stripity_stripe/pull/533)
+- [Make stripe version configurable ](https://github.com/code-corps/stripity_stripe/pull/534)
+- [Add Stripe.Topup](https://github.com/code-corps/stripity_stripe/pull/527)
+- [Update util.ex](https://github.com/code-corps/stripity_stripe/pull/529)
+- [Cast cardholder to id](https://github.com/code-corps/stripity_stripe/pull/526)
+- [Allow Customer.create/2 to take Source id in typespecs.](https://github.com/code-corps/stripity_stripe/pull/523)
+- [Pass Hackney options from config](https://github.com/code-corps/stripity_stripe/pull/506)
+- [updated readme with more explicit API version info](https://github.com/code-corps/stripity_stripe/pull/520)
+
 ## 2.4.0
 
 - [Issues/add missing fields](https://github.com/code-corps/stripity_stripe/pull/511)

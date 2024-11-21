@@ -12,6 +12,7 @@ defmodule Stripe.Converter do
 
   @supported_objects ~w(
     account
+    account_link
     application_fee
     fee_refund
     balance
@@ -45,11 +46,13 @@ defmodule Stripe.Converter do
     payment_intent
     payment_method
     payout
+    person
     plan
     product
     recipient
     refund
     review
+    setup_intent
     sku
     source
     subscription
@@ -57,12 +60,36 @@ defmodule Stripe.Converter do
     subscription_schedule
     tax_rate
     tax_id
+    topup
     transfer
     transfer_reversal
     token
   )
 
   @no_convert_maps ~w(metadata supported_bank_account_currencies)
+
+  @doc """
+  Returns a list of structs to be used for providing JSON-encoders.
+
+  ## Examples
+
+  Say you are using Jason to encode your JSON, you can provide the following protocol,
+  to directly encode all structs of this library into JSON.
+
+  ```
+  for struct <- Stripe.Converter.structs() do
+    defimpl Jason.Encoder, for: struct do
+      def encode(value, opts) do
+        Jason.Encode.map(Map.delete(value, :__struct__), opts)
+      end
+    end
+  end
+  ```
+  """
+  def structs() do
+    (@supported_objects -- @no_convert_maps)
+    |> Enum.map(&Stripe.Util.object_name_to_module/1)
+  end
 
   @spec convert_value(any) :: any
   defp convert_value(%{"object" => object_name} = value) when is_binary(object_name) do
@@ -114,17 +141,17 @@ defmodule Stripe.Converter do
   @spec convert_list(list) :: list
   defp convert_list(list), do: list |> Enum.map(&convert_value/1)
 
-  if Mix.env() == "prod" do
+  if Mix.env() == :prod do
     defp warn_unknown_object(_), do: :ok
   else
-    defp warn_unknown_object(%{"object" => object_name} = value) do
+    defp warn_unknown_object(%{"object" => object_name}) do
       require Logger
 
       Logger.warn("Unknown object received: #{object_name}")
     end
   end
 
-  if Mix.env() == "prod" do
+  if Mix.env() == :prod do
     defp check_for_extra_keys(_, _), do: :ok
   else
     defp check_for_extra_keys(struct_keys, map) do

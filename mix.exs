@@ -20,7 +20,7 @@ defmodule Stripe.Mixfile do
         "coveralls.html": :test
       ],
       test_coverage: [tool: ExCoveralls],
-      version: "2.4.0",
+      version: "2.8.0",
       source_url: "https://github.com/code-corps/stripity_stripe/",
       docs: [
         main: "readme",
@@ -105,6 +105,7 @@ defmodule Stripe.Mixfile do
         Stripe.Payout,
         Stripe.Product,
         Stripe.Refund,
+        Stripe.SetupIntent,
         Stripe.TaxID,
         Stripe.Token
       ],
@@ -144,6 +145,7 @@ defmodule Stripe.Mixfile do
         Stripe.Connect.OAuth.TokenResponse,
         Stripe.Connect.OAuth.DeauthorizeResponse,
         Stripe.Recipient,
+        Stripe.Topup,
         Stripe.Transfer,
         Stripe.TransferReversal
       ],

@@ -18,8 +18,8 @@ defmodule Stripe.Customer do
   @type t :: %__MODULE__{
           id: Stripe.id(),
           object: String.t(),
-          account_balance: integer,
           address: Stripe.Types.address() | nil,
+          balance: integer,
           created: Stripe.timestamp(),
           currency: String.t() | nil,
           default_source: Stripe.id() | Stripe.Source.t() | nil,
@@ -33,6 +33,7 @@ defmodule Stripe.Customer do
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
           name: String.t(),
+          payment_method: String.t() | nil,
           phone: String.t(),
           preferred_locales: list(String.t()),
           shipping: Stripe.Types.shipping() | nil,
@@ -48,8 +49,8 @@ defmodule Stripe.Customer do
   defstruct [
     :id,
     :object,
-    :account_balance,
     :address,
+    :balance,
     :created,
     :currency,
     :default_source,
@@ -63,6 +64,7 @@ defmodule Stripe.Customer do
     :livemode,
     :metadata,
     :name,
+    :payment_method,
     :phone,
     :preferred_locales,
     :shipping,
@@ -83,17 +85,22 @@ defmodule Stripe.Customer do
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
-                 optional(:account_balance) => integer,
+                 optional(:address) => Stripe.Types.address(),
+                 optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
-                 optional(:default_source) => Stripe.id() | Stripe.Source.t(),
                  optional(:description) => String.t(),
                  optional(:email) => String.t(),
                  optional(:invoice_prefix) => String.t(),
                  optional(:invoice_settings) => Stripe.Invoice.invoice_settings(),
                  optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:name) => String.t(),
+                 optional(:payment_method) => String.t(),
+                 optional(:phone) => String.t(),
+                 optional(:preferred_locales) => list(String.t()),
                  optional(:shipping) => Stripe.Types.shipping(),
-                 optional(:source) => Stripe.Source.t(),
+                 optional(:source) => Stripe.id() | Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
+                 optional(:tax_id_data) => Stripe.TaxID.tax_id_data(),
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}
@@ -123,7 +130,8 @@ defmodule Stripe.Customer do
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params:
                %{
-                 optional(:account_balance) => integer,
+                 optional(:address) => Stripe.Types.address(),
+                 optional(:balance) => integer,
                  optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                  optional(:default_source) => Stripe.id() | Stripe.Source.t(),
                  optional(:description) => String.t(),
@@ -131,9 +139,13 @@ defmodule Stripe.Customer do
                  optional(:invoice_prefix) => String.t(),
                  optional(:invoice_settings) => Stripe.Invoice.invoice_settings(),
                  optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:name) => String.t(),
+                 optional(:phone) => String.t(),
+                 optional(:preferred_locales) => list(String.t()),
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
+                 optional(:tax_id_data) => Stripe.TaxID.tax_id_data(),
                  optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}

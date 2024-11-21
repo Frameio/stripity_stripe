@@ -22,10 +22,15 @@ defmodule Stripe.Subscription do
           automatic_tax: map,
           billing: String.t() | nil,
           billing_cycle_anchor: Stripe.timestamp() | nil,
-          billing_thresholds: Stripe.Types.subscription_billing_thresholds() | nil,
+          billing_thresholds: map | nil,
+          collection_method: String.t() | nil,
+          collection_method_cycle_anchor: Stripe.timestamp() | nil,
+          collection_method_thresholds: Stripe.Types.collection_method_thresholds() | nil,
+          cancel_at: Stripe.timestamp() | nil,
           cancel_at_period_end: boolean,
           canceled_at: Stripe.timestamp() | nil,
           cancellation_details: map,
+          collection_method: String.t(),
           created: Stripe.timestamp(),
           current_period_end: Stripe.timestamp() | nil,
           current_period_start: Stripe.timestamp() | nil,
@@ -40,10 +45,10 @@ defmodule Stripe.Subscription do
           latest_invoice: Stripe.id() | Stripe.Invoice.t() | nil,
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
+          pending_setup_intent: Stripe.SetupIntent.t() | nil,
           plan: Stripe.Plan.t() | nil,
           quantity: integer | nil,
           schedule: String.t() | nil,
-          start: Stripe.timestamp(),
           start_date: Stripe.timestamp(),
           status: String.t(),
           tax_percent: float | nil,
@@ -60,9 +65,14 @@ defmodule Stripe.Subscription do
     :billing,
     :billing_cycle_anchor,
     :billing_thresholds,
+    :collection_method,
+    :collection_method_cycle_anchor,
+    :collection_method_thresholds,
+    :cancel_at,
     :cancel_at_period_end,
     :canceled_at,
     :cancellation_details,
+    :collection_method,
     :created,
     :current_period_end,
     :current_period_start,
@@ -77,10 +87,10 @@ defmodule Stripe.Subscription do
     :latest_invoice,
     :livemode,
     :metadata,
+    :pending_setup_intent,
     :plan,
     :quantity,
     :schedule,
-    :start,
     :start_date,
     :status,
     :tax_percent,
@@ -98,24 +108,33 @@ defmodule Stripe.Subscription do
         when params: %{
                :customer => Stripe.id() | Stripe.Customer.t(),
                optional(:application_fee_percent) => integer,
-               optional(:billing) => String.t(),
                optional(:billing_cycle_anchor) => Stripe.timestamp(),
+               optional(:billing_thresholds) => map,
+               optional(:collection_method) => String.t(),
+               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
+               optional(:cancel_at) => Stripe.timestamp(),
+               optional(:collection_method) => String.t(),
                optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
-               optional(:items) => [
+               :items => [
                  %{
                    :plan => Stripe.id() | Stripe.Plan.t(),
-                   optional(:quantity) => non_neg_integer
+                   optional(:billing_methods) => map,
+                   optional(:metadata) => map,
+                   optional(:quantity) => non_neg_integer,
+                   optional(:tax_rates) => list
                  }
                ],
+               optional(:default_payment_method) => Stripe.id(),
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
+               optional(:proration_behavior) => String.t(),
                optional(:tax_percent) => float,
                optional(:trial_end) => Stripe.timestamp(),
                optional(:trial_from_plan) => boolean,
                optional(:trial_period_days) => non_neg_integer
              }
-  def create(%{customer: _} = params, opts \\ []) do
+  def create(%{customer: _, items: _} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
     |> put_params(params)
@@ -143,19 +162,28 @@ defmodule Stripe.Subscription do
   @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params: %{
                optional(:application_fee_percent) => float,
-               optional(:billing) => String.t(),
                optional(:billing_cycle_anchor) => Stripe.timestamp(),
+               optional(:billing_thresholds) => map,
+               optional(:collection_method) => String.t(),
+               optional(:collection_method_cycle_anchor) => Stripe.timestamp(),
+               optional(:cancel_at) => Stripe.timestamp(),
                optional(:cancel_at_period_end) => boolean(),
+               optional(:collection_method) => String.t(),
                optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
                optional(:items) => [
                  %{
                    :plan => Stripe.id() | Stripe.Plan.t(),
-                   optional(:quantity) => non_neg_integer
+                   optional(:billing_methods) => map,
+                   optional(:metadata) => map,
+                   optional(:quantity) => non_neg_integer,
+                   optional(:tax_rates) => list
                  }
                ],
+               optional(:default_payment_method) => Stripe.id(),
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
+               optional(:proration_behavior) => String.t(),
                optional(:proration_date) => Stripe.timestamp(),
                optional(:tax_percent) => float,
                optional(:trial_end) => Stripe.timestamp(),
@@ -215,7 +243,7 @@ defmodule Stripe.Subscription do
   """
   @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
         when params: %{
-               optional(:billing) => String.t(),
+               optional(:collection_method) => String.t(),
                optional(:created) => Stripe.date_query(),
                optional(:customer) => Stripe.Customer.t() | Stripe.id(),
                optional(:ending_before) => t | Stripe.id(),

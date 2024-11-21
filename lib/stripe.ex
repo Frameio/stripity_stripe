@@ -23,6 +23,8 @@ defmodule Stripe do
 
     * `:api_key` - The Stripe API key to use for the request. See
       [https://stripe.com/docs/api/authentication](https://stripe.com/docs/api/authentication)
+    * `:api_version` - The version of the api that is being used, defaults to the
+      version the library is written for. See [https://stripe.com/docs/api/versioning](https://stripe.com/docs/api/versioning)
     * `:connect_account` - The ID of a Stripe Connect account for which the
       request should be made, passed through as the "Stripe-Account" header. The
       preferred authentication method for Stripe Connect. See
@@ -68,6 +70,12 @@ defmodule Stripe do
           optional(:gte) => timestamp,
           optional(:lt) => timestamp,
           optional(:lte) => timestamp
+        }
+  @type integer_query :: %{
+          optional(:gt) => integer,
+          optional(:gte) => integer,
+          optional(:lt) => integer,
+          optional(:lte) => integer
         }
   @type options :: Keyword.t()
   @type timestamp :: pos_integer
