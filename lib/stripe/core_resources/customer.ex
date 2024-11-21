@@ -101,7 +101,7 @@ defmodule Stripe.Customer do
                  optional(:source) => Stripe.id() | Stripe.Source.t(),
                  optional(:tax_exempt) => :exempt | :none | :reverse,
                  optional(:tax_id_data) => Stripe.TaxID.tax_id_data(),
-                 optional(:tax_info) => Stripe.Types.tax_info()e typespecs (#569))
+                 optional(:tax_info) => Stripe.Types.tax_info()
                }
                | %{}
   def create(params, opts \\ []) do
