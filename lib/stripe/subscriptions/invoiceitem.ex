@@ -33,6 +33,7 @@ defmodule Stripe.Invoiceitem do
           proration: boolean,
           quantity: integer,
           subscription: Stripe.id() | Stripe.Subscription.t() | nil,
+          subscription_item: Stripe.id() | Stripe.SubscriptionItem.t() | nil,
           tax_rates: list(Stripe.TaxRate.t()),
           unit_amount: integer,
           unit_amount_decimal: String.t()
@@ -57,6 +58,7 @@ defmodule Stripe.Invoiceitem do
     :proration,
     :quantity,
     :subscription,
+    :subscription_item,
     :tax_rates,
     :unit_amount,
     :unit_amount_decimal
