@@ -132,10 +132,8 @@ defmodule Stripe.Webhook do
   defp secure_compare(acc, [], []), do: acc == 0
 
   defp secure_compare(acc, [input_codepoint | input], [expected_codepoint | expected]) do
-    import Bitwise
-
     acc
-    |> bor(input_codepoint ^^^ expected_codepoint)
+    |> bor(Bitwise.xor(input_codepoint, expected_codepoint))
     |> secure_compare(input, expected)
   end
 
