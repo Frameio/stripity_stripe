@@ -17,7 +17,7 @@ defmodule Stripe.API do
 
   @pool_name __MODULE__
   @api_version "2018-08-23"
-  @http_module Application.get_env(:stripity_stripe, :http_module) || :hackney
+  @http_module Application.compile_env(:stripity_stripe, :http_module) || :hackney
 
   def supervisor_children do
     if use_pool?() do
