@@ -60,6 +60,7 @@ defmodule Stripe.Invoice do
           tax: integer | nil,
           tax_percent: number | nil,
           total: integer,
+          total_tax_amounts: Stripe.List.t(map) | nil,
           webhooks_delivered_at: Stripe.timestamp() | nil
         }
 
@@ -107,6 +108,7 @@ defmodule Stripe.Invoice do
     :tax,
     :tax_percent,
     :total,
+    :total_tax_amounts,
     :webhooks_delivered_at
   ]
 
