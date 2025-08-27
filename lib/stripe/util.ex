@@ -57,7 +57,7 @@ defmodule StripeFork.Util do
       |> String.split("_")
       |> Enum.map_join("", &String.capitalize/1)
 
-    Module.concat("StripeFork", module_name)
+    Module.concat("Stripe", module_name)
   end
 
   @spec module_to_string(module) :: String.t()
