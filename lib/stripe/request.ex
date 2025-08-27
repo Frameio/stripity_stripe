@@ -1,4 +1,4 @@
-defmodule Stripe.Request do
+defmodule StripeFork.Request do
   @moduledoc """
   A module for working with requests to the Stripe API.
 
@@ -14,13 +14,13 @@ defmodule Stripe.Request do
   At a minimum, a request must have the endpoint and method specified to be
   valid.
   """
-  alias Stripe.{API, Converter, Request}
+  alias StripeFork.{API, Converter, Request}
 
   @type t :: %__MODULE__{
           cast_to_id: MapSet.t(),
           endpoint: String.t() | nil,
           headers: map | nil,
-          method: Stripe.API.method() | nil,
+          method: StripeFork.API.method() | nil,
           opts: Keyword.t() | nil,
           params: map
         }
@@ -42,7 +42,7 @@ defmodule Stripe.Request do
   Optionally accepts options for the request, such as using a specific API key.
   See `t:Stripe.options` for details.
   """
-  @spec new_request(Stripe.options(), map) :: t
+  @spec new_request(StripeFork.options(), map) :: t
   def new_request(opts \\ [], headers \\ %{}) do
     headers =
       opts
@@ -74,7 +74,7 @@ defmodule Stripe.Request do
   Accepts any of the standard HTTP methods as atoms, that is `:get`, `:post`,
   `:put`, `:patch` or `:delete`.
   """
-  @spec put_method(t, Stripe.API.method()) :: t
+  @spec put_method(t, StripeFork.API.method()) :: t
   def put_method(%Request{} = request, method)
       when method in [:get, :post, :put, :patch, :delete] do
     %{request | method: method}
@@ -148,7 +148,7 @@ defmodule Stripe.Request do
     ...
   ```
   """
-  @spec get_id!(Stripe.id() | struct) :: Stripe.id()
+  @spec get_id!(StripeFork.id() | struct) :: StripeFork.id()
   def get_id!(id) when is_binary(id), do: id
 
   def get_id!(%{id: id}) when is_binary(id), do: id
@@ -188,7 +188,7 @@ defmodule Stripe.Request do
   @doc """
   Executes the request and returns the response.
   """
-  @spec make_request(t) :: {:ok, struct} | {:error, Stripe.Error.t()}
+  @spec make_request(t) :: {:ok, struct} | {:error, StripeFork.Error.t()}
   def make_request(
         %Request{params: params, endpoint: endpoint, method: method, headers: headers, opts: opts} =
           request
@@ -203,7 +203,7 @@ defmodule Stripe.Request do
   @doc """
   Executes the request and returns the response for file uploads
   """
-  @spec make_file_upload_request(t) :: {:ok, struct} | {:error, Stripe.Error.t()}
+  @spec make_file_upload_request(t) :: {:ok, struct} | {:error, StripeFork.Error.t()}
   def make_file_upload_request(
         %Request{params: params, endpoint: endpoint, method: method, opts: opts} = request
       ) do
@@ -238,7 +238,7 @@ defmodule Stripe.Request do
       invalid ->
         {
           :error,
-          Stripe.Error.new(
+          StripeFork.Error.new(
             source: :internal,
             code: :endpoint_fun_invalid_result,
             message:
@@ -251,7 +251,7 @@ defmodule Stripe.Request do
   defp consolidate_endpoint(_, _) do
     {
       :error,
-      Stripe.Error.new(
+      StripeFork.Error.new(
         source: :internal,
         code: :invalid_endpoint,
         message: "endpoint must be a string or a function from params to a string"

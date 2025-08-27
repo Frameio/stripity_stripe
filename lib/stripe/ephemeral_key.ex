@@ -1,4 +1,4 @@
-defmodule Stripe.EphemeralKey do
+defmodule StripeFork.EphemeralKey do
   @moduledoc """
   Work with Stripe EphemeralKey objects.
 
@@ -18,7 +18,7 @@ defmodule Stripe.EphemeralKey do
   Stripe API reference: https://stripe.com/docs/api#customer
   """
 
-  import Stripe.Request
+  import StripeFork.Request
 
   defstruct [
     :id,
@@ -36,9 +36,9 @@ defmodule Stripe.EphemeralKey do
   @doc """
   Create an ephemeral key.
   """
-  @spec create(params, String.t(), Keyword.t()) :: {:ok, t} | {:error, %Stripe.Error{}}
+  @spec create(params, String.t(), Keyword.t()) :: {:ok, t} | {:error, %StripeFork.Error{}}
         when params: %{
-               :customer => Stripe.id(),
+               :customer => StripeFork.id(),
             }
   def create(params, api_version, opts \\ []) do
     new_request(opts, %{"Stripe-Version": api_version})

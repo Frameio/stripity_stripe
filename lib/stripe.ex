@@ -1,4 +1,4 @@
-defmodule Stripe do
+defmodule StripeFork do
   @moduledoc """
   A HTTP client for Stripe.
 
@@ -74,9 +74,9 @@ defmodule Stripe do
   def start(_start_type, _args) do
     import Supervisor.Spec, warn: false
 
-    children = Stripe.API.supervisor_children()
+    children = StripeFork.API.supervisor_children()
 
-    opts = [strategy: :one_for_one, name: Stripe.Supervisor]
+    opts = [strategy: :one_for_one, name: StripeFork.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

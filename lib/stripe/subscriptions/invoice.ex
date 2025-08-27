@@ -1,4 +1,4 @@
-defmodule Stripe.Invoice do
+defmodule StripeFork.Invoice do
   @moduledoc """
   Work with Stripe invoice objects.
 
@@ -13,11 +13,11 @@ defmodule Stripe.Invoice do
   Stripe API reference: https://stripe.com/docs/api#invoice
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount_due: integer,
           amount_paid: integer,
@@ -28,40 +28,40 @@ defmodule Stripe.Invoice do
           auto_advance: boolean,
           billing: String.t() | nil,
           billing_reason: String.t() | nil,
-          charge: Stripe.id() | Stripe.Charge.t() | nil,
+          charge: StripeFork.id() | StripeFork.Charge.t() | nil,
           closed: boolean,
           currency: String.t(),
-          customer: Stripe.id() | Stripe.Customer.t(),
-          date: Stripe.timestamp(),
+          customer: StripeFork.id() | StripeFork.Customer.t(),
+          date: StripeFork.timestamp(),
           default_source: String.t() | nil,
           description: String.t() | nil,
-          discount: Stripe.Discount.t() | nil,
-          due_date: Stripe.timestamp() | nil,
+          discount: StripeFork.Discount.t() | nil,
+          due_date: StripeFork.timestamp() | nil,
           ending_balance: integer | nil,
-          finalized_at: Stripe.timestamp() | nil,
+          finalized_at: StripeFork.timestamp() | nil,
           forgiven: boolean,
           hosted_invoice_url: String.t() | nil,
           invoice_pdf: String.t() | nil,
-          lines: Stripe.List.t(Stripe.LineItem.t()),
+          lines: StripeFork.List.t(StripeFork.LineItem.t()),
           livemode: boolean,
-          metadata: Stripe.Types.metadata() | nil,
-          next_payment_attempt: Stripe.timestamp() | nil,
+          metadata: StripeFork.Types.metadata() | nil,
+          next_payment_attempt: StripeFork.timestamp() | nil,
           number: String.t() | nil,
           paid: boolean,
-          period_end: Stripe.timestamp(),
-          period_start: Stripe.timestamp(),
+          period_end: StripeFork.timestamp(),
+          period_start: StripeFork.timestamp(),
           receipt_number: String.t() | nil,
           starting_balance: integer,
           statement_descriptor: String.t() | nil,
           status: String.t() | nil,
-          subscription: Stripe.id() | Stripe.Subscription.t() | nil,
-          subscription_proration_date: Stripe.timestamp(),
+          subscription: StripeFork.id() | StripeFork.Subscription.t() | nil,
+          subscription_proration_date: StripeFork.timestamp(),
           subtotal: integer,
           tax: integer | nil,
           tax_percent: number | nil,
           total: integer,
-          total_tax_amounts: Stripe.List.t(map) | nil,
-          webhooks_delivered_at: Stripe.timestamp() | nil
+          total_tax_amounts: StripeFork.List.t(map) | nil,
+          webhooks_delivered_at: StripeFork.timestamp() | nil
         }
 
   defstruct [
@@ -117,19 +117,19 @@ defmodule Stripe.Invoice do
   @doc """
   Create an invoice.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  optional(:application_fee) => integer,
                  optional(:billing) => String.t(),
-                 :customer => Stripe.id() | Stripe.Customer.t(),
+                 :customer => StripeFork.id() | StripeFork.Customer.t(),
                  optional(:days_until_due) => integer,
                  optional(:default_source) => String.t(),
                  optional(:description) => String.t(),
-                 optional(:due_date) => Stripe.timestamp(),
-                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:due_date) => StripeFork.timestamp(),
+                 optional(:metadata) => StripeFork.Types.metadata(),
                  optional(:statement_descriptor) => String.t(),
-                 optional(:subscription) => Stripe.id() | Stripe.Subscription.t(),
+                 optional(:subscription) => StripeFork.id() | StripeFork.Subscription.t(),
                  optional(:tax_percent) => number
                }
                | %{}
@@ -145,7 +145,7 @@ defmodule Stripe.Invoice do
   @doc """
   Retrieve an invoice.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -158,7 +158,7 @@ defmodule Stripe.Invoice do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  optional(:application_fee) => integer,
@@ -166,9 +166,9 @@ defmodule Stripe.Invoice do
                  optional(:days_until_due) => integer,
                  optional(:default_source) => String.t(),
                  optional(:description) => String.t(),
-                 optional(:due_date) => Stripe.timestamp(),
+                 optional(:due_date) => StripeFork.timestamp(),
                  optional(:forgiven) => boolean,
-                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:metadata) => StripeFork.Types.metadata(),
                  optional(:paid) => boolean,
                  optional(:statement_descriptor) => String.t(),
                  optional(:tax_percent) => number
@@ -185,7 +185,7 @@ defmodule Stripe.Invoice do
   @doc """
   Retrieve an upcoming invoice.
   """
-  @spec upcoming(map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec upcoming(map, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def upcoming(params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/upcoming")
@@ -197,17 +197,17 @@ defmodule Stripe.Invoice do
   @doc """
   List all invoices.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  optional(:billing) => String.t(),
-                 optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-                 optional(:date) => Stripe.date_query(),
-                 optional(:due_date) => Stripe.timestamp(),
-                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
+                 optional(:date) => StripeFork.date_query(),
+                 optional(:due_date) => StripeFork.timestamp(),
+                 optional(:ending_before) => t | StripeFork.id(),
                  optional(:limit) => 1..100,
-                 optional(:starting_after) => t | Stripe.id(),
-                 optional(:subscription) => Stripe.id() | Stripe.Subscription.t()
+                 optional(:starting_after) => t | StripeFork.id(),
+                 optional(:subscription) => StripeFork.id() | StripeFork.Subscription.t()
                }
                | %{}
   def list(params \\ %{}, opts \\ []) do
@@ -222,12 +222,12 @@ defmodule Stripe.Invoice do
   @doc """
   Pay an invoice.
   """
-  @spec pay(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec pay(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  :id => String.t(),
                  optional(:forgive) => boolean,
-                 optional(:source) => Stripe.id() | Stripe.Source.t() | nil
+                 optional(:source) => StripeFork.id() | StripeFork.Source.t() | nil
                }
                | %{}
   def pay(id, params, opts \\ []) do

@@ -1,9 +1,9 @@
-defmodule Stripe.EntityTest do
+defmodule StripeFork.EntityTest do
   use ExUnit.Case, async: true
-  import Stripe.Entity
+  import StripeFork.Entity
 
   defmodule SampleEntity do
-    use Stripe.Entity
+    use StripeFork.Entity
 
     from_json data do
       data
@@ -12,15 +12,15 @@ defmodule Stripe.EntityTest do
   end
 
   defmodule SampleEntity2 do
-    use Stripe.Entity
+    use StripeFork.Entity
   end
 
-  test "a module using Stripe.Entity has a default implementation of `__from_json__/1`" do
+  test "a module using StripeFork.Entity has a default implementation of `__from_json__/1`" do
     map = %{foo: "bar"}
     assert SampleEntity2.__from_json__(map) == map
   end
 
-  test "a module using Stripe.Entity and the `from_json/2` macro defines a `__from_json__/1` function with the user's logic" do
+  test "a module using StripeFork.Entity and the `from_json/2` macro defines a `__from_json__/1` function with the user's logic" do
     map = %{foo: "bar", abc: "xyz"}
     expected = %{foo: :bar, abc: "xyz"}
     assert SampleEntity.__from_json__(map) == expected

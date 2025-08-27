@@ -1,4 +1,4 @@
-defmodule Stripe.Error do
+defmodule StripeFork.Error do
   @moduledoc """
   A struct which represents an error which occurred during a Stripe API call.
 
@@ -91,7 +91,7 @@ defmodule Stripe.Error do
 
   @type t :: %__MODULE__{
           source: error_source,
-          code: error_status | stripe_error_type | Stripe.Request.error_code() | :network_error,
+          code: error_status | stripe_error_type | StripeFork.Request.error_code() | :network_error,
           request_id: String.t() | nil,
           message: String.t(),
           user_message: String.t() | nil,
@@ -99,7 +99,7 @@ defmodule Stripe.Error do
             optional(:card_code) => card_error_code,
             optional(:decline_code) => String.t(),
             optional(:param) => atom,
-            optional(:charge_id) => Stripe.id(),
+            optional(:charge_id) => StripeFork.id(),
             optional(:http_status) => 400..599,
             optional(:raw_error) => map,
             optional(:hackney_reason) => any

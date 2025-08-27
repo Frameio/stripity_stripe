@@ -1,4 +1,4 @@
-defmodule Stripe.Event do
+defmodule StripeFork.Event do
   @moduledoc """
   Work with Stripe event objects.
 
@@ -9,8 +9,8 @@ defmodule Stripe.Event do
   Stripe API reference: https://stripe.com/docs/api#event
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type event_data :: %{
           object: event_data_object,
@@ -19,25 +19,25 @@ defmodule Stripe.Event do
 
   # TODO: add Scheduled query run
   @type event_data_object ::
-          Stripe.Account.t()
-          | Stripe.ApplicationFee.t()
-          | Stripe.Charge.t()
-          | Stripe.Coupon.t()
-          | Stripe.Customer.t()
-          | Stripe.FileUpload.t()
-          | Stripe.Invoice.t()
-          | Stripe.Invoiceitem.t()
-          | Stripe.Order.t()
-          | Stripe.OrderReturn.t()
-          | Stripe.Payout.t()
-          | Stripe.Plan.t()
-          | Stripe.Relay.Product.t()
-          | Stripe.Product.t()
-          | Stripe.Recipient.t()
-          | Stripe.Review.t()
-          | Stripe.Sku.t()
-          | Stripe.Source.t()
-          | Stripe.Transfer.t()
+          StripeFork.Account.t()
+          | StripeFork.ApplicationFee.t()
+          | StripeFork.Charge.t()
+          | StripeFork.Coupon.t()
+          | StripeFork.Customer.t()
+          | StripeFork.FileUpload.t()
+          | StripeFork.Invoice.t()
+          | StripeFork.Invoiceitem.t()
+          | StripeFork.Order.t()
+          | StripeFork.OrderReturn.t()
+          | StripeFork.Payout.t()
+          | StripeFork.Plan.t()
+          | StripeFork.Relay.Product.t()
+          | StripeFork.Product.t()
+          | StripeFork.Recipient.t()
+          | StripeFork.Review.t()
+          | StripeFork.Sku.t()
+          | StripeFork.Source.t()
+          | StripeFork.Transfer.t()
           | map
 
   @type event_request :: %{
@@ -46,10 +46,10 @@ defmodule Stripe.Event do
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           api_version: String.t() | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           data: event_data,
           livemode: boolean,
           pending_webhooks: non_neg_integer,
@@ -75,7 +75,7 @@ defmodule Stripe.Event do
   @doc """
   Retrieve an event.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -86,12 +86,12 @@ defmodule Stripe.Event do
   @doc """
   List all events, going back up to 30 days.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:starting_after) => t | StripeFork.id(),
                optional(:type) => String.t(),
                optional(:types) => list
              } | %{}

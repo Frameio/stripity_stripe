@@ -1,9 +1,9 @@
-defmodule Stripe.FeeRefundTest do
-  use Stripe.StripeCase, async: true
+defmodule StripeFork.FeeRefundTest do
+  use StripeFork.StripeCase, async: true
 
   describe "retrieve/2" do
     test "retrieves a transfer" do
-      assert {:ok, %Stripe.FeeRefund{}} = Stripe.FeeRefund.retrieve("transf_123", "rev_123")
+      assert {:ok, %StripeFork.FeeRefund{}} = StripeFork.FeeRefund.retrieve("transf_123", "rev_123")
       assert_stripe_requested(:get, "/v1/appliction_fees/trasnf_123/reversals/rev_123")
     end
   end
@@ -14,7 +14,7 @@ defmodule Stripe.FeeRefundTest do
         amount: 123
       }
 
-      assert {:ok, %Stripe.FeeRefund{}} = Stripe.FeeRefund.create("transf_123", params)
+      assert {:ok, %StripeFork.FeeRefund{}} = StripeFork.FeeRefund.create("transf_123", params)
       assert_stripe_requested(:post, "/v1/appliction_fees/transf_123/reversals")
     end
   end
@@ -22,17 +22,17 @@ defmodule Stripe.FeeRefundTest do
   describe "update/2" do
     test "updates a transfer" do
       params = %{metadata: %{foo: "bar"}}
-      assert {:ok, transfer} = Stripe.FeeRefund.update("trasnf_123", "rev_123", params)
+      assert {:ok, transfer} = StripeFork.FeeRefund.update("trasnf_123", "rev_123", params)
       assert_stripe_requested(:post, "/v1/appliction_fees/#{transfer.id}/reversals/rev_123")
     end
   end
 
   describe "list/2" do
     test "lists all appliction_fees refunds" do
-      assert {:ok, %Stripe.List{data: appliction_fees}} = Stripe.FeeRefund.list("transf_123")
+      assert {:ok, %StripeFork.List{data: appliction_fees}} = StripeFork.FeeRefund.list("transf_123")
       assert_stripe_requested(:get, "/v1/appliction_fees/transf_123/reversals")
       assert is_list(appliction_fees)
-      assert %Stripe.FeeRefund{} = hd(appliction_fees)
+      assert %StripeFork.FeeRefund{} = hd(appliction_fees)
     end
   end
 end

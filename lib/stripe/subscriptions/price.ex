@@ -1,4 +1,4 @@
-defmodule Stripe.Price do
+defmodule StripeFork.Price do
   @moduledoc """
   Work with Stripe price objects.
   The Prices API adds more flexibility to how you charge customers.
@@ -46,8 +46,8 @@ defmodule Stripe.Price do
   ```
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type recurring :: %{
           optional(:aggregate_usage) => String.t(),
@@ -71,17 +71,17 @@ defmodule Stripe.Price do
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           active: boolean,
           billing_scheme: String.t(),
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           livemode: boolean,
           lookup_key: String.t(),
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           nickname: String.t(),
-          product: Stripe.id() | Stripe.Product.t(),
+          product: StripeFork.id() | StripeFork.Product.t(),
           recurring: recurring(),
           tax_behavior: String.t(),
           tiers: [price_tier()],
@@ -121,16 +121,16 @@ defmodule Stripe.Price do
   @doc """
   Create a price.
   """
-  @spec create(params, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  :currency => String.t(),
                  optional(:unit_amount) => pos_integer,
                  optional(:active) => boolean,
-                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:metadata) => StripeFork.Types.metadata(),
                  optional(:nickname) => String.t(),
-                 optional(:product) => Stripe.id() | Stripe.Product.t(),
+                 optional(:product) => StripeFork.id() | StripeFork.Product.t(),
                  optional(:recurring) => recurring(),
                  optional(:tax_behavior) => String.t(),
                  optional(:tiers) => [price_tier()],
@@ -154,7 +154,7 @@ defmodule Stripe.Price do
   @doc """
   Retrieve a price.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -166,11 +166,11 @@ defmodule Stripe.Price do
   Update a price.
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  optional(:active) => boolean,
-                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:metadata) => StripeFork.Types.metadata(),
                  optional(:nickname) => String.t(),
                  optional(:recurring) => recurring(),
                  optional(:lookup_key) => String.t(),
@@ -188,19 +188,19 @@ defmodule Stripe.Price do
   @doc """
   List all prices.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params:
                %{
                  optional(:active) => boolean,
                  optional(:currency) => String.t(),
-                 optional(:product) => Stripe.Product.t() | Stripe.id(),
+                 optional(:product) => StripeFork.Product.t() | StripeFork.id(),
                  optional(:type) => String.t(),
-                 optional(:created) => Stripe.timestamp(),
-                 optional(:ending_before) => t | Stripe.id(),
+                 optional(:created) => StripeFork.timestamp(),
+                 optional(:ending_before) => t | StripeFork.id(),
                  optional(:limit) => 1..100,
                  optional(:lookup_keys) => list(String.t()),
                  optional(:recurring) => recurring() | nil,
-                 optional(:starting_after) => t | Stripe.id()
+                 optional(:starting_after) => t | StripeFork.id()
                }
                | %{}
   def list(params \\ %{}, opts \\ []) do

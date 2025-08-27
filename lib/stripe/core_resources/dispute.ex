@@ -1,4 +1,4 @@
-defmodule Stripe.Dispute do
+defmodule StripeFork.Dispute do
   @moduledoc """
   Work with Stripe disputes.
 
@@ -12,41 +12,41 @@ defmodule Stripe.Dispute do
   Stripe API reference: https://stripe.com/docs/api#disputes
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type dispute_evidence :: %{
           access_activity_log: String.t() | nil,
           billing_address: String.t() | nil,
-          cancellation_policy: Stripe.id() | Stripe.FileUpload.t() | nil,
+          cancellation_policy: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           cancellation_policy_disclosure: String.t() | nil,
           cancellation_rebuttal: String.t() | nil,
-          dispute_communication: Stripe.id() | Stripe.FileUpload.t() | nil,
+          dispute_communication: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           dispute_email_address: String.t() | nil,
           dispute_name: String.t() | nil,
           dispute_purchase_ip: String.t() | nil,
-          dispute_signature: Stripe.id() | Stripe.FileUpload.t() | nil,
-          duplicate_charge_documentation: Stripe.id() | Stripe.FileUpload.t() | nil,
+          dispute_signature: StripeFork.id() | StripeFork.FileUpload.t() | nil,
+          duplicate_charge_documentation: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           duplicate_charge_explanation: String.t() | nil,
-          duplicate_charge_id: Stripe.id() | nil,
+          duplicate_charge_id: StripeFork.id() | nil,
           product_description: String.t() | nil,
-          receipt: Stripe.id() | Stripe.FileUpload.t() | nil,
-          refund_policy: Stripe.id() | Stripe.FileUpload.t() | nil,
+          receipt: StripeFork.id() | StripeFork.FileUpload.t() | nil,
+          refund_policy: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           refund_policy_disclosure: String.t() | nil,
           refund_refusal_explanation: String.t() | nil,
           service_date: String.t() | nil,
-          service_documentation: Stripe.id() | Stripe.FileUpload.t() | nil,
+          service_documentation: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           shipping_address: String.t() | nil,
           shipping_carrier: String.t() | nil,
           shipping_date: String.t() | nil,
-          shipping_documentation: Stripe.id() | Stripe.FileUpload.t() | nil,
-          shipping_tracking_number: Stripe.id() | Stripe.FileUpload.t() | nil,
-          uncategorized_file: Stripe.id() | Stripe.FileUpload.t() | nil,
+          shipping_documentation: StripeFork.id() | StripeFork.FileUpload.t() | nil,
+          shipping_tracking_number: StripeFork.id() | StripeFork.FileUpload.t() | nil,
+          uncategorized_file: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           uncategorized_text: String.t() | nil
         }
 
   @type dispute_evidence_details :: %{
-          due_by: Stripe.timestamp() | nil,
+          due_by: StripeFork.timestamp() | nil,
           has_evidence: boolean,
           past_due: boolean,
           submission_count: integer
@@ -57,12 +57,12 @@ defmodule Stripe.Dispute do
   @type dispute_status :: String.t()
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
-          balance_transactions: list(Stripe.BalanceTransaction.t()),
-          charge: Stripe.id() | Stripe.Charge.t(),
-          created: Stripe.timestamp(),
+          balance_transactions: list(StripeFork.BalanceTransaction.t()),
+          charge: StripeFork.id() | StripeFork.Charge.t(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           evidence: dispute_evidence,
           evidence_details: dispute_evidence_details,
@@ -97,7 +97,7 @@ defmodule Stripe.Dispute do
   @doc """
   Retrieve a dispute.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -108,10 +108,10 @@ defmodule Stripe.Dispute do
   @doc """
   Update a dispute.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:evidence) => dispute_evidence,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:submit) => boolean
              } | %{}
   def update(id, params, opts \\ []) do
@@ -125,7 +125,7 @@ defmodule Stripe.Dispute do
   @doc """
   Close a dispute.
   """
-  @spec close(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec close(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def close(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}" <> "/close")
@@ -136,12 +136,12 @@ defmodule Stripe.Dispute do
   @doc """
   List all disputes.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => String.t() | Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => String.t() | StripeFork.date_query(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

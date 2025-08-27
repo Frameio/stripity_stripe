@@ -1,4 +1,4 @@
-defmodule Stripe.Invoiceitem do
+defmodule StripeFork.Invoiceitem do
   @moduledoc """
   Work with Stripe invoiceitem objects.
 
@@ -8,30 +8,30 @@ defmodule Stripe.Invoiceitem do
   match the Stripe terminology of `invoiceitem`.
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
           currency: String.t(),
-          customer: Stripe.id() | Stripe.Customer.t(),
-          date: Stripe.timestamp(),
+          customer: StripeFork.id() | StripeFork.Customer.t(),
+          date: StripeFork.timestamp(),
           description: String.t(),
           discountable: boolean,
-          invoice: Stripe.id() | Stripe.Invoice.t(),
+          invoice: StripeFork.id() | StripeFork.Invoice.t(),
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           period: %{
-            start: Stripe.timestamp(),
-            end: Stripe.timestamp()
+            start: StripeFork.timestamp(),
+            end: StripeFork.timestamp()
           },
-          plan: Stripe.Plan.t() | nil,
+          plan: StripeFork.Plan.t() | nil,
           proration: boolean,
           quantity: integer,
-          subscription: Stripe.id() | Stripe.Subscription.t() | nil,
-          subscription_item: Stripe.id() | Stripe.SubscriptionItem.t() | nil,
+          subscription: StripeFork.id() | StripeFork.Subscription.t() | nil,
+          subscription_item: StripeFork.id() | StripeFork.SubscriptionItem.t() | nil,
           unit_amount: integer
         }
 
@@ -61,17 +61,17 @@ defmodule Stripe.Invoiceitem do
   @doc """
   Create an invoiceitem.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:amount) => integer,
                :currency => String.t(),
-               :customer => Stripe.id() | Stripe.Customer.t(),
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
                optional(:description) => String.t(),
                optional(:discountable) => boolean,
-               optional(:invoice) => Stripe.id() | Stripe.Invoice.t(),
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:invoice) => StripeFork.id() | StripeFork.Invoice.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:quantity) => integer,
-               optional(:subscription) => Stripe.id() | Stripe.Subscription.t(),
+               optional(:subscription) => StripeFork.id() | StripeFork.Subscription.t(),
                optional(:unit_amount) => integer
              } | %{}
   def create(params, opts \\ []) do
@@ -86,7 +86,7 @@ defmodule Stripe.Invoiceitem do
   @doc """
   Retrieve an invoiceitem.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -99,12 +99,12 @@ defmodule Stripe.Invoiceitem do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:amount) => integer,
                optional(:description) => String.t(),
                optional(:discountable) => boolean,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:quantity) => integer,
                optional(:unit_amount) => integer
              } | %{}
@@ -119,14 +119,14 @@ defmodule Stripe.Invoiceitem do
   @doc """
   List all invoiceitems.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => Stripe.timestamp(),
-               optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-               optional(:ending_before) => t | Stripe.id(),
-               optional(:invoice) => Stripe.id() | Stripe.Invoice.t(),
+               optional(:created) => StripeFork.timestamp(),
+               optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
+               optional(:ending_before) => t | StripeFork.id(),
+               optional(:invoice) => StripeFork.id() | StripeFork.Invoice.t(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

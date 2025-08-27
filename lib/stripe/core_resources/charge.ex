@@ -1,4 +1,4 @@
-defmodule Stripe.Charge do
+defmodule StripeFork.Charge do
   @moduledoc """
   Work with [Stripe `charge` objects](https://stripe.com/docs/api#charges).
 
@@ -10,9 +10,9 @@ defmodule Stripe.Charge do
   - [List all charges](https://stripe.com/docs/api#list_charges)
   """
 
-  use Stripe.Entity
-  import Stripe.Request
-  require Stripe.Util
+  use StripeFork.Entity
+  import StripeFork.Request
+  require StripeFork.Util
 
   @type user_fraud_report :: %{
           user_report: String.t()
@@ -26,7 +26,7 @@ defmodule Stripe.Charge do
           network_status: String.t() | nil,
           reason: String.t() | nil,
           risk_level: String.t(),
-          rule: Stripe.id() | charge_outcome_rule,
+          rule: StripeFork.id() | charge_outcome_rule,
           seller_message: String.t() | nil,
           type: String.t()
         }
@@ -53,41 +53,41 @@ defmodule Stripe.Charge do
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: non_neg_integer,
           amount_refunded: non_neg_integer,
-          application: Stripe.id() | nil,
-          application_fee: Stripe.id() | Stripe.ApplicationFee.t() | nil,
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
+          application: StripeFork.id() | nil,
+          application_fee: StripeFork.id() | StripeFork.ApplicationFee.t() | nil,
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t() | nil,
           captured: boolean,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
-          customer: Stripe.id() | Stripe.Customer.t() | nil,
+          customer: StripeFork.id() | StripeFork.Customer.t() | nil,
           description: String.t() | nil,
-          destination: Stripe.id() | Stripe.Account.t() | nil,
-          dispute: Stripe.id() | Stripe.Dispute.t() | nil,
-          failure_code: Stripe.Error.card_error_code() | nil,
+          destination: StripeFork.id() | StripeFork.Account.t() | nil,
+          dispute: StripeFork.id() | StripeFork.Dispute.t() | nil,
+          failure_code: StripeFork.Error.card_error_code() | nil,
           failure_message: String.t() | nil,
           fraud_details: user_fraud_report | stripe_fraud_report | %{},
-          invoice: Stripe.id() | Stripe.Invoice.t() | nil,
+          invoice: StripeFork.id() | StripeFork.Invoice.t() | nil,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
-          on_behalf_of: Stripe.id() | Stripe.Account.t() | nil,
-          order: Stripe.id() | Stripe.Order.t() | nil,
+          metadata: StripeFork.Types.metadata(),
+          on_behalf_of: StripeFork.id() | StripeFork.Account.t() | nil,
+          order: StripeFork.id() | StripeFork.Order.t() | nil,
           outcome: charge_outcome | nil,
           paid: boolean,
           receipt_email: String.t() | nil,
           receipt_number: String.t() | nil,
           refunded: boolean,
-          refunds: Stripe.List.t(Stripe.Refund.t()),
-          review: Stripe.id() | Stripe.Review.t() | nil,
-          shipping: Stripe.Types.shipping() | nil,
-          source: Stripe.Card.t() | map,
-          source_transfer: Stripe.id() | Stripe.Transfer.t() | nil,
+          refunds: StripeFork.List.t(StripeFork.Refund.t()),
+          review: StripeFork.id() | StripeFork.Review.t() | nil,
+          shipping: StripeFork.Types.shipping() | nil,
+          source: StripeFork.Card.t() | map,
+          source_transfer: StripeFork.id() | StripeFork.Transfer.t() | nil,
           statement_descriptor: String.t() | nil,
           status: String.t(),
-          transfer: Stripe.id() | Stripe.Transfer.t() | nil,
+          transfer: StripeFork.id() | StripeFork.Transfer.t() | nil,
           transfer_group: String.t() | nil
         }
 
@@ -141,7 +141,7 @@ defmodule Stripe.Charge do
 
   See the [Stripe docs](https://stripe.com/docs/api#create_charge).
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                :amount => pos_integer,
                :currency => String.t(),
@@ -149,16 +149,16 @@ defmodule Stripe.Charge do
                optional(:capture) => boolean,
                optional(:description) => String.t(),
                optional(:destination) => %{
-                 :account => Stripe.id() | Stripe.Account.t(),
+                 :account => StripeFork.id() | StripeFork.Account.t(),
                  optional(:amount) => non_neg_integer
                },
                optional(:transfer_group) => String.t(),
-               optional(:on_behalf_of) => Stripe.id() | Stripe.Account.t(),
+               optional(:on_behalf_of) => StripeFork.id() | StripeFork.Account.t(),
                optional(:metadata) => map,
                optional(:receipt_email) => String.t(),
-               optional(:shipping) => Stripe.Types.shipping(),
-               optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-               optional(:source) => Stripe.id() | Stripe.Card.t() | card_info,
+               optional(:shipping) => StripeFork.Types.shipping(),
+               optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
+               optional(:source) => StripeFork.id() | StripeFork.Card.t() | card_info,
                optional(:statement_descriptor) => String.t()
              } | %{}
   def create(params, opts \\ []) do
@@ -181,7 +181,7 @@ defmodule Stripe.Charge do
 
   See the [Stripe docs](https://stripe.com/docs/api#retrieve_charge).
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -202,14 +202,14 @@ defmodule Stripe.Charge do
 
   See the [Stripe docs](https://stripe.com/docs/api#update_charge).
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:customer) => Stripe.id() | Stripe.Customer.t(),
+               optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
                optional(:description) => String.t(),
                optional(:fraud_details) => user_fraud_report,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:receipt_email) => String.t(),
-               optional(:shipping) => Stripe.Types.shipping(),
+               optional(:shipping) => StripeFork.Types.shipping(),
                optional(:transfer_group) => String.t()
              } | %{}
   def update(id, params, opts \\ []) do
@@ -233,8 +233,8 @@ defmodule Stripe.Charge do
 
   See the [Stripe docs](https://stripe.com/docs/api#capture_charge).
   """
-  @spec capture(Stripe.id() | t, params, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec capture(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:amount) => non_neg_integer,
                optional(:application_fee) => non_neg_integer,
@@ -257,20 +257,20 @@ defmodule Stripe.Charge do
 
   This version of the function is deprecated. Please use `capture/3` instead.
   """
-  @spec capture(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec capture(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def capture(id, opts) when is_list(opts) do
-    Stripe.Util.log_deprecation("Please use `capture/3` instead.")
+    StripeFork.Util.log_deprecation("Please use `capture/3` instead.")
     capture(id, %{}, opts)
   end
 
-  @spec capture(Stripe.id() | t, map) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec capture(StripeFork.id() | t, map) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def capture(id, params) when is_map(params) do
     capture(id, params, [])
   end
 
-  @spec capture(Stripe.id() | t) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec capture(StripeFork.id() | t) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def capture(id) do
-    Stripe.Util.log_deprecation("Please use `capture/3` instead.")
+    StripeFork.Util.log_deprecation("Please use `capture/3` instead.")
     capture(id, %{}, [])
   end
 
@@ -282,16 +282,16 @@ defmodule Stripe.Charge do
 
   See the [Stripe docs](https://stripe.com/docs/api#list_charges).
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => Stripe.date_query(),
-               optional(:customer) => Stripe.Customer.t() | Stripe.id(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:customer) => StripeFork.Customer.t() | StripeFork.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
                optional(:source) => %{
                  optional(:object) => String.t()
                },
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:starting_after) => t | StripeFork.id(),
                optional(:transfer_group) => String.t()
              }
   def list(params \\ %{}, opts \\ []) do

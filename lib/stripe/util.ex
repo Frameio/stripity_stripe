@@ -1,4 +1,4 @@
-defmodule Stripe.Util do
+defmodule StripeFork.Util do
   @moduledoc false
 
   @doc """
@@ -19,7 +19,7 @@ defmodule Stripe.Util do
   ...>     }
   ...>   }
   ...> }
-  iex> Stripe.Util.map_keys_to_atoms(map)
+  iex> StripeFork.Util.map_keys_to_atoms(map)
   %{
     a: %{
       "b" => %{
@@ -57,7 +57,7 @@ defmodule Stripe.Util do
       |> String.split("_")
       |> Enum.map_join("", &String.capitalize/1)
 
-    Module.concat("Stripe", module_name)
+    Module.concat("StripeFork", module_name)
   end
 
   @spec module_to_string(module) :: String.t()

@@ -1,4 +1,4 @@
-defmodule Stripe.Entity do
+defmodule StripeFork.Entity do
   @moduledoc """
   A behaviour implemented by modules which represent Stripe objects.
 
@@ -29,9 +29,9 @@ defmodule Stripe.Entity do
   @doc false
   defmacro __using__(_opts) do
     quote do
-      require Stripe.Entity
-      import Stripe.Entity, only: [from_json: 2]
-      @behaviour Stripe.Entity
+      require StripeFork.Entity
+      import StripeFork.Entity, only: [from_json: 2]
+      @behaviour StripeFork.Entity
       def __from_json__(data), do: data
       defoverridable __from_json__: 1
     end
@@ -88,7 +88,7 @@ defmodule Stripe.Entity do
   defmacro from_json(param, do: block) do
     quote do
       def __from_json__(unquote(param)) do
-        import Stripe.Entity, except: [from_json: 2]
+        import StripeFork.Entity, except: [from_json: 2]
         unquote(block)
       end
     end

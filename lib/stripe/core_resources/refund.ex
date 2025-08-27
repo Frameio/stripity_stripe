@@ -1,4 +1,4 @@
-defmodule Stripe.Refund do
+defmodule StripeFork.Refund do
   @moduledoc """
   Work with [Stripe `refund` objects](https://stripe.com/docs/api#refund_object).
 
@@ -9,21 +9,21 @@ defmodule Stripe.Refund do
   - [List all refunds](https://stripe.com/docs/api#list_refunds)
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: non_neg_integer,
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
-          charge: Stripe.id() | Stripe.Charge.t() | nil,
-          created: Stripe.timestamp(),
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t() | nil,
+          charge: StripeFork.id() | StripeFork.Charge.t() | nil,
+          created: StripeFork.timestamp(),
           currency: String.t(),
-          failure_balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
+          failure_balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t() | nil,
           failure_reason: String.t() | nil,
-          metadata: Stripe.Types.metadata(),
-          payment: Stripe.id() | Stripe.Charge.t() | nil,
+          metadata: StripeFork.Types.metadata(),
+          payment: StripeFork.id() | StripeFork.Charge.t() | nil,
           reason: String.t() | nil,
           receipt_number: String.t() | nil,
           status: String.t() | nil
@@ -66,11 +66,11 @@ defmodule Stripe.Refund do
 
   See the [Stripe docs](https://stripe.com/docs/api#create_refund).
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               :charge => Stripe.Charge.t() | Stripe.id(),
+               :charge => StripeFork.Charge.t() | StripeFork.id(),
                optional(:amount) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:reason) => String.t(),
                optional(:refund_application_fee) => boolean,
                optional(:reverse_transfer) => boolean
@@ -91,7 +91,7 @@ defmodule Stripe.Refund do
 
   See the [Stripe docs](https://stripe.com/docs/api#retrieve_refund).
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -109,9 +109,9 @@ defmodule Stripe.Refund do
 
   See the [Stripe docs](https://stripe.com/docs/api#update_refund).
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:metadata) => Stripe.Types.metadata()
+               optional(:metadata) => StripeFork.Types.metadata()
              } | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
@@ -131,12 +131,12 @@ defmodule Stripe.Refund do
 
   See the [Stripe docs](https://stripe.com/docs/api#list_refunds).
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:charget) => Stripe.id() | Stripe.Charge.t(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:charget) => StripeFork.id() | StripeFork.Charge.t(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

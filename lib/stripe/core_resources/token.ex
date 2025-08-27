@@ -1,4 +1,4 @@
-defmodule Stripe.Token do
+defmodule StripeFork.Token do
   @moduledoc """
   Work with Stripe token objects.
 
@@ -12,11 +12,11 @@ defmodule Stripe.Token do
 
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type token_bank_account :: %{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           account_holder_name: String.t() | nil,
           account_holder_type: String.t() | nil,
@@ -30,7 +30,7 @@ defmodule Stripe.Token do
         }
 
   @type token_card :: %{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           address_city: String.t() | nil,
           address_country: String.t() | nil,
@@ -50,18 +50,18 @@ defmodule Stripe.Token do
           fingerprint: String.t() | nil,
           funding: String.t(),
           last4: String.t(),
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           name: String.t() | nil,
           tokenization_method: String.t() | nil
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           bank_account: token_bank_account | nil,
           card: token_card | nil,
           client_ip: String.t() | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           livemode: boolean,
           type: String.t(),
           used: boolean
@@ -90,7 +90,7 @@ defmodule Stripe.Token do
   In most cases, you should create tokens client-side using Checkout, Elements,
   or Stripe's mobile libraries, instead of using the API.
   """
-  @spec create(map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(map, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def create(params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -102,7 +102,7 @@ defmodule Stripe.Token do
   @doc """
   Retrieve a token.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")

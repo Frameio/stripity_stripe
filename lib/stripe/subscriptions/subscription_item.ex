@@ -1,22 +1,22 @@
-defmodule Stripe.SubscriptionItem do
+defmodule StripeFork.SubscriptionItem do
   @moduledoc """
   Work with Stripe subscription item objects.
 
   Stripe API reference: https://stripe.com/docs/api#subscription_items
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           deleted: boolean | nil,
-          metadata: Stripe.Types.metadata(),
-          plan: Stripe.Plan.t(),
+          metadata: StripeFork.Types.metadata(),
+          plan: StripeFork.Plan.t(),
           quantity: non_neg_integer,
-          subscription: Stripe.id() | Stripe.Subscription.t() | nil
+          subscription: StripeFork.id() | StripeFork.Subscription.t() | nil
         }
 
   defstruct [
@@ -35,13 +35,13 @@ defmodule Stripe.SubscriptionItem do
   @doc """
   Create a subscription item.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               :plan => Stripe.id() | Stripe.Plan.t(),
-               :subscription => Stripe.id() | Stripe.Subscription.t(),
-               optional(:metadata) => Stripe.Types.metadata(),
+               :plan => StripeFork.id() | StripeFork.Plan.t(),
+               :subscription => StripeFork.id() | StripeFork.Subscription.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:prorate) => boolean,
-               optional(:proration_date) => Stripe.timestamp(),
+               optional(:proration_date) => StripeFork.timestamp(),
                optional(:quantity) => float
              }
   def create(%{plan: _, subscription: _} = params, opts \\ []) do
@@ -56,7 +56,7 @@ defmodule Stripe.SubscriptionItem do
   @doc """
   Retrieve a subscription.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -69,12 +69,12 @@ defmodule Stripe.SubscriptionItem do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:plan) => Stripe.id() | Stripe.Plan.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:plan) => StripeFork.id() | StripeFork.Plan.t(),
                optional(:prorate) => boolean,
-               optional(:proration_date) => Stripe.timestamp(),
+               optional(:proration_date) => StripeFork.timestamp(),
                optional(:quantity) => float
              }
   def update(id, params, opts \\ []) do
@@ -91,11 +91,11 @@ defmodule Stripe.SubscriptionItem do
 
   Takes the `id` and an optional map of `params`.
   """
-  @spec delete(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:clear_usage) => boolean,
                optional(:prorate) => boolean,
-               optional(:proration_date) => Stripe.timestamp()
+               optional(:proration_date) => StripeFork.timestamp()
              }
   def delete(id, params \\ %{}, opts \\ []) do
     new_request(opts)
@@ -108,11 +108,11 @@ defmodule Stripe.SubscriptionItem do
   @doc """
   List all subscriptions.
   """
-  @spec list(Stripe.id(), params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(StripeFork.id(), params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              }
   def list(id, params \\ %{}, opts \\ []) do
     new_request(opts)

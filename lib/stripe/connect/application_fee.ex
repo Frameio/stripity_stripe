@@ -1,28 +1,28 @@
-defmodule Stripe.ApplicationFee do
+defmodule StripeFork.ApplicationFee do
   @moduledoc """
   Work with Stripe Connect application fees.
 
   Stripe API reference: https://stripe.com/docs/api#application_fees
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
-          account: Stripe.id() | Stripe.Account.t(),
+          account: StripeFork.id() | StripeFork.Account.t(),
           amount: integer,
           amount_refunded: integer,
-          application: Stripe.id(),
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t(),
-          charge: Stripe.id() | Stripe.Charge.t(),
-          created: Stripe.timestamp(),
+          application: StripeFork.id(),
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t(),
+          charge: StripeFork.id() | StripeFork.Charge.t(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           livemode: boolean,
-          originating_transaction: Stripe.id() | Stripe.Charge.t(),
+          originating_transaction: StripeFork.id() | StripeFork.Charge.t(),
           refunded: boolean,
-          refunds: Stripe.List.t(Stripe.FeeRefund.t())
+          refunds: StripeFork.List.t(StripeFork.FeeRefund.t())
         }
 
   defstruct [
@@ -47,7 +47,7 @@ defmodule Stripe.ApplicationFee do
   @doc """
   Retrieves the details of the application fees
   """
-  @spec retrieve(Stripe.id()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id) do
     new_request()
     |> put_endpoint(@endpoint <> "/#{get_id!(id)}")
@@ -58,13 +58,13 @@ defmodule Stripe.ApplicationFee do
   @doc """
   List all application fees
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:charge) => Stripe.id(),
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:charge) => StripeFork.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

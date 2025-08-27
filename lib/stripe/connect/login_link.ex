@@ -1,14 +1,14 @@
-defmodule Stripe.LoginLink do
+defmodule StripeFork.LoginLink do
   @moduledoc """
 
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
           object: String.t(),
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           url: String.t()
         }
 
@@ -18,8 +18,8 @@ defmodule Stripe.LoginLink do
     :url
   ]
 
-  @spec create(Stripe.id() | Stripe.Account.t(), map, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(StripeFork.id() | StripeFork.Account.t(), map, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def create(id, params, opts \\ []) do
     new_request(opts)
     |> put_endpoint("accounts/#{get_id!(id)}/login_links")

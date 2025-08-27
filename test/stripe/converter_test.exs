@@ -1,15 +1,15 @@
-defmodule Stripe.ConverterTest do
+defmodule StripeFork.ConverterTest do
   use ExUnit.Case
 
-  alias Stripe.Converter
+  alias StripeFork.Converter
 
   test "converts a 'customer.updated' event response properly" do
-    expected_result = %Stripe.Event{
+    expected_result = %StripeFork.Event{
       account: "acct_0000000000000000",
       api_version: "2016-07-06",
       created: 1_483_537_031,
       data: %{
-        object: %Stripe.Customer{
+        object: %StripeFork.Customer{
           id: "cus_9ryX7lUQ4Dcpf7",
           object: "customer",
           account_balance: 0,
@@ -21,14 +21,14 @@ defmodule Stripe.ConverterTest do
           email: "test2@mail.com",
           livemode: false,
           metadata: %{},
-          sources: %Stripe.List{
+          sources: %StripeFork.List{
             object: "list",
             data: [],
             has_more: false,
             total_count: 0,
             url: "/v1/customers/cus_9ryX7lUQ4Dcpf7/sources"
           },
-          subscriptions: %Stripe.List{
+          subscriptions: %StripeFork.List{
             object: "list",
             data: [],
             has_more: false,
@@ -58,10 +58,10 @@ defmodule Stripe.ConverterTest do
   end
 
   test "converts a list response properly" do
-    expected_result = %Stripe.List{
+    expected_result = %StripeFork.List{
       object: "list",
       data: [
-        %Stripe.Card{
+        %StripeFork.Card{
           id: "card_19YDiuBKl1F6IRFflldIp6Dc",
           object: "card",
           address_city: nil,
@@ -85,7 +85,7 @@ defmodule Stripe.ConverterTest do
           name: nil,
           tokenization_method: nil
         },
-        %Stripe.Card{
+        %StripeFork.Card{
           id: "card_abcdiuBKl1F6IRFflldIp6Dc",
           object: "card",
           address_city: nil,
@@ -122,7 +122,7 @@ defmodule Stripe.ConverterTest do
   end
 
   test "converts a customer response with a list of sources properly" do
-    expected_result = %Stripe.Customer{
+    expected_result = %StripeFork.Customer{
       id: "cus_9ryX7lUQ4Dcpf7",
       object: "customer",
       account_balance: 0,
@@ -136,14 +136,14 @@ defmodule Stripe.ConverterTest do
       livemode: false,
       metadata: %{},
       shipping: nil,
-      sources: %Stripe.List{
+      sources: %StripeFork.List{
         object: "list",
         data: [],
         has_more: false,
         total_count: 0,
         url: "/v1/customers/cus_9ryX7lUQ4Dcpf7/sources"
       },
-      subscriptions: %Stripe.List{
+      subscriptions: %StripeFork.List{
         object: "list",
         data: [],
         has_more: false,
@@ -159,8 +159,8 @@ defmodule Stripe.ConverterTest do
   end
 
   test "converts a discount response properly" do
-    expected_result = %Stripe.Discount{
-      coupon: %Stripe.Coupon{
+    expected_result = %StripeFork.Discount{
+      coupon: %StripeFork.Coupon{
         amount_off: nil,
         created: 1_532_358_691,
         currency: nil,
@@ -190,10 +190,10 @@ defmodule Stripe.ConverterTest do
   end
 
   test "converts a recipient response properly" do
-    expected_result = %Stripe.Recipient{
+    expected_result = %StripeFork.Recipient{
       id: "rp_19p5Zf2eZvKYlo2CipXKLoSU",
       object: "recipient",
-      active_account: %Stripe.BankAccount{
+      active_account: %StripeFork.BankAccount{
         id: "ba_19p5Ze2eZvKYlo2C1fs6Ar4u",
         object: "bank_account",
         account_holder_name: nil,
@@ -208,7 +208,7 @@ defmodule Stripe.ConverterTest do
         routing_number: "110000000",
         status: "new"
       },
-      cards: %Stripe.List{
+      cards: %StripeFork.List{
         object: "list",
         data: [],
         has_more: false,

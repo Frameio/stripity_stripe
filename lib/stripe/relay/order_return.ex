@@ -1,23 +1,23 @@
-defmodule Stripe.OrderReturn do
+defmodule StripeFork.OrderReturn do
   @moduledoc """
   Work with Stripe order returns.
 
   Stripe API reference: https://stripe.com/docs/api#order_return_object
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: pos_integer,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
-          items: Stripe.List.t(Stripe.OrderItem.t()),
+          items: StripeFork.List.t(StripeFork.OrderItem.t()),
           livemode: boolean,
-          order: Stripe.id() | Stripe.Order.t() | nil,
-          refund: Stripe.id() | Stripe.Refund.t() | nil
+          order: StripeFork.id() | StripeFork.Order.t() | nil,
+          refund: StripeFork.id() | StripeFork.Refund.t() | nil
         }
 
   defstruct [
@@ -37,7 +37,7 @@ defmodule Stripe.OrderReturn do
   @doc """
   Retrieve a return.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -48,14 +48,14 @@ defmodule Stripe.OrderReturn do
   @doc """
   List all returns.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:created) => Stripe.date_query(),
-              optional(:ending_before) => t | Stripe.id(),
-              optional(:ids) => Stripe.List.t(Stripe.id()),
+              optional(:created) => StripeFork.date_query(),
+              optional(:ending_before) => t | StripeFork.id(),
+              optional(:ids) => StripeFork.List.t(StripeFork.id()),
               optional(:limit) => 1..100,
-              optional(:order) => Stripe.Order.t(),
-              optional(:starting_after) => t | Stripe.id()
+              optional(:order) => StripeFork.Order.t(),
+              optional(:starting_after) => t | StripeFork.id()
             }
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

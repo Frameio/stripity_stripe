@@ -1,4 +1,4 @@
-defmodule Stripe.Plan do
+defmodule StripeFork.Plan do
   @moduledoc """
   Work with Stripe plan objects.
 
@@ -41,27 +41,27 @@ defmodule Stripe.Plan do
   ```
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           active: boolean,
           aggregate_usage: String.t() | nil,
           amount: non_neg_integer | nil,
           billing_scheme: String.t() | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           deleted: boolean | nil,
           interval: String.t(),
           interval_count: pos_integer,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           name: String.t(),
           nickname: String.t() | nil,
-          product: Stripe.id() | Stripe.Product.t(),
-          tiers: Stripe.List.t(map) | nil,
+          product: StripeFork.id() | StripeFork.Product.t(),
+          tiers: StripeFork.List.t(map) | nil,
           tiers_mode: boolean | nil,
           transform_usage: map | nil,
           trial_period_days: non_neg_integer | nil,
@@ -97,19 +97,19 @@ defmodule Stripe.Plan do
   @doc """
   Create a plan.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                :currency => String.t(),
                :interval => String.t(),
-               :product => Stripe.id() | Stripe.Product.t(),
+               :product => StripeFork.id() | StripeFork.Product.t(),
                optional(:id) => String.t(),
                optional(:amount) => non_neg_integer,
                optional(:active) => boolean,
                optional(:billing_scheme) => String.t(),
                optional(:interval_count) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:nickname) => String.t(),
-               optional(:tiers) => Stripe.List.t(map),
+               optional(:tiers) => StripeFork.List.t(map),
                optional(:tiers_mode) => String.t(),
                optional(:transform_usage) => map,
                optional(:trial_period_days) => non_neg_integer,
@@ -126,7 +126,7 @@ defmodule Stripe.Plan do
   @doc """
   Retrieve a plan.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -139,12 +139,12 @@ defmodule Stripe.Plan do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:active) => boolean,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:nickname) => String.t(),
-               optional(:product) => Stripe.id() | Stripe.Product.t(),
+               optional(:product) => StripeFork.id() | StripeFork.Product.t(),
                optional(:trial_period_days) => non_neg_integer,
              } | %{}
   def update(id, params, opts \\ []) do
@@ -158,7 +158,7 @@ defmodule Stripe.Plan do
   @doc """
   Delete a plan.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -169,14 +169,14 @@ defmodule Stripe.Plan do
   @doc """
   List all plans.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:active) => boolean,
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:product) => Stripe.Product.t() | Stripe.id(),
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:product) => StripeFork.Product.t() | StripeFork.id(),
+               optional(:starting_after) => t | StripeFork.id(),
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

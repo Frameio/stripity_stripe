@@ -1,9 +1,9 @@
-defmodule Stripe.SubscriptionTest do
-  use Stripe.StripeCase, async: true
+defmodule StripeFork.SubscriptionTest do
+  use StripeFork.StripeCase, async: true
 
   describe "retrieve/2" do
     test "retrieves a subscription" do
-      assert {:ok, %Stripe.Subscription{}} = Stripe.Subscription.retrieve("sub_123")
+      assert {:ok, %StripeFork.Subscription{}} = StripeFork.Subscription.retrieve("sub_123")
       assert_stripe_requested(:get, "/v1/subscriptions/sub_123")
     end
   end
@@ -21,8 +21,8 @@ defmodule Stripe.SubscriptionTest do
         ]
       }
 
-      assert {:ok, %Stripe.Subscription{}} =
-               Stripe.Subscription.create(params, connect_account: "acct_123")
+      assert {:ok, %StripeFork.Subscription{}} =
+               StripeFork.Subscription.create(params, connect_account: "acct_123")
 
       assert_stripe_requested(:post, "/v1/subscriptions")
     end
@@ -39,7 +39,7 @@ defmodule Stripe.SubscriptionTest do
         ]
       }
 
-      assert {:error, %Stripe.Error{}} = Stripe.Subscription.create(params)
+      assert {:error, %StripeFork.Error{}} = StripeFork.Subscription.create(params)
 
       assert_stripe_requested(:post, "/v1/subscriptions")
     end
@@ -48,35 +48,35 @@ defmodule Stripe.SubscriptionTest do
   describe "update/2" do
     test "updates a subscription" do
       params = %{metadata: %{foo: "bar"}}
-      assert {:ok, subscription} = Stripe.Subscription.update("sub_123", params)
+      assert {:ok, subscription} = StripeFork.Subscription.update("sub_123", params)
       assert_stripe_requested(:post, "/v1/subscriptions/#{subscription.id}")
     end
 
     test "fails with source param [since 2018-08-23]" do
       params = %{source: "tok_124", metadata: %{foo: "bar"}}
-      assert {:error, %Stripe.Error{}} = Stripe.Subscription.update("sub_123", params)
+      assert {:error, %StripeFork.Error{}} = StripeFork.Subscription.update("sub_123", params)
       assert_stripe_requested(:post, "/v1/subscriptions/sub_123")
     end
   end
 
   describe "delete/1" do
     test "deletes a subscription" do
-      assert {:ok, %Stripe.Subscription{} = subscription} = Stripe.Subscription.delete("sub_123")
+      assert {:ok, %StripeFork.Subscription{} = subscription} = StripeFork.Subscription.delete("sub_123")
       assert_stripe_requested(:delete, "/v1/subscriptions/#{subscription.id}")
     end
   end
 
   describe "delete/2" do
     test "deletes a subscription when second argument is a list" do
-      assert {:ok, %Stripe.Subscription{} = subscription} =
-               Stripe.Subscription.delete("sub_123", [])
+      assert {:ok, %StripeFork.Subscription{} = subscription} =
+               StripeFork.Subscription.delete("sub_123", [])
 
       assert_stripe_requested(:delete, "/v1/subscriptions/#{subscription.id}")
     end
 
     test "with `at_period_end` is deprecated [since 2018-08-23]" do
-      assert {:ok, %Stripe.Subscription{} = subscription} =
-               Stripe.Subscription.delete("sub_123", %{at_period_end: true})
+      assert {:ok, %StripeFork.Subscription{} = subscription} =
+               StripeFork.Subscription.delete("sub_123", %{at_period_end: true})
 
       assert subscription.cancel_at_period_end
 
@@ -87,8 +87,8 @@ defmodule Stripe.SubscriptionTest do
 
   describe "delete/3" do
     test "with `at_period_end` is deprecated [since 2018-08-23]" do
-      assert {:ok, %Stripe.Subscription{cancel_at_period_end: true}} =
-               Stripe.Subscription.delete("sub_123", %{at_period_end: true}, [])
+      assert {:ok, %StripeFork.Subscription{cancel_at_period_end: true}} =
+               StripeFork.Subscription.delete("sub_123", %{at_period_end: true}, [])
 
       # The deprecated function acts as a facade for `cancel_at_period_end: true`.
       assert_stripe_requested(:update, "/v1/subscriptions/sub_123")
@@ -97,17 +97,17 @@ defmodule Stripe.SubscriptionTest do
 
   describe "list/2" do
     test "lists all subscriptions" do
-      assert {:ok, %Stripe.List{data: subscriptions}} = Stripe.Subscription.list()
+      assert {:ok, %StripeFork.List{data: subscriptions}} = StripeFork.Subscription.list()
       assert_stripe_requested(:get, "/v1/subscriptions")
       assert is_list(subscriptions)
-      assert %Stripe.Subscription{} = hd(subscriptions)
+      assert %StripeFork.Subscription{} = hd(subscriptions)
     end
   end
 
   describe "delete_discount/2" do
     test "deletes a subscription's discount" do
-      {:ok, subscription} = Stripe.Subscription.retrieve("sub_123")
-      assert {:ok, _} = Stripe.Subscription.delete_discount("sub_123")
+      {:ok, subscription} = StripeFork.Subscription.retrieve("sub_123")
+      assert {:ok, _} = StripeFork.Subscription.delete_discount("sub_123")
       assert_stripe_requested(:delete, "/v1/subscriptions/#{subscription.id}/discount")
     end
   end

@@ -1,4 +1,4 @@
-defmodule Stripe.Types do
+defmodule StripeFork.Types do
   @moduledoc """
   A module that contains shared types matching Stripe schemas.
   """
@@ -31,7 +31,7 @@ defmodule Stripe.Types do
         }
 
   @type shipping :: %{
-          address: Stripe.Types.address(),
+          address: StripeFork.Types.address(),
           carrier: String.t() | nil,
           name: String.t(),
           phone: String.t() | nil,

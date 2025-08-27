@@ -1,30 +1,30 @@
-defmodule Stripe.Payout do
+defmodule StripeFork.Payout do
   @moduledoc """
   Work with Stripe payouts.
 
   Stripe API reference: https://stripe.com/docs/api#payouts
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
-          arrival_date: Stripe.timestamp(),
+          arrival_date: StripeFork.timestamp(),
           automatic: boolean,
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
-          created: Stripe.timestamp(),
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t() | nil,
+          created: StripeFork.timestamp(),
           currency: String.t(),
           deleted: boolean | nil,
           description: String.t() | nil,
-          destination: Stripe.id() | Stripe.Card.t() | Stripe.BankAccount.t() | String.t() | nil,
-          failure_balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t() | nil,
+          destination: StripeFork.id() | StripeFork.Card.t() | StripeFork.BankAccount.t() | String.t() | nil,
+          failure_balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t() | nil,
           failure_code: String.t() | nil,
           failure_message: String.t() | nil,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           method: String.t(),
           source_type: String.t(),
           statement_descriptor: String.t() | nil,
@@ -67,13 +67,13 @@ defmodule Stripe.Payout do
 
   See the [Stripe docs](https://stripe.com/docs/api#create_payout).
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                :amount => pos_integer,
                :currency => String.t(),
                optional(:description) => String.t(),
-               optional(:destination) => Stripe.id() | Stripe.Card.t() | Stripe.BankAccount.t() | String.t(),
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:destination) => StripeFork.id() | StripeFork.Card.t() | StripeFork.BankAccount.t() | String.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:method) => String.t(),
                optional(:source_type) => String.t(),
                optional(:statement_descriptor) => String.t()
@@ -91,7 +91,7 @@ defmodule Stripe.Payout do
 
   See the [Stripe docs](https://stripe.com/docs/api#retrieve_payout).
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -111,9 +111,9 @@ defmodule Stripe.Payout do
 
   See the [Stripe docs](https://stripe.com/docs/api#update_payout).
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:metadata) => Stripe.Types.metadata()
+               optional(:metadata) => StripeFork.Types.metadata()
              } | %{}
   def update(id, params, opts \\ []) do
     new_request(opts)
@@ -131,14 +131,14 @@ defmodule Stripe.Payout do
 
   See the [Stripe docs](https://stripe.com/docs/api#list_payouts).
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:arrival_date) => Stripe.date_query(),
-               optional(:created) => Stripe.date_query(),
+               optional(:arrival_date) => StripeFork.date_query(),
+               optional(:created) => StripeFork.date_query(),
                optional(:destination) => String.t(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:starting_after) => t | StripeFork.id(),
                optional(:status) => String.t()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
@@ -156,7 +156,7 @@ defmodule Stripe.Payout do
 
   See the [Stripe docs](https://stripe.com/docs/api#cancel_payout).
   """
-  @spec cancel(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec cancel(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def cancel(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}" <> "/cancel")

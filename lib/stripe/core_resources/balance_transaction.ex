@@ -1,4 +1,4 @@
-defmodule Stripe.BalanceTransaction do
+defmodule StripeFork.BalanceTransaction do
   @moduledoc """
   Work with [Stripe `balance_transaction` objects]  (https://stripe.com/docs/api#balance_transaction_object).
 
@@ -7,22 +7,22 @@ defmodule Stripe.BalanceTransaction do
   - [List all balance history](https://stripe.com/docs/api#balance_history)
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
-          available_on: Stripe.timestamp(),
-          created: Stripe.timestamp(),
+          available_on: StripeFork.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           description: String.t() | nil,
           exchange_rate: integer | nil,
           fee: integer,
-          fee_details: list(Stripe.Types.fee()) | [],
+          fee_details: list(StripeFork.Types.fee()) | [],
           net: integer,
-          source: Stripe.id() | Stripe.Source.t() | nil,
+          source: StripeFork.id() | StripeFork.Source.t() | nil,
           status: String.t(),
           type: String.t()
         }
@@ -53,7 +53,7 @@ defmodule Stripe.BalanceTransaction do
 
   See the [Stripe docs](https://stripe.com/docs/api#balance_transaction_retrieve).
   """
-  @spec retrieve(Stripe.id(), Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id(), StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{id}")
@@ -67,19 +67,19 @@ defmodule Stripe.BalanceTransaction do
   Examples of such transactions are charges, transfers, and so forth.
   The transactions are returned in sorted order, with the most recent transactions appearing first.
 
-  See `t:Stripe.BalanceTransaction.All.t/0` or the
+  See `t:StripeFork.BalanceTransaction.All.t/0` or the
   [Stripe docs](https://stripe.com/docs/api#balance_history) for parameter structure.
   """
-  @spec all(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec all(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:available_on) => String.t() | Stripe.date_query(),
-               optional(:created) => String.t() | Stripe.date_query(),
+               optional(:available_on) => String.t() | StripeFork.date_query(),
+               optional(:created) => String.t() | StripeFork.date_query(),
                optional(:currency) => String.t(),
-               optional(:ending_before) => Stripe.id() | Stripe.BalanceTransaction.t(),
+               optional(:ending_before) => StripeFork.id() | StripeFork.BalanceTransaction.t(),
                optional(:limit) => 1..100,
-               optional(:payout) => Stripe.id() | Stripe.Payout.t(),
-               optional(:source) => Stripe.id() | Stripe.Source.t(),
-               optional(:starting_after) => Stripe.id() | Stripe.BalanceTransaction.t(),
+               optional(:payout) => StripeFork.id() | StripeFork.Payout.t(),
+               optional(:source) => StripeFork.id() | StripeFork.Source.t(),
+               optional(:starting_after) => StripeFork.id() | StripeFork.BalanceTransaction.t(),
                optional(:type) => String.t()
              }
   def all(params \\ %{}, opts \\ []) do

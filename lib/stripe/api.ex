@@ -1,11 +1,11 @@
-defmodule Stripe.API do
+defmodule StripeFork.API do
   @moduledoc """
   Low-level utilities for interacting with the Stripe API.
 
   Usually the utilities in `Stripe.Request` are a better way to write custom interactions with
   the API.
   """
-  alias Stripe.Error
+  alias StripeFork.Error
 
   @callback oauth_request(method, String.t(), map) :: {:ok, map}
 
@@ -17,7 +17,7 @@ defmodule Stripe.API do
 
   @pool_name __MODULE__
   @api_version "2018-08-23"
-  @http_module Application.compile_env(:stripity_stripe, :http_module) || :hackney
+  @http_module Application.compile_env(:stripity_stripe_fork, :http_module) || :hackney
 
   def supervisor_children do
     if use_pool?() do
@@ -29,22 +29,22 @@ defmodule Stripe.API do
 
   @spec get_pool_options() :: Keyword.t()
   defp get_pool_options() do
-    Application.get_env(:stripity_stripe, :pool_options)
+    Application.get_env(:stripity_stripe_fork, :pool_options)
   end
 
   @spec get_base_url() :: String.t()
   defp get_base_url() do
-    Application.get_env(:stripity_stripe, :api_base_url)
+    Application.get_env(:stripity_stripe_fork, :api_base_url)
   end
 
   @spec get_upload_url() :: String.t()
   defp get_upload_url() do
-    Application.get_env(:stripity_stripe, :api_upload_url)
+    Application.get_env(:stripity_stripe_fork, :api_upload_url)
   end
 
   @spec get_default_api_key() :: String.t()
   defp get_default_api_key() do
-    case Application.get_env(:stripity_stripe, :api_key) do
+    case Application.get_env(:stripity_stripe_fork, :api_key) do
       nil ->
         # use an empty string and let Stripe produce an error
         ""
@@ -56,7 +56,7 @@ defmodule Stripe.API do
 
   @spec use_pool?() :: boolean
   defp use_pool?() do
-    Application.get_env(:stripity_stripe, :use_connection_pool)
+    Application.get_env(:stripity_stripe_fork, :use_connection_pool)
   end
 
   @spec add_common_headers(headers) :: headers
@@ -134,16 +134,16 @@ defmodule Stripe.API do
 
   """
   @spec request(body, method, String.t(), headers, list) ::
-          {:ok, map} | {:error, Stripe.Error.t()}
+          {:ok, map} | {:error, StripeFork.Error.t()}
   def request(body, :get, endpoint, headers, opts) do
     {expansion, opts} = Keyword.pop(opts, :expand)
     base_url = get_base_url()
 
     req_url =
       body
-      |> Stripe.Util.map_keys_to_atoms()
+      |> StripeFork.Util.map_keys_to_atoms()
       |> add_object_expansion(expansion)
-      |> Stripe.URI.encode_query()
+      |> StripeFork.URI.encode_query()
       |> prepend_url("#{base_url}#{endpoint}")
 
     perform_request(req_url, :get, "", headers, opts)
@@ -157,8 +157,8 @@ defmodule Stripe.API do
 
     req_body =
       body
-      |> Stripe.Util.map_keys_to_atoms()
-      |> Stripe.URI.encode_query()
+      |> StripeFork.Util.map_keys_to_atoms()
+      |> StripeFork.URI.encode_query()
 
     perform_request(req_url, method, req_body, headers, opts)
   end
@@ -167,7 +167,7 @@ defmodule Stripe.API do
   A low level utility function to make a direct request to the files Stripe API
   """
   @spec request_file_upload(body, method, String.t(), headers, list) ::
-          {:ok, map} | {:error, Stripe.Error.t()}
+          {:ok, map} | {:error, StripeFork.Error.t()}
   def request_file_upload(body, :post, endpoint, headers, opts) do
     base_url = get_upload_url()
     req_url = base_url <> endpoint
@@ -179,7 +179,7 @@ defmodule Stripe.API do
     parts =
       body
       |> Enum.map(fn {key, value} ->
-        {Stripe.Util.multipart_key(key), value}
+        {StripeFork.Util.multipart_key(key), value}
       end)
 
     perform_request(req_url, :post, {:multipart, parts}, req_headers, opts)
@@ -191,8 +191,8 @@ defmodule Stripe.API do
 
     req_body =
       body
-      |> Stripe.Util.map_keys_to_atoms()
-      |> Stripe.URI.encode_query()
+      |> StripeFork.Util.map_keys_to_atoms()
+      |> StripeFork.URI.encode_query()
 
     perform_request(req_url, method, req_body, headers, opts)
   end
@@ -200,11 +200,11 @@ defmodule Stripe.API do
   @doc """
   A low level utility function to make an OAuth request to the Stripe API
   """
-  @spec oauth_request(method, String.t(), map) :: {:ok, map} | {:error, Stripe.Error.t()}
+  @spec oauth_request(method, String.t(), map) :: {:ok, map} | {:error, StripeFork.Error.t()}
   def oauth_request(method, endpoint, body) do
     base_url = "https://connect.stripe.com/oauth/"
     req_url = base_url <> endpoint
-    req_body = Stripe.URI.encode_query(body)
+    req_body = StripeFork.URI.encode_query(body)
 
     req_headers =
       %{}
@@ -221,7 +221,7 @@ defmodule Stripe.API do
   end
 
   @spec perform_request(String.t(), method, body, headers, list) ::
-          {:ok, map} | {:error, Stripe.Error.t()}
+          {:ok, map} | {:error, StripeFork.Error.t()}
   defp perform_request(req_url, method, body, headers, opts) do
     {connect_account_id, opts} = Keyword.pop(opts, :connect_account)
     {api_key, opts} = Keyword.pop(opts, :api_key)
@@ -242,7 +242,7 @@ defmodule Stripe.API do
     |> handle_response()
   end
 
-  @spec handle_response(http_success | http_failure) :: {:ok, map} | {:error, Stripe.Error.t()}
+  @spec handle_response(http_success | http_failure) :: {:ok, map} | {:error, StripeFork.Error.t()}
   defp handle_response({:ok, status, headers, body}) when status >= 200 and status <= 299 do
     decoded_body =
       body

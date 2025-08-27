@@ -1,4 +1,4 @@
-defmodule Stripe.Product do
+defmodule StripeFork.Product do
   @moduledoc """
   Work with Stripe product objects.
 
@@ -13,29 +13,29 @@ defmodule Stripe.Product do
   Stripe API reference: https://stripe.com/docs/api#service_products
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           active: boolean | nil,
           attributes: list | nil,
           caption: String.t() | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           deactivate_on: list,
           deleted: boolean | nil,
           description: String.t() | nil,
           images: list,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           name: String.t(),
           package_dimensions: map | nil,
           shippable: boolean | nil,
           statement_descriptor: String.t() | nil,
           type: String.t() | nil,
           unit_label: String.t() | nil,
-          updated: Stripe.timestamp(),
+          updated: StripeFork.timestamp(),
           url: String.t() | nil
   }
 
@@ -67,13 +67,13 @@ defmodule Stripe.Product do
   @doc """
   Create a product.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
           optional(:id) => String.t(),
           optional(:attributes) => list,
           :name => String.t(),
           :type => String.t(),
-          optional(:metadata) => Stripe.Types.metadata(),
+          optional(:metadata) => StripeFork.Types.metadata(),
           optional(:statement_descriptor) => String.t(),
           optional(:unit_label) => String.t()
         } | %{}
@@ -88,7 +88,7 @@ defmodule Stripe.Product do
   @doc """
   Retrieve a product.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -101,11 +101,11 @@ defmodule Stripe.Product do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
           optional(:attributes) => list,
           optional(:name) => String.t(),
-          optional(:metadata) => Stripe.Types.metadata(),
+          optional(:metadata) => StripeFork.Types.metadata(),
           optional(:statement_descriptor) => String.t()
         } | %{}
   def update(id, params, opts \\ []) do
@@ -119,7 +119,7 @@ defmodule Stripe.Product do
   @doc """
   Delete a product.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -130,14 +130,14 @@ defmodule Stripe.Product do
   @doc """
   List all products.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
           optional(:active) => boolean,
-          optional(:created) => Stripe.date_query(),
-          optional(:ending_before) => t | Stripe.id(),
+          optional(:created) => StripeFork.date_query(),
+          optional(:ending_before) => t | StripeFork.id(),
           optional(:limit) => 1..100,
           optional(:shippable) => boolean,
-          optional(:starting_after) => t | Stripe.id(),
+          optional(:starting_after) => t | StripeFork.id(),
           optional(:type) => String.t(),
           optional(:url) => String.t()
         } | %{}

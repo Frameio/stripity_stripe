@@ -1,4 +1,4 @@
-defmodule Stripe.FileUpload do
+defmodule StripeFork.FileUpload do
   @moduledoc """
   Work with Stripe file_upload objects.
 
@@ -11,13 +11,13 @@ defmodule Stripe.FileUpload do
   Stripe API reference: https://stripe.com/docs/api#file_uploads
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-    id: Stripe.id,
+    id: StripeFork.id,
     object: String.t,
-    created: Stripe.timestamp,
+    created: StripeFork.timestamp,
     filename: String.t | nil,
     purpose: String.t,
     size: integer,
@@ -43,7 +43,7 @@ defmodule Stripe.FileUpload do
 
   Takes the filepath and the purpose.
   """
-  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Stripe.Error.t}
+  @spec create(map, Keyword.t) :: {:ok, t} | {:error, StripeFork.Error.t}
   def create(%{file: _, purpose: _} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -55,7 +55,7 @@ defmodule Stripe.FileUpload do
   @doc """
   Retrieve a file_upload.
   """
-  @spec retrieve(Stripe.id | t, Stripe.options) :: {:ok, t} | {:error, Stripe.Error.t}
+  @spec retrieve(StripeFork.id | t, StripeFork.options) :: {:ok, t} | {:error, StripeFork.Error.t}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -66,12 +66,12 @@ defmodule Stripe.FileUpload do
   @doc """
   List all file uploads, going back up to 30 days.
   """
-  @spec list(params, Stripe.options) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t}
+  @spec list(params, StripeFork.options) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t}
         when params: %{
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
                optional(:purpose) => String.t(),
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              } | %{}
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

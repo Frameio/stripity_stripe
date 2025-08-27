@@ -1,12 +1,12 @@
-defmodule Stripe.Order do
+defmodule StripeFork.Order do
   @moduledoc """
   Work with Stripe orders.
 
   Stripe API reference: https://stripe.com/docs/api#orders
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type card_info :: %{
           exp_month: number,
@@ -24,21 +24,21 @@ defmodule Stripe.Order do
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: pos_integer,
           amount_returned: non_neg_integer,
-          application: Stripe.id(),
+          application: StripeFork.id(),
           application_fee: non_neg_integer,
-          charge: Stripe.id() | Stripe.Charge.t(),
+          charge: StripeFork.id() | StripeFork.Charge.t(),
           currency: String.t(),
-          customer: Stripe.id() | Stripe.Customer.t(),
+          customer: StripeFork.id() | StripeFork.Customer.t(),
           email: String.t(),
           external_coupon_code: String.t(),
-          items: Stripe.List.t(Stripe.OrderItem.t()),
+          items: StripeFork.List.t(StripeFork.OrderItem.t()),
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
-          returns: Stripe.List.t(Stripe.OrderReturn.t()),
+          metadata: StripeFork.Types.metadata(),
+          returns: StripeFork.List.t(StripeFork.OrderReturn.t()),
           selected_shipping_method: String.t(),
           shipping: %{
             address: %{
@@ -70,12 +70,12 @@ defmodule Stripe.Order do
           ],
           status: String.t(),
           status_transitions: %{
-            canceled: Stripe.timestamp(),
-            fulfiled: Stripe.timestamp(),
-            paid: Stripe.timestamp(),
-            returned: Stripe.timestamp()
+            canceled: StripeFork.timestamp(),
+            fulfiled: StripeFork.timestamp(),
+            paid: StripeFork.timestamp(),
+            returned: StripeFork.timestamp()
           },
-          updated: Stripe.timestamp(),
+          updated: StripeFork.timestamp(),
           upstream_id: String.t()
         }
 
@@ -109,14 +109,14 @@ defmodule Stripe.Order do
   @doc """
   Create a order.
   """
-  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
               :currency => String.t(),
-              optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
-              optional(:customer) => Stripe.id() | Stripe.Customer.t(),
+              optional(:coupon) => StripeFork.id() | StripeFork.Coupon.t(),
+              optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
               optional(:email) => String.t(),
-              optional(:items) => Stripe.List.t(Stripe.OrderItem.t()),
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:items) => StripeFork.List.t(StripeFork.OrderItem.t()),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:shipping) => map
             }
   def create(%{currency: _} = params, opts \\ []) do
@@ -130,7 +130,7 @@ defmodule Stripe.Order do
   @doc """
   Retrieve a order.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{get_id!(id)}")
@@ -143,10 +143,10 @@ defmodule Stripe.Order do
 
   Takes the `id` and a map of changes
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:coupon) => StripeFork.id() | StripeFork.Coupon.t(),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:selected_shipping_method) => String.t(),
               optional(:shipping) => map,
               optional(:status) => String.t()
@@ -162,13 +162,13 @@ defmodule Stripe.Order do
   @doc """
   Pay an order.
   """
-  @spec pay(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec pay(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
               optional(:application_fee) => non_neg_integer,
-              optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-              optional(:source) => Stripe.id() | Stripe.Card.t() | Stripe.Customer.t() | card_info,
+              optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
+              optional(:source) => StripeFork.id() | StripeFork.Card.t() | StripeFork.Customer.t() | card_info,
               optional(:email) => String.t(),
-              optional(:metadata) => Stripe.Types.metadata()
+              optional(:metadata) => StripeFork.Types.metadata()
             }
   def pay(id, params \\ %{}, opts \\ []) do
     new_request(opts)
@@ -181,9 +181,9 @@ defmodule Stripe.Order do
   @doc """
   return an order.
   """
-  @spec return(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec return(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:items) => Stripe.List.t(Stripe.OrderItem.t())
+              optional(:items) => StripeFork.List.t(StripeFork.OrderItem.t())
             }
   def return(id, params \\ %{}, opts \\ []) do
     new_request(opts)
@@ -196,16 +196,16 @@ defmodule Stripe.Order do
   @doc """
   List all orders.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:customer) => Stripe.id() | Stripe.Customer.t(),
-              optional(:ending_before) => t | Stripe.id(),
-              optional(:ids) => Stripe.List.t(Stripe.id()),
+              optional(:customer) => StripeFork.id() | StripeFork.Customer.t(),
+              optional(:ending_before) => t | StripeFork.id(),
+              optional(:ids) => StripeFork.List.t(StripeFork.id()),
               optional(:limit) => 1..100,
-              optional(:starting_after) => t | Stripe.id(),
+              optional(:starting_after) => t | StripeFork.id(),
               optional(:status) => String.t(),
               optional(:status_transitions) => map,
-              optional(:upstream_ids) => Stripe.List.t(Stripe.id())
+              optional(:upstream_ids) => StripeFork.List.t(StripeFork.id())
             }
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

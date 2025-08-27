@@ -1,4 +1,4 @@
-defmodule Stripe.Coupon do
+defmodule StripeFork.Coupon do
   @moduledoc """
   Work with Stripe coupon objects.
 
@@ -13,24 +13,24 @@ defmodule Stripe.Coupon do
   Stripe API reference: https://stripe.com/docs/api#coupons
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount_off: pos_integer | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t() | nil,
           deleted: boolean | nil,
           duration: String.t(),
           duration_in_months: pos_integer | nil,
           livemode: boolean,
           max_redemptions: pos_integer | nil,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           name: String.t() | nil,
           percent_off: number | nil,
-          redeem_by: Stripe.timestamp() | nil,
+          redeem_by: StripeFork.timestamp() | nil,
           times_redeemed: non_neg_integer,
           valid: boolean
         }
@@ -59,7 +59,7 @@ defmodule Stripe.Coupon do
   @doc """
   Create a coupon.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:id) => String.t(),
                :duration => String.t(),
@@ -67,10 +67,10 @@ defmodule Stripe.Coupon do
                optional(:duration_in_months) => pos_integer,
                optional(:currency) => String.t(),
                optional(:max_redemptions) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:name) => String.t(),
                optional(:percent_off) => number,
-               optional(:redeem_by) => Stripe.timestamp()
+               optional(:redeem_by) => StripeFork.timestamp()
              }
   def create(params, opts \\ []) do
     new_request(opts)
@@ -83,7 +83,7 @@ defmodule Stripe.Coupon do
   @doc """
   Retrieve a coupon.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -97,10 +97,10 @@ defmodule Stripe.Coupon do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params:
                %{
-                 optional(:metadata) => Stripe.Types.metadata(),
+                 optional(:metadata) => StripeFork.Types.metadata(),
                  optional(:name) => String.t()
                }
                | %{}
@@ -115,7 +115,7 @@ defmodule Stripe.Coupon do
   @doc """
   Delete a coupon.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -126,12 +126,12 @@ defmodule Stripe.Coupon do
   @doc """
   List all coupons.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => Stripe.date_query(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              }
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

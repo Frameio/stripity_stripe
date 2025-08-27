@@ -1,21 +1,21 @@
-defmodule Stripe.Sku do
+defmodule StripeFork.Sku do
   @moduledoc """
   Work with Stripe Sku objects.
 
   Stripe API reference: https://stripe.com/docs/api#sku_object
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           active: boolean,
           attributes: %{
             optional(String.t()) => String.t()
           },
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           image: String.t(),
           inventory: %{
@@ -24,7 +24,7 @@ defmodule Stripe.Sku do
             value: String.t() | nil
           },
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           package_dimensions:
             %{
               height: float,
@@ -34,8 +34,8 @@ defmodule Stripe.Sku do
             }
             | nil,
           price: non_neg_integer,
-          product: Stripe.id() | Stripe.Relay.Product.t(),
-          updated: Stripe.timestamp()
+          product: StripeFork.id() | StripeFork.Relay.Product.t(),
+          updated: StripeFork.timestamp()
         }
 
   defstruct [
@@ -60,16 +60,16 @@ defmodule Stripe.Sku do
   @doc """
   Create a order.
   """
-  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
               :currency => String.t(),
               :inventory => map,
               :price => non_neg_integer,
-              :product => Stripe.id() | Stripe.Relay.Product.t(),
+              :product => StripeFork.id() | StripeFork.Relay.Product.t(),
               optional(:active) => boolean,
               optional(:attributes) => map,
               optional(:image) => String.t(),
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:package_dimensions) => map
             }
   def create(%{currency: _, inventory: _, price: _, product: _} = params, opts \\ []) do
@@ -83,7 +83,7 @@ defmodule Stripe.Sku do
   @doc """
   Retrieve a order.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{get_id!(id)}")
@@ -96,17 +96,17 @@ defmodule Stripe.Sku do
 
   Takes the `id` and a map of changes
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
               optional(:active) => boolean,
               optional(:attributes) => map,
               optional(:currency) => String.t(),
               optional(:image) => String.t(),
               optional(:inventory) => map,
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:package_dimensions) => map,
               optional(:price) => non_neg_integer,
-              optional(:product) => Stripe.id() | Stripe.Relay.Product.t()
+              optional(:product) => StripeFork.id() | StripeFork.Relay.Product.t()
             }
   def update(id, params, opts \\ []) do
     new_request(opts)
@@ -119,7 +119,7 @@ defmodule Stripe.Sku do
   @doc """
   delete an order.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{get_id!(id)}")
@@ -130,16 +130,16 @@ defmodule Stripe.Sku do
   @doc """
   List all skus.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
               optional(:active) => boolean,
               optional(:attributes) => map,
-              optional(:ending_before) => t | Stripe.id(),
-              optional(:ids) => Stripe.List.t(Stripe.id()),
+              optional(:ending_before) => t | StripeFork.id(),
+              optional(:ids) => StripeFork.List.t(StripeFork.id()),
               optional(:in_stock) => boolean,
               optional(:limit) => 1..100,
-              optional(:product) => Stripe.id() | Stripe.Relay.Product.t(),
-              optional(:starting_after) => t | Stripe.id()
+              optional(:product) => StripeFork.id() | StripeFork.Relay.Product.t(),
+              optional(:starting_after) => t | StripeFork.id()
             }
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)

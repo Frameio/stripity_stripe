@@ -1,7 +1,7 @@
-defmodule Stripe.RequestTest do
+defmodule StripeFork.RequestTest do
   use ExUnit.Case
 
-  alias Stripe.Request
+  alias StripeFork.Request
 
   describe "object expansion" do
     test "prefix_expansions/2 should apply the given prefix to the expansion values" do

@@ -1,6 +1,6 @@
-defmodule Stripe.StripeMockTest do
+defmodule StripeFork.StripeMockTest do
   use ExUnit.Case, async: false
-  alias Stripe.StripeMock
+  alias StripeFork.StripeMock
   require StripeMock
 
   # needed because the external process takes a while to spin up

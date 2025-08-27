@@ -1,15 +1,15 @@
-defmodule Stripe.ApplicationFeeTest do
-  use Stripe.StripeCase, async: true
+defmodule StripeFork.ApplicationFeeTest do
+  use StripeFork.StripeCase, async: true
 
   test "is retrievable using plural endpoint" do
-    assert {:ok, %Stripe.ApplicationFee{}} = Stripe.ApplicationFee.retrieve("acct_123")
+    assert {:ok, %StripeFork.ApplicationFee{}} = StripeFork.ApplicationFee.retrieve("acct_123")
     assert_stripe_requested(:get, "/v1/application_fees/acct_123")
   end
 
   test "is listable" do
-    assert {:ok, %Stripe.List{data: application_feess}} = Stripe.ApplicationFee.list()
+    assert {:ok, %StripeFork.List{data: application_feess}} = StripeFork.ApplicationFee.list()
     assert_stripe_requested(:get, "/v1/application_fees")
     assert is_list(application_feess)
-    assert %Stripe.ApplicationFee{} = hd(application_feess)
+    assert %StripeFork.ApplicationFee{} = hd(application_feess)
   end
 end

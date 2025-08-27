@@ -1,9 +1,9 @@
-defmodule Stripe.TransferTest do
-  use Stripe.StripeCase, async: true
+defmodule StripeFork.TransferTest do
+  use StripeFork.StripeCase, async: true
 
   describe "retrieve/2" do
     test "retrieves a transfer" do
-      assert {:ok, %Stripe.Transfer{}} = Stripe.Transfer.retrieve("sub_123")
+      assert {:ok, %StripeFork.Transfer{}} = StripeFork.Transfer.retrieve("sub_123")
       assert_stripe_requested(:get, "/v1/transfers/sub_123")
     end
   end
@@ -15,7 +15,7 @@ defmodule Stripe.TransferTest do
         currency: "curr_123",
         destination: "dest_123"
       }
-      assert {:ok, %Stripe.Transfer{}} = Stripe.Transfer.create(params)
+      assert {:ok, %StripeFork.Transfer{}} = StripeFork.Transfer.create(params)
       assert_stripe_requested(:post, "/v1/transfers")
     end
   end
@@ -23,17 +23,17 @@ defmodule Stripe.TransferTest do
   describe "update/2" do
     test "updates a transfer" do
       params = %{metadata: %{foo: "bar"}}
-      assert {:ok, transfer} = Stripe.Transfer.update("sub_123", params)
+      assert {:ok, transfer} = StripeFork.Transfer.update("sub_123", params)
       assert_stripe_requested(:post, "/v1/transfers/#{transfer.id}")
     end
   end
 
   describe "list/2" do
     test "lists all transfers" do
-      assert {:ok, %Stripe.List{data: transfers}} = Stripe.Transfer.list()
+      assert {:ok, %StripeFork.List{data: transfers}} = StripeFork.Transfer.list()
       assert_stripe_requested(:get, "/v1/transfers")
       assert is_list(transfers)
-      assert %Stripe.Transfer{} = hd(transfers)
+      assert %StripeFork.Transfer{} = hd(transfers)
     end
   end
 end

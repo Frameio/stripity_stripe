@@ -1,22 +1,22 @@
-defmodule Stripe.FeeRefund do
+defmodule StripeFork.FeeRefund do
   @moduledoc """
   Work with Stripe Connect application fees refund.
 
   Stripe API reference: https://stripe.com/docs/api#fee_refunds
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t(),
-          created: Stripe.timestamp(),
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           fee: String.t(),
-          metadata: Stripe.Types.metadata()
+          metadata: StripeFork.Types.metadata()
         }
 
   defstruct [
@@ -35,10 +35,10 @@ defmodule Stripe.FeeRefund do
   @doc """
   Create a application fee refund
   """
-  @spec create(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:amount) => pos_integer,
-               optional(:metadata) => Stripe.Types.metadata()
+               optional(:metadata) => StripeFork.Types.metadata()
              }
   def create(id, params, opts \\ []) do
     new_request(opts)
@@ -51,7 +51,7 @@ defmodule Stripe.FeeRefund do
   @doc """
   Retrieve a application fee refund.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, fee_id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@endpoint <> "/#{id}/refunds/#{fee_id}")
@@ -64,9 +64,9 @@ defmodule Stripe.FeeRefund do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
              }
   def update(id, fee_id, params, opts \\ []) do
     new_request(opts)
@@ -79,11 +79,11 @@ defmodule Stripe.FeeRefund do
   @doc """
   List all transfers.
   """
-  @spec list(Stripe.id() | t, params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              }
   def list(id, params \\ %{}, opts \\ []) do
     new_request(opts)

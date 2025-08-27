@@ -1,4 +1,4 @@
-defmodule Stripe.Account do
+defmodule StripeFork.Account do
   @moduledoc """
   Work with Stripe Connect account objects.
 
@@ -12,8 +12,8 @@ defmodule Stripe.Account do
   Stripe API reference: https://stripe.com/docs/api#account
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type decline_charge_on :: %{
           avs_failure: boolean,
@@ -88,30 +88,30 @@ defmodule Stripe.Account do
   @type legal_entity_verification :: %{
           details: String.t() | nil,
           details_code: String.t() | nil,
-          document: Stripe.id() | Stripe.FileUpload.t() | nil,
+          document: StripeFork.id() | StripeFork.FileUpload.t() | nil,
           status: String.t()
         }
 
   @type tos_acceptance :: %{
-          date: Stripe.timestamp() | nil,
+          date: StripeFork.timestamp() | nil,
           ip: String.t() | nil,
           user_agent: String.t() | nil
         }
 
   @type verification :: %{
           disabled_reason: String.t() | nil,
-          due_by: Stripe.timestamp() | nil,
+          due_by: StripeFork.timestamp() | nil,
           fields_needed: [String.t()]
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           business_logo: String.t() | nil,
           business_name: String.t() | nil,
           business_url: String.t() | nil,
           charges_enabled: boolean,
-          created: Stripe.timestamp() | nil,
+          created: StripeFork.timestamp() | nil,
           country: String.t(),
           debit_negative_balances: boolean,
           decline_charge_on: decline_charge_on,
@@ -119,10 +119,10 @@ defmodule Stripe.Account do
           details_submitted: boolean,
           display_name: String.t() | nil,
           email: String.t() | nil,
-          external_accounts: Stripe.List.t(Stripe.BankAccount.t() | Stripe.Card.t()),
+          external_accounts: StripeFork.List.t(StripeFork.BankAccount.t() | StripeFork.Card.t()),
           legal_entity: legal_entity,
-          metadata: Stripe.Types.metadata(),
-          payout_schedule: Stripe.Types.transfer_schedule(),
+          metadata: StripeFork.Types.metadata(),
+          payout_schedule: StripeFork.Types.transfer_schedule(),
           payout_statement_descriptor: String.t() | nil,
           payouts_enabled: boolean,
           product_description: String.t() | nil,
@@ -185,8 +185,8 @@ defmodule Stripe.Account do
           optional(:email) => String.t(),
           optional(:external_account) => String.t(),
           optional(:legal_entity) => legal_entity,
-          optional(:metadata) => Stripe.Types.metadata(),
-          optional(:payout_schedule) => Stripe.Types.transfer_schedule(),
+          optional(:metadata) => StripeFork.Types.metadata(),
+          optional(:payout_schedule) => StripeFork.Types.transfer_schedule(),
           optional(:payout_statement_descriptor) => String.t(),
           optional(:product_description) => String.t(),
           optional(:statement_descriptor) => String.t(),
@@ -199,7 +199,7 @@ defmodule Stripe.Account do
   @doc """
   Create an account.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:country) => String.t(),
                optional(:email) => String.t(),
@@ -217,22 +217,22 @@ defmodule Stripe.Account do
   @doc """
   Retrieve your own account without options.
   """
-  @spec retrieve :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve, do: retrieve([])
 
   @doc """
   Retrieve your own account with options.
   """
-  @spec retrieve(list) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(list) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(opts) when is_list(opts), do: do_retrieve(@singular_endpoint, opts)
 
   @doc """
   Retrieve an account with a specified `id`.
   """
-  @spec retrieve(binary, list) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(binary, list) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []), do: do_retrieve(@plural_endpoint <> "/" <> id, opts)
 
-  @spec do_retrieve(String.t(), list) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec do_retrieve(String.t(), list) :: {:ok, t} | {:error, StripeFork.Error.t()}
   defp do_retrieve(endpoint, opts) do
     new_request(opts)
     |> put_endpoint(endpoint)
@@ -253,8 +253,8 @@ defmodule Stripe.Account do
           optional(:email) => String.t(),
           optional(:external_account) => String.t(),
           optional(:legal_entity) => legal_entity,
-          optional(:metadata) => Stripe.Types.metadata(),
-          optional(:payout_schedule) => Stripe.Types.transfer_schedule(),
+          optional(:metadata) => StripeFork.Types.metadata(),
+          optional(:payout_schedule) => StripeFork.Types.transfer_schedule(),
           optional(:payout_statement_descriptor) => String.t(),
           optional(:product_description) => String.t(),
           optional(:statement_descriptor) => String.t(),
@@ -269,7 +269,7 @@ defmodule Stripe.Account do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:business_logo) => String.t(),
                optional(:business_name) => String.t(),
@@ -281,8 +281,8 @@ defmodule Stripe.Account do
                optional(:email) => String.t(),
                optional(:external_accounts) => String.t(),
                optional(:legal_entity) => legal_entity,
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:payout_schedule) => Stripe.Types.transfer_schedule(),
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:payout_schedule) => StripeFork.Types.transfer_schedule(),
                optional(:payout_statement_descriptor) => String.t(),
                optional(:product_description) => String.t(),
                optional(:statement_descriptor) => String.t(),
@@ -302,7 +302,7 @@ defmodule Stripe.Account do
   @doc """
   Delete an account.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -315,8 +315,8 @@ defmodule Stripe.Account do
 
   Takes the `id` and `reason`.
   """
-  @spec reject(Stripe.id() | t, String.t(), Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec reject(StripeFork.id() | t, String.t(), StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def reject(id, reason, opts \\ []) do
     params = %{
       reason: reason
@@ -333,11 +333,11 @@ defmodule Stripe.Account do
   @doc """
   List all connected accounts.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id()
+               optional(:starting_after) => t | StripeFork.id()
              }
   def list(params \\ %{}, opts \\ []) do
     new_request(opts)
@@ -352,12 +352,12 @@ defmodule Stripe.Account do
   @doc """
   Create a login link.
   """
-  @spec create_login_link(Stripe.id() | t, params, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create_login_link(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:redirect_url) => String.t()
              }
   def create_login_link(id, params, opts \\ []) do
-    Stripe.LoginLink.create(id, params, opts)
+    StripeFork.LoginLink.create(id, params, opts)
   end
 end

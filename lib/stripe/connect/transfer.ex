@@ -1,29 +1,29 @@
-defmodule Stripe.Transfer do
+defmodule StripeFork.Transfer do
   @moduledoc """
   Work with Stripe transfer objects.
 
   Stripe API reference: https://stripe.com/docs/api#transfers
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           amount: integer,
           amount_reversed: integer,
-          balance_transaction: Stripe.id() | Stripe.BalanceTransaction.t(),
-          created: Stripe.timestamp(),
+          balance_transaction: StripeFork.id() | StripeFork.BalanceTransaction.t(),
+          created: StripeFork.timestamp(),
           currency: String.t(),
           description: String.t(),
-          destination: Stripe.id() | Stripe.Account.t(),
+          destination: StripeFork.id() | StripeFork.Account.t(),
           destination_payment: String.t(),
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
-          reversals: Stripe.List.t(Stripe.TransferReversal.t()),
+          metadata: StripeFork.Types.metadata(),
+          reversals: StripeFork.List.t(StripeFork.TransferReversal.t()),
           reversed: boolean,
-          source_transaction: Stripe.id() | Stripe.Charge.t(),
+          source_transaction: StripeFork.id() | StripeFork.Charge.t(),
           source_type: String.t(),
           transfer_group: String.t()
         }
@@ -53,13 +53,13 @@ defmodule Stripe.Transfer do
   @doc """
   Create a transfer.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                :amount => pos_integer,
                :currency => String.t(),
-               :destination => Stripe.id() | Stripe.Account.t(),
-               optional(:metadata) => Stripe.Types.metadata(),
-               optional(:source_transaction) => Stripe.id() | Stripe.Charge.t(),
+               :destination => StripeFork.id() | StripeFork.Account.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:source_transaction) => StripeFork.id() | StripeFork.Charge.t(),
                optional(:transfer_group) => String.t()
              }
   def create(%{amount: _, currency: _, destination: _} = params, opts \\ []) do
@@ -74,7 +74,7 @@ defmodule Stripe.Transfer do
   @doc """
   Retrieve a transfer.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -87,10 +87,10 @@ defmodule Stripe.Transfer do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:description) => String.t(),
-               optional(:metadata) => Stripe.Types.metadata()
+               optional(:metadata) => StripeFork.Types.metadata()
              }
   def update(id, params, opts \\ []) do
     new_request(opts)
@@ -104,13 +104,13 @@ defmodule Stripe.Transfer do
   @doc """
   List all transfers.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-               optional(:created) => Stripe.date_query(),
-               optional(:destination) => Stripe.id() | Stripe.Account.t(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:destination) => StripeFork.id() | StripeFork.Account.t(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:starting_after) => t | StripeFork.id(),
                optional(:transfer_group) => String.t()
              }
   def list(params \\ %{}, opts \\ []) do

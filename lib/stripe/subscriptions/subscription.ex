@@ -1,4 +1,4 @@
-defmodule Stripe.Subscription do
+defmodule StripeFork.Subscription do
   @moduledoc """
   Work with Stripe subscription objects.
 
@@ -12,37 +12,37 @@ defmodule Stripe.Subscription do
   Stripe API reference: https://stripe.com/docs/api#subscription
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           application_fee_percent: float | nil,
           automatic_tax: map,
           billing: String.t() | nil,
-          billing_cycle_anchor: Stripe.timestamp() | nil,
+          billing_cycle_anchor: StripeFork.timestamp() | nil,
           cancel_at_period_end: boolean,
-          canceled_at: Stripe.timestamp() | nil,
+          canceled_at: StripeFork.timestamp() | nil,
           cancellation_details: map,
-          created: Stripe.timestamp(),
-          current_period_end: Stripe.timestamp() | nil,
-          current_period_start: Stripe.timestamp() | nil,
-          customer: Stripe.id() | Stripe.Customer.t(),
+          created: StripeFork.timestamp(),
+          current_period_end: StripeFork.timestamp() | nil,
+          current_period_start: StripeFork.timestamp() | nil,
+          customer: StripeFork.id() | StripeFork.Customer.t(),
           days_until_due: integer | nil,
-          discount: Stripe.Discount.t() | nil,
-          ended_at: Stripe.timestamp() | nil,
-          items: Stripe.List.t(Stripe.SubscriptionItem.t()),
-          latest_invoice: Stripe.Invoice.t() | nil,
+          discount: StripeFork.Discount.t() | nil,
+          ended_at: StripeFork.timestamp() | nil,
+          items: StripeFork.List.t(StripeFork.SubscriptionItem.t()),
+          latest_invoice: StripeFork.Invoice.t() | nil,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
-          plan: Stripe.Plan.t() | nil,
+          metadata: StripeFork.Types.metadata(),
+          plan: StripeFork.Plan.t() | nil,
           quantity: integer | nil,
-          start: Stripe.timestamp(),
+          start: StripeFork.timestamp(),
           status: String.t(),
           tax_percent: float | nil,
-          trial_end: Stripe.timestamp() | nil,
-          trial_start: Stripe.timestamp() | nil,
+          trial_end: StripeFork.timestamp() | nil,
+          trial_start: StripeFork.timestamp() | nil,
           trial_settings: map
         }
 
@@ -82,24 +82,24 @@ defmodule Stripe.Subscription do
   @doc """
   Create a subscription.
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-               :customer => Stripe.id() | Stripe.Customer.t(),
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
                optional(:application_fee_percent) => integer,
                optional(:billing) => String.t(),
-               optional(:billing_cycle_anchor) => Stripe.timestamp(),
-               optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
+               optional(:billing_cycle_anchor) => StripeFork.timestamp(),
+               optional(:coupon) => StripeFork.id() | StripeFork.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
                optional(:items) => [
                  %{
-                   :plan => Stripe.id() | Stripe.Plan.t(),
+                   :plan => StripeFork.id() | StripeFork.Plan.t(),
                    optional(:quantity) => non_neg_integer
                  }
                ],
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:tax_percent) => float,
-               optional(:trial_end) => Stripe.timestamp(),
+               optional(:trial_end) => StripeFork.timestamp(),
                optional(:trial_from_plan) => boolean,
                optional(:trial_period_days) => non_neg_integer
              }
@@ -115,7 +115,7 @@ defmodule Stripe.Subscription do
   @doc """
   Retrieve a subscription.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -128,25 +128,25 @@ defmodule Stripe.Subscription do
 
   Takes the `id` and a map of changes.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:application_fee_percent) => float,
                optional(:billing) => String.t(),
-               optional(:billing_cycle_anchor) => Stripe.timestamp(),
+               optional(:billing_cycle_anchor) => StripeFork.timestamp(),
                optional(:cancel_at_period_end) => boolean(),
-               optional(:coupon) => Stripe.id() | Stripe.Coupon.t(),
+               optional(:coupon) => StripeFork.id() | StripeFork.Coupon.t(),
                optional(:days_until_due) => non_neg_integer,
                optional(:items) => [
                  %{
-                   :plan => Stripe.id() | Stripe.Plan.t(),
+                   :plan => StripeFork.id() | StripeFork.Plan.t(),
                    optional(:quantity) => non_neg_integer
                  }
                ],
-               optional(:metadata) => Stripe.Types.metadata(),
+               optional(:metadata) => StripeFork.Types.metadata(),
                optional(:prorate) => boolean,
-               optional(:proration_date) => Stripe.timestamp(),
+               optional(:proration_date) => StripeFork.timestamp(),
                optional(:tax_percent) => float,
-               optional(:trial_end) => Stripe.timestamp(),
+               optional(:trial_end) => StripeFork.timestamp(),
                optional(:trial_from_plan) => boolean
              }
   def update(id, params, opts \\ []) do
@@ -161,9 +161,9 @@ defmodule Stripe.Subscription do
   @doc """
   Delete a subscription.
 
-  Takes the subscription `id` or a `Stripe.Subscription` struct.
+  Takes the subscription `id` or a `StripeFork.Subscription` struct.
   """
-  @spec delete(Stripe.id() | t) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id), do: delete(id, [])
 
   @doc """
@@ -177,11 +177,11 @@ defmodule Stripe.Subscription do
   is deprecated.  Use `Subscription.update/2` with
   `cancel_at_period_end: true` instead.
   """
-  @deprecated "Use Stripe.Subscription.update/2 with `cancel_at_period_end: true`"
-  @spec delete(Stripe.id() | t, %{at_period_end: true}) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @deprecated "Use StripeFork.Subscription.update/2 with `cancel_at_period_end: true`"
+  @spec delete(StripeFork.id() | t, %{at_period_end: true}) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, %{at_period_end: true}), do: update(id, %{cancel_at_period_end: true})
 
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts) when is_list(opts) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -192,24 +192,24 @@ defmodule Stripe.Subscription do
   @doc """
   DEPRECATED: Use `Subscription.update/3` with `cancel_at_period_end: true` instead.
   """
-  @deprecated "Use Stripe.Subscription.update/3 with `cancel_at_period_end: true`"
-  @spec delete(Stripe.id() | t, %{at_period_end: true}, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @deprecated "Use StripeFork.Subscription.update/3 with `cancel_at_period_end: true`"
+  @spec delete(StripeFork.id() | t, %{at_period_end: true}, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, %{at_period_end: true}, opts) when is_list(opts),
     do: update(id, %{cancel_at_period_end: true}, opts)
 
   @doc """
   List all subscriptions.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
                optional(:billing) => String.t(),
-               optional(:created) => Stripe.date_query(),
-               optional(:customer) => Stripe.Customer.t() | Stripe.id(),
-               optional(:ending_before) => t | Stripe.id(),
+               optional(:created) => StripeFork.date_query(),
+               optional(:customer) => StripeFork.Customer.t() | StripeFork.id(),
+               optional(:ending_before) => t | StripeFork.id(),
                optional(:limit) => 1..100,
-               optional(:plan) => Stripe.Plan.t() | Stripe.id(),
-               optional(:starting_after) => t | Stripe.id(),
+               optional(:plan) => StripeFork.Plan.t() | StripeFork.id(),
+               optional(:starting_after) => t | StripeFork.id(),
                optional(:status) => String.t()
              }
   def list(params \\ %{}, opts \\ []) do
@@ -225,8 +225,8 @@ defmodule Stripe.Subscription do
   @doc """
   Deletes the discount on a subscription.
   """
-  @spec delete_discount(Stripe.id() | t, Stripe.options()) ::
-          {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete_discount(StripeFork.id() | t, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def delete_discount(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}/discount")

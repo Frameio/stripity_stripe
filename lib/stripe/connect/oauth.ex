@@ -1,4 +1,4 @@
-defmodule Stripe.Connect.OAuth do
+defmodule StripeFork.Connect.OAuth do
   @moduledoc """
   Work with Stripe Connect.
 
@@ -11,7 +11,7 @@ defmodule Stripe.Connect.OAuth do
   Stripe API reference: https://stripe.com/docs/connect/reference
   """
 
-  alias Stripe.Converter
+  alias StripeFork.Converter
 
   @callback token(code :: String.t()) :: {:ok, map}
   @callback authorize_url(map) :: String.t()
@@ -63,9 +63,9 @@ defmodule Stripe.Connect.OAuth do
 
   ## Example
   ```
-  iex(1)> {:ok, resp} = Stripe.Connect.OAuth.token(code)
+  iex(1)> {:ok, resp} = StripeFork.Connect.OAuth.token(code)
   ...(1)> IO.inspect resp
-  %Stripe.Connect.OAuth.TokenResponse{
+  %StripeFork.Connect.OAuth.TokenResponse{
       access_token: "ACCESS_TOKEN",
       livemode: false,
       refresh_token: "REFRESH_TOKEN",
@@ -76,7 +76,7 @@ defmodule Stripe.Connect.OAuth do
   }
   ```
   """
-  @spec token(String.t()) :: {:ok, map} | {:error, %Stripe.Error{}}
+  @spec token(String.t()) :: {:ok, map} | {:error, %StripeFork.Error{}}
   def token(code) do
     endpoint = "token"
 
@@ -86,7 +86,7 @@ defmodule Stripe.Connect.OAuth do
       grant_type: "authorization_code"
     }
 
-    case Stripe.API.oauth_request(:post, endpoint, body) do
+    case StripeFork.API.oauth_request(:post, endpoint, body) do
       {:ok, result} -> {:ok, Converter.convert_result(result)}
       {:error, error} -> {:error, error}
     end
@@ -99,11 +99,11 @@ defmodule Stripe.Connect.OAuth do
 
   ## Example
   ```
-  iex(1)> {:ok, result} = Stripe.Connect.OAuth.deauthorize(stripe_user_id)
+  iex(1)> {:ok, result} = StripeFork.Connect.OAuth.deauthorize(stripe_user_id)
   ```
 
   """
-  @spec deauthorize(String.t()) :: {:ok, map} | {:error, %Stripe.Error{}}
+  @spec deauthorize(String.t()) :: {:ok, map} | {:error, %StripeFork.Error{}}
   def deauthorize(stripe_user_id) do
     endpoint = "deauthorize"
 
@@ -112,7 +112,7 @@ defmodule Stripe.Connect.OAuth do
       stripe_user_id: stripe_user_id
     }
 
-    case Stripe.API.oauth_request(:post, endpoint, body) do
+    case StripeFork.API.oauth_request(:post, endpoint, body) do
       {:ok, result} -> {:ok, Converter.convert_result(result)}
       {:error, error} -> {:error, error}
     end
@@ -170,7 +170,7 @@ defmodule Stripe.Connect.OAuth do
       "product_category" => "food_and_restuarants"
     }
   }
-  url = Stripe.Connect.OAuth.authorize_url(connect_opts)
+  url = StripeFork.Connect.OAuth.authorize_url(connect_opts)
   ```
   """
   @spec authorize_url(map) :: String.t()
@@ -181,19 +181,19 @@ defmodule Stripe.Connect.OAuth do
       get_default_authorize_map()
       |> Map.merge(options)
       |> Map.take(@authorize_url_valid_keys)
-      |> Stripe.URI.encode_query()
+      |> StripeFork.URI.encode_query()
 
     base_url <> param_string
   end
 
   @spec get_client_id() :: String.t()
   defp get_client_id() do
-    Application.get_env(:stripity_stripe, :connect_client_id)
+    Application.get_env(:stripity_stripe_fork, :connect_client_id)
   end
 
   @spec get_client_secret() :: String.t()
   defp get_client_secret() do
-    Application.get_env(:stripity_stripe, :api_key)
+    Application.get_env(:stripity_stripe_fork, :api_key)
   end
 
   @spec get_default_authorize_map() :: map

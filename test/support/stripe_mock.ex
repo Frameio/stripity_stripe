@@ -1,4 +1,4 @@
-defmodule Stripe.StripeMock do
+defmodule StripeFork.StripeMock do
   use GenServer
   require Logger
 

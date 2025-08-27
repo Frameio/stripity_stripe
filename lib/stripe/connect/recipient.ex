@@ -1,45 +1,45 @@
-defmodule Stripe.Recipient do
+defmodule StripeFork.Recipient do
   @moduledoc """
   Work with Stripe recipient objects.
 
   Stripe API reference: https://stripe.com/docs/api#recipients
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           active_account:
             %{
-              id: Stripe.id(),
+              id: StripeFork.id(),
               object: String.t(),
-              account: Stripe.id(),
+              account: StripeFork.id(),
               account_holder_name: String.t(),
               account_holder_type: String.t(),
               bank_name: String.t(),
               country: String.t(),
               currency: String.t(),
-              customer: Stripe.id(),
+              customer: StripeFork.id(),
               default_for_currency: boolean,
               fingerprint: String.t(),
               last4: String.t(),
-              metadata: Stripe.Types.metadata(),
+              metadata: StripeFork.Types.metadata(),
               routing_number: String.t(),
               status: String.t()
             }
             | nil,
-          cards: Stripe.List.t(Stripe.Card.t()),
-          created: Stripe.timestamp(),
-          default_card: Stripe.id() | Stripe.Card.t(),
+          cards: StripeFork.List.t(StripeFork.Card.t()),
+          created: StripeFork.timestamp(),
+          default_card: StripeFork.id() | StripeFork.Card.t(),
           description: String.t() | nil,
           email: String.t() | nil,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
-          migrated_to: Stripe.id() | Stripe.Account.t(),
+          metadata: StripeFork.Types.metadata(),
+          migrated_to: StripeFork.id() | StripeFork.Account.t(),
           name: String.t() | nil,
-          rolled_back_from: Stripe.id() | Stripe.Account.t(),
+          rolled_back_from: StripeFork.id() | StripeFork.Account.t(),
           type: String.t()
         }
 
@@ -65,15 +65,15 @@ defmodule Stripe.Recipient do
   @doc """
   Create a recipient
   """
-  @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
               :name => String.t(),
               :type => String.t(),
-              optional(:bank_account) => Stripe.id() | Stripe.BankAccount.t(),
-              optional(:recipient) => Stripe.id() | Stripe.Card.t(),
+              optional(:bank_account) => StripeFork.id() | StripeFork.BankAccount.t(),
+              optional(:recipient) => StripeFork.id() | StripeFork.Card.t(),
               optional(:description) => String.t(),
               optional(:email) => String.t(),
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:tax_id) => String.t()
             }
   def create(%{name: _, type: _} = params, opts \\ []) do
@@ -87,7 +87,7 @@ defmodule Stripe.Recipient do
   @doc """
   Retrieve a recipient.
   """
-  @spec retrieve(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -100,14 +100,14 @@ defmodule Stripe.Recipient do
 
   Takes the `id` and a map of changes
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:bank_account) => Stripe.id() | Stripe.BankAccount.t(),
-              optional(:card) => Stripe.id() | Stripe.Card.t(),
-              optional(:default_card) => Stripe.id() | Stripe.Card.t(),
+              optional(:bank_account) => StripeFork.id() | StripeFork.BankAccount.t(),
+              optional(:card) => StripeFork.id() | StripeFork.Card.t(),
+              optional(:default_card) => StripeFork.id() | StripeFork.Card.t(),
               optional(:description) => String.t(),
               optional(:email) => String.t(),
-              optional(:metadata) => Stripe.Types.metadata(),
+              optional(:metadata) => StripeFork.Types.metadata(),
               optional(:name) => String.t(),
               optional(:tax_id) => String.t()
             }
@@ -122,7 +122,7 @@ defmodule Stripe.Recipient do
   @doc """
   Delete a recipient.
   """
-  @spec delete(Stripe.id() | t, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, StripeFork.options()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -133,12 +133,12 @@ defmodule Stripe.Recipient do
   @doc """
   List all recipients.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) :: {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-              optional(:created) => Stripe.timestamp(),
-              optional(:ending_before) => t | Stripe.id(),
+              optional(:created) => StripeFork.timestamp(),
+              optional(:ending_before) => t | StripeFork.id(),
               optional(:limit) => 1..100,
-              optional(:starting_after) => t | Stripe.id(),
+              optional(:starting_after) => t | StripeFork.id(),
               optional(:type) => String.t(),
               optional(:verified) => boolean
             }
