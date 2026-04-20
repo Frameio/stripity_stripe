@@ -49,7 +49,6 @@ defmodule Stripe.Card do
           last4: String.t(),
           metadata: Stripe.Types.metadata(),
           name: String.t() | nil,
-          recipient: Stripe.id() | Stripe.Recipient.t() | nil,
           tokenization_method: String.t() | nil
         }
 
@@ -81,7 +80,6 @@ defmodule Stripe.Card do
     :last4,
     :metadata,
     :name,
-    :recipient,
     :tokenization_method
   ]
 

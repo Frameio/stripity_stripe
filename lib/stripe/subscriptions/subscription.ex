@@ -36,11 +36,7 @@ defmodule Stripe.Subscription do
           latest_invoice: Stripe.Invoice.t() | nil,
           livemode: boolean,
           metadata: Stripe.Types.metadata(),
-          plan: Stripe.Plan.t() | nil,
-          quantity: integer | nil,
-          start: Stripe.timestamp(),
           status: String.t(),
-          tax_percent: float | nil,
           trial_end: Stripe.timestamp() | nil,
           trial_start: Stripe.timestamp() | nil,
           trial_settings: map
@@ -67,11 +63,7 @@ defmodule Stripe.Subscription do
     :latest_invoice,
     :livemode,
     :metadata,
-    :plan,
-    :quantity,
-    :start,
     :status,
-    :tax_percent,
     :trial_end,
     :trial_start,
     :trial_settings
@@ -98,7 +90,6 @@ defmodule Stripe.Subscription do
                ],
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
-               optional(:tax_percent) => float,
                optional(:trial_end) => Stripe.timestamp(),
                optional(:trial_from_plan) => boolean,
                optional(:trial_period_days) => non_neg_integer
@@ -145,7 +136,6 @@ defmodule Stripe.Subscription do
                optional(:metadata) => Stripe.Types.metadata(),
                optional(:prorate) => boolean,
                optional(:proration_date) => Stripe.timestamp(),
-               optional(:tax_percent) => float,
                optional(:trial_end) => Stripe.timestamp(),
                optional(:trial_from_plan) => boolean
              }
