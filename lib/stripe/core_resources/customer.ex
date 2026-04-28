@@ -37,9 +37,7 @@ defmodule Stripe.Customer do
           subscriptions: Stripe.List.t(Stripe.Subscription.t()),
           tax: Stripe.Types.tax() | nil,
           tax_exempt: binary | nil,
-          tax_ids: term,
-          tax_info: Stripe.Types.tax_info() | nil,
-          tax_info_verification: Stripe.Types.tax_info_verification() | nil
+          tax_ids: term
         }
 
   defstruct [
@@ -64,9 +62,7 @@ defmodule Stripe.Customer do
     :subscriptions,
     :tax,
     :tax_exempt,
-    :tax_ids,
-    :tax_info,
-    :tax_info_verification
+    :tax_ids
   ]
 
   @plural_endpoint "customers"
@@ -87,8 +83,7 @@ defmodule Stripe.Customer do
                  optional(:preferred_locales) => list(binary),
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.Source.t(),
-                 optional(:tax_exempt) => :exempt | :none | :reverse,
-                 optional(:tax_info) => Stripe.Types.tax_info()
+                 optional(:tax_exempt) => :exempt | :none | :reverse
                }
                | %{}
   def create(params, opts \\ []) do
@@ -127,8 +122,7 @@ defmodule Stripe.Customer do
                  optional(:preferred_locales) => list(binary),
                  optional(:shipping) => Stripe.Types.shipping(),
                  optional(:source) => Stripe.Source.t(),
-                 optional(:tax_exempt) => :exempt | :none | :reverse,
-                 optional(:tax_info) => Stripe.Types.tax_info()
+                 optional(:tax_exempt) => :exempt | :none | :reverse
                }
                | %{}
   def update(id, params, opts \\ []) do
