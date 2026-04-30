@@ -1,5 +1,5 @@
-defmodule Stripe.TokenTest do
-  use Stripe.StripeCase, async: true
+defmodule StripeFork.TokenTest do
+  use StripeFork.StripeCase, async: true
 
   @card %{
     number: "4242424242424242",
@@ -23,24 +23,24 @@ defmodule Stripe.TokenTest do
 
   describe "create/2" do
     test "creates a card token" do
-      assert {:ok, %Stripe.Token{}} = Stripe.Token.create(%{card: @card})
+      assert {:ok, %StripeFork.Token{}} = StripeFork.Token.create(%{card: @card})
       assert_stripe_requested(:post, "/v1/tokens")
     end
 
     test "creates a bank account token" do
-      assert {:ok, %Stripe.Token{}} = Stripe.Token.create(%{bank_account: @bank_account})
+      assert {:ok, %StripeFork.Token{}} = StripeFork.Token.create(%{bank_account: @bank_account})
       assert_stripe_requested(:post, "/v1/tokens")
     end
 
     test "creates a PII token" do
-      assert {:ok, %Stripe.Token{}} = Stripe.Token.create(%{pii: @pii})
+      assert {:ok, %StripeFork.Token{}} = StripeFork.Token.create(%{pii: @pii})
       assert_stripe_requested(:post, "/v1/tokens")
     end
   end
 
   describe "retrieve/2" do
     test "retrieves a token" do
-      assert {:ok, %Stripe.Token{}} = Stripe.Token.retrieve("tok_123")
+      assert {:ok, %StripeFork.Token{}} = StripeFork.Token.retrieve("tok_123")
       assert_stripe_requested(:get, "/v1/tokens/tok_123")
     end
   end

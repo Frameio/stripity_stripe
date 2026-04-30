@@ -1,7 +1,7 @@
-defmodule Stripe.Converter do
+defmodule StripeFork.Converter do
   @doc """
   Takes a result map or list of maps from a Stripe response and returns a
-  struct (e.g. `%Stripe.Card{}`) or list of structs.
+  struct (e.g. `%StripeFork.Card{}`) or list of structs.
 
   If the result is not a supported Stripe object, it just returns a plain map
   with atomized keys.
@@ -71,23 +71,23 @@ defmodule Stripe.Converter do
 
   @spec convert_stripe_object(%{String.t() => any}) :: struct
   defp convert_stripe_object(%{"object" => object_name} = value) do
-    module = Stripe.Util.object_name_to_module(object_name)
+    module = StripeFork.Util.object_name_to_module(object_name)
     struct_keys = Map.keys(module.__struct__()) |> List.delete(:__struct__)
     check_for_extra_keys(struct_keys, value)
 
     processed_map =
       struct_keys
       |> Enum.reduce(%{}, fn key, acc ->
-           string_key = to_string(key)
+        string_key = to_string(key)
 
-           converted_value =
-             case string_key do
-               string_key when string_key in @no_convert_maps -> Map.get(value, string_key)
-               _ -> Map.get(value, string_key) |> convert_value()
-             end
+        converted_value =
+          case string_key do
+            string_key when string_key in @no_convert_maps -> Map.get(value, string_key)
+            _ -> Map.get(value, string_key) |> convert_value()
+          end
 
-           Map.put(acc, key, converted_value)
-         end)
+        Map.put(acc, key, converted_value)
+      end)
       |> module.__from_json__()
 
     struct(module, processed_map)
@@ -122,8 +122,8 @@ defmodule Stripe.Converter do
 
         module_name =
           object
-          |> Stripe.Util.object_name_to_module()
-          |> Stripe.Util.module_to_string()
+          |> StripeFork.Util.object_name_to_module()
+          |> StripeFork.Util.module_to_string()
 
         details = "#{module_name}: #{inspect(extra_keys)}"
         message = "Extra keys were received but ignored when converting #{details}"

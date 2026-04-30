@@ -1,3 +1,3 @@
-defmodule Stripe.ConnectTest do
+defmodule StripeFork.ConnectTest do
   use ExUnit.Case
 end

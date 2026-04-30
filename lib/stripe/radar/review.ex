@@ -1,17 +1,17 @@
-defmodule Stripe.Review do
+defmodule StripeFork.Review do
   @moduledoc """
   Work with Stripe review objects.
 
   Stripe API reference: https://stripe.com/docs/api#reviews
   """
 
-  use Stripe.Entity
+  use StripeFork.Entity
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
-          charge: Stripe.id() | Stripe.Charge.t(),
-          created: Stripe.timestamp(),
+          charge: StripeFork.id() | StripeFork.Charge.t(),
+          created: StripeFork.timestamp(),
           livemode: boolean,
           open: boolean,
           reason: String.t()

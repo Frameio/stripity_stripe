@@ -1,16 +1,16 @@
-defmodule Stripe.Source do
+defmodule StripeFork.Source do
   @moduledoc """
   Work with Stripe source objects.
 
   Stripe API reference: https://stripe.com/docs/api#sources
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type source_type :: String.t()
 
-  @type customer :: Stripe.id()
+  @type customer :: StripeFork.id()
 
   @type ach_credit_transfer :: %{
           account_number: String.t() | nil,
@@ -108,11 +108,11 @@ defmodule Stripe.Source do
         }
 
   @type owner :: %{
-          address: Stripe.Types.address() | nil,
+          address: StripeFork.Types.address() | nil,
           email: String.t() | nil,
           name: String.t() | nil,
           phone: String.t() | nil,
-          verifired_address: Stripe.Types.address() | nil,
+          verifired_address: StripeFork.Types.address() | nil,
           verified_email: String.t() | nil,
           verified_name: String.t() | nil,
           verified_phone: String.t() | nil
@@ -164,7 +164,7 @@ defmodule Stripe.Source do
         }
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
           ach_credit_transfer: ach_credit_transfer | nil,
           ach_debit: ach_debit | nil,
@@ -175,14 +175,14 @@ defmodule Stripe.Source do
           card: card | nil,
           client_secret: String.t(),
           code_verification: code_verification_flow | nil,
-          created: Stripe.timestamp(),
+          created: StripeFork.timestamp(),
           currency: String.t() | nil,
           eps: eps | nil,
           flow: String.t(),
           giropay: giropay | nil,
           ideal: ideal | nil,
           livemode: boolean,
-          metadata: Stripe.Types.metadata(),
+          metadata: StripeFork.Types.metadata(),
           multibanco: multibanco | nil,
           owner: owner | nil,
           p24: p24 | nil,
@@ -237,21 +237,21 @@ defmodule Stripe.Source do
   @doc """
   Create a source.
   """
-  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
-            when params: %{
-              :type => String.t(),
-              optional(:amount) => String.t(),
-              optional(:currency) => String.t(),
-              optional(:flow) => String.t(),
-              optional(:mandate) => map,
-              optional(:metadata) => Stripe.Types.metadata(),
-              optional(:owner) => owner,
-              optional(:receiver) => receiver_flow,
-              optional(:redirect) => redirect_flow,
-              optional(:statement_descriptor) => String.t(),
-              optional(:token) => String.t(),
-              optional(:usage) => String.t()
-            }
+  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, StripeFork.Error.t()}
+        when params: %{
+               :type => String.t(),
+               optional(:amount) => String.t(),
+               optional(:currency) => String.t(),
+               optional(:flow) => String.t(),
+               optional(:mandate) => map,
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:owner) => owner,
+               optional(:receiver) => receiver_flow,
+               optional(:redirect) => redirect_flow,
+               optional(:statement_descriptor) => String.t(),
+               optional(:token) => String.t(),
+               optional(:usage) => String.t()
+             }
   def create(%{} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint)
@@ -263,10 +263,11 @@ defmodule Stripe.Source do
   @doc """
   Retrieve a source.
   """
-  @spec retrieve(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-          optional(:client_secret) => String.t(),
-        }
+               optional(:client_secret) => String.t()
+             }
   def retrieve(id, %{} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -280,12 +281,13 @@ defmodule Stripe.Source do
 
   Takes the `id` and a map of changes
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-          optional(:mandate) => map,
-          optional(:metadata) => Stripe.Types.metadata(),
-          optional(:owner) => owner
-        }
+               optional(:mandate) => map,
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:owner) => owner
+             }
   def update(id, %{} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
@@ -301,7 +303,7 @@ defmodule Stripe.Source do
   @doc """
   Attach a source to a customer.
   """
-  @spec attach(map, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec attach(map, Keyword.t()) :: {:ok, t} | {:error, StripeFork.Error.t()}
   def attach(%{customer: _, source: _} = params, opts \\ []) do
     endpoint = params |> customer_endpoint()
 
@@ -315,7 +317,8 @@ defmodule Stripe.Source do
   @doc """
   Detach a source from a customer.
   """
-  @spec detach(Stripe.id() | t, map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec detach(StripeFork.id() | t, map, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def detach(id, %{customer: _} = params, opts \\ []) do
     endpoint = params |> customer_endpoint()
 

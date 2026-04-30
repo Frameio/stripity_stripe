@@ -1,7 +1,7 @@
-defmodule Stripe.WebhookTest do
+defmodule StripeFork.WebhookTest do
   use ExUnit.Case
 
-  import Stripe.Webhook
+  import StripeFork.Webhook
 
   @valid_payload ~S({"object": "event"})
 
@@ -25,7 +25,7 @@ defmodule Stripe.WebhookTest do
     signature = generate_signature(timestamp, payload)
     signature_header = create_signature_header(timestamp, @valid_scheme, signature)
 
-    assert {:ok, %Stripe.Event{}} = construct_event(payload, signature_header, @secret)
+    assert {:ok, %StripeFork.Event{}} = construct_event(payload, signature_header, @secret)
   end
 
   test "payload with an invalid signature should fail" do

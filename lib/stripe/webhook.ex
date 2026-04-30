@@ -1,4 +1,4 @@
-defmodule Stripe.Webhook do
+defmodule StripeFork.Webhook do
   @moduledoc """
   Creates a Stripe Event from webhook's payload if signature is valid.
   """
@@ -29,8 +29,8 @@ defmodule Stripe.Webhook do
 
   ## Example
 
-      case Stripe.Webhook.construct_event(payload, signature, secret) do
-        {:ok, %Stripe.Event{} = event} ->
+      case StripeFork.Webhook.construct_event(payload, signature, secret) do
+        {:ok, %StripeFork.Event{} = event} ->
           # Return 200 to Stripe and handle event
 
         {:error, reason} ->
@@ -38,7 +38,7 @@ defmodule Stripe.Webhook do
       end
   """
   @spec construct_event(String.t(), String.t(), String.t(), integer) ::
-          {:ok, Stripe.Event.t()} | {:error, any}
+          {:ok, StripeFork.Event.t()} | {:error, any}
   def construct_event(payload, signature_header, secret, tolerance \\ @default_tolerance) do
     case verify_header(payload, signature_header, secret, tolerance) do
       :ok ->
@@ -140,6 +140,6 @@ defmodule Stripe.Webhook do
   defp convert_to_event!(payload) do
     payload
     |> Poison.decode!()
-    |> Stripe.Converter.convert_result()
+    |> StripeFork.Converter.convert_result()
   end
 end

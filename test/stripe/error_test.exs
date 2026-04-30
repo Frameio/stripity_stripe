@@ -1,9 +1,9 @@
-defmodule Stripe.ErrorTest do
+defmodule StripeFork.ErrorTest do
   @moduledoc false
 
   use ExUnit.Case, async: true
 
-  alias Stripe.Error
+  alias StripeFork.Error
 
   describe "from_stripe_error/3" do
     test "works with no error data" do

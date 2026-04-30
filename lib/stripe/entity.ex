@@ -1,4 +1,4 @@
-defmodule Stripe.Entity do
+defmodule StripeFork.Entity do
   @moduledoc """
   A behaviour implemented by modules which represent Stripe objects.
 
@@ -9,14 +9,14 @@ defmodule Stripe.Entity do
   achieved through the use of the `from_json/2` macro.
 
   The list of objects which are recognised by the library upon receipt are
-  currently static and contained in `Stripe.Converter`.
+  currently static and contained in `StripeFork.Converter`.
 
   When a map containing the `"object"` key is received from the API (even when
   nested inside another map), and the value of that field (for example,
   `"foo_widget"`) is in the list of supported objects, the converter will
-  expect `Stripe.FooWidget` to be present and to implement this behaviour.
+  expect `StripeFork.FooWidget` to be present and to implement this behaviour.
 
-  To implement this behaviour, simply add `use Stripe.Entity` to the top of
+  To implement this behaviour, simply add `use StripeFork.Entity` to the top of
   the entity module and make sure it defines a struct. This will also enable
   the use of the `from_json/2` macro, which allows for changes to the data
   received from Stripe before it is converted to a struct.
@@ -29,9 +29,9 @@ defmodule Stripe.Entity do
   @doc false
   defmacro __using__(_opts) do
     quote do
-      require Stripe.Entity
-      import Stripe.Entity, only: [from_json: 2]
-      @behaviour Stripe.Entity
+      require StripeFork.Entity
+      import StripeFork.Entity, only: [from_json: 2]
+      @behaviour StripeFork.Entity
       def __from_json__(data), do: data
       defoverridable __from_json__: 1
     end
@@ -53,7 +53,7 @@ defmodule Stripe.Entity do
   `"status"` values of `"succeeded"` or `"failed"`) into atoms instead of
   keeping them as strings.
 
-  This macro is used in modules implementing the `Stripe.Entity` behaviour in
+  This macro is used in modules implementing the `StripeFork.Entity` behaviour in
   order to specify this extra logic.
 
   Its use is optional, and the default is no transformation; i.e. the received
@@ -88,7 +88,7 @@ defmodule Stripe.Entity do
   defmacro from_json(param, do: block) do
     quote do
       def __from_json__(unquote(param)) do
-        import Stripe.Entity, except: [from_json: 2]
+        import StripeFork.Entity, except: [from_json: 2]
         unquote(block)
       end
     end

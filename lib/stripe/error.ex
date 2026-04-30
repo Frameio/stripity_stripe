@@ -1,4 +1,4 @@
-defmodule Stripe.Error do
+defmodule StripeFork.Error do
   @moduledoc """
   A struct which represents an error which occurred during a Stripe API call.
 
@@ -13,7 +13,7 @@ defmodule Stripe.Error do
       returned an error.) In this case, `:code` will always be `:network_error`. The
       `:hackney_reason` field in the `:extra` map contains the actual error reason received from
       hackney.
-    * `:stripe` – an error response was received from Stripe.
+    * `:stripe` – an error response was received from StripeFork.
   - `:code` – an atom indicating the particular error. See "Error Codes" for more detail.
   - `:request_id` – if `:source` is `:stripe`, this will contain the
     [request ID](https://stripe.com/docs/api#request_ids) for logging and troubleshooting.
@@ -36,7 +36,7 @@ defmodule Stripe.Error do
   - `:charge_id` – when a Charge was declined, indicates the ID of the failed Charge which was
     created.
   - `:http_status` – for `:stripe` errors, the HTTP status returned with the error.
-  - `:raw_error` – the raw error map received from Stripe.
+  - `:raw_error` – the raw error map received from StripeFork.
   - `:hackney_reason` – for `:network` errors, contains the error reason received from hackney.
 
   ## Error Codes
@@ -51,7 +51,7 @@ defmodule Stripe.Error do
   - `:network_code` – used only when `:source` is `:network`. Indicates an error occurred while
     making the request.
   - `:valid_keys_failed`, `:required_keys_failed`, `:endpoint_fun_invalid_result`,
-    `:invalid_endpoint` – used when `:source` is `:internal`. See `Stripe.Request` for details.
+    `:invalid_endpoint` – used when `:source` is `:internal`. See `StripeFork.Request` for details.
   """
 
   @type error_source :: :internal | :network | :stripe
@@ -91,7 +91,8 @@ defmodule Stripe.Error do
 
   @type t :: %__MODULE__{
           source: error_source,
-          code: error_status | stripe_error_type | Stripe.Request.error_code() | :network_error,
+          code:
+            error_status | stripe_error_type | StripeFork.Request.error_code() | :network_error,
           request_id: String.t() | nil,
           message: String.t(),
           user_message: String.t() | nil,
@@ -99,7 +100,7 @@ defmodule Stripe.Error do
             optional(:card_code) => card_error_code,
             optional(:decline_code) => String.t(),
             optional(:param) => atom,
-            optional(:charge_id) => Stripe.id(),
+            optional(:charge_id) => StripeFork.id(),
             optional(:http_status) => 400..599,
             optional(:raw_error) => map,
             optional(:hackney_reason) => any
@@ -122,9 +123,7 @@ defmodule Stripe.Error do
       source: :network,
       code: :network_error,
       message:
-        "An error occurred while making the network request. The HTTP client returned the following reason: #{
-          inspect(reason)
-        }",
+        "An error occurred while making the network request. The HTTP client returned the following reason: #{inspect(reason)}",
       extra: %{
         hackney_reason: reason
       }

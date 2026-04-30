@@ -1,3 +1,3 @@
-defmodule Stripe.StripeTest do
-  use Stripe.StripeCase
+defmodule StripeFork.StripeTest do
+  use StripeFork.StripeCase
 end

@@ -1,4 +1,4 @@
-defmodule Stripe.List do
+defmodule StripeFork.List do
   @moduledoc """
   Work with Stripe list objects.
 
@@ -12,17 +12,17 @@ defmodule Stripe.List do
   - Support multiple types of objects in its collection
   - Support fetching the next set of objects (pagination)
   """
-  use Stripe.Entity
+  use StripeFork.Entity
 
   @type value :: term
 
   @type t(value) :: %__MODULE__{
-            object: String.t(),
-            data: [value],
-            has_more: boolean,
-            total_count: integer | nil,
-            url: String.t()
-          }
+          object: String.t(),
+          data: [value],
+          has_more: boolean,
+          total_count: integer | nil,
+          url: String.t()
+        }
 
   defstruct [:object, :data, :has_more, :total_count, :url]
 end

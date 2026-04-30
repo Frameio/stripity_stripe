@@ -1,14 +1,14 @@
-defmodule Stripe.Mixfile do
+defmodule StripeFork.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :stripity_stripe,
+      app: :stripity_stripe_fork,
       deps: deps(),
       description: description(),
       dialyzer: [
         plt_add_apps: [:mix],
-        plt_file: {:no_warn, "priv/plts/stripity_stripe.plt"}
+        plt_file: {:no_warn, "priv/plts/stripity_stripe_fork.plt"}
       ],
       elixir: "~> 1.18",
       package: package(),
@@ -30,7 +30,7 @@ defmodule Stripe.Mixfile do
     [
       applications: apps(Mix.env()),
       env: env(),
-      mod: {Stripe, []}
+      mod: {StripeFork, []}
     ]
   end
 

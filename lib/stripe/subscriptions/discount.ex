@@ -1,20 +1,20 @@
-defmodule Stripe.Discount do
+defmodule StripeFork.Discount do
   @moduledoc """
   Work with Stripe discounts.
 
   Stripe API reference: https://stripe.com/docs/api#discounts
   """
 
-  use Stripe.Entity
+  use StripeFork.Entity
 
   @type t :: %__MODULE__{
           object: String.t(),
-          coupon: Stripe.Coupon.t(),
-          customer: Stripe.id() | Stripe.Customer.t() | nil,
+          coupon: StripeFork.Coupon.t(),
+          customer: StripeFork.id() | StripeFork.Customer.t() | nil,
           deleted: boolean | nil,
-          end: Stripe.timestamp() | nil,
-          start: Stripe.timestamp(),
-          subscription: Stripe.id() | nil
+          end: StripeFork.timestamp() | nil,
+          start: StripeFork.timestamp(),
+          subscription: StripeFork.id() | nil
         }
 
   defstruct [

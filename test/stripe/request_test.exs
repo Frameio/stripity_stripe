@@ -1,7 +1,7 @@
-defmodule Stripe.RequestTest do
+defmodule StripeFork.RequestTest do
   use ExUnit.Case
 
-  alias Stripe.Request
+  alias StripeFork.Request
 
   describe "object expansion" do
     test "prefix_expansions/2 should apply the given prefix to the expansion values" do
@@ -30,11 +30,11 @@ defmodule Stripe.RequestTest do
 
   describe "new_request/2" do
     test "new_request/1 extracts headers from options and puts it on headers" do
-      new_request = Request.new_request([headers: %{foo: "bar"}])
+      new_request = Request.new_request(headers: %{foo: "bar"})
 
       assert new_request.headers == %{
-        foo: "bar"
-      }
+               foo: "bar"
+             }
     end
   end
 end

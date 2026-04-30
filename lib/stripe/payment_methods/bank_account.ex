@@ -1,28 +1,28 @@
-defmodule Stripe.BankAccount do
+defmodule StripeFork.BankAccount do
   @moduledoc """
   Work with Stripe bank account objects.
 
   Stripe API reference: https://stripe.com/docs/api#bank_accounts
   """
 
-  use Stripe.Entity
-  import Stripe.Request
+  use StripeFork.Entity
+  import StripeFork.Request
 
   @type t :: %__MODULE__{
-          id: Stripe.id(),
+          id: StripeFork.id(),
           object: String.t(),
-          account: Stripe.id() | Stripe.Account.t() | nil,
+          account: StripeFork.id() | StripeFork.Account.t() | nil,
           account_holder_name: String.t() | nil,
           account_holder_type: String.t() | nil,
           bank_name: String.t() | nil,
           country: String.t(),
           currency: String.t(),
-          customer: Stripe.id() | Stripe.Customer.t() | nil,
+          customer: StripeFork.id() | StripeFork.Customer.t() | nil,
           default_for_currency: boolean | nil,
           deleted: boolean | nil,
           fingerprint: String.t() | nil,
           last4: String.t(),
-          metadata: Stripe.Types.metadata() | nil,
+          metadata: StripeFork.Types.metadata() | nil,
           routing_number: String.t() | nil,
           status: String.t()
         }
@@ -53,12 +53,12 @@ defmodule Stripe.BankAccount do
   @doc """
   Create a bank account.
   """
-  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec create(params, Keyword.t()) :: {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              :customer => Stripe.id() | Stripe.Customer.t(),
-              :source => Stripe.id() | Stripe.Source.t(),
-              optional(:metadata) => Stripe.Types.metadata()
-            }
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
+               :source => StripeFork.id() | StripeFork.Source.t(),
+               optional(:metadata) => StripeFork.Types.metadata()
+             }
   def create(%{customer: _, source: _} = params, opts \\ []) do
     new_request(opts)
     |> put_endpoint(params |> plural_endpoint())
@@ -70,7 +70,8 @@ defmodule Stripe.BankAccount do
   @doc """
   Retrieve a bank account.
   """
-  @spec retrieve(Stripe.id() | t, map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec retrieve(StripeFork.id() | t, map, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def retrieve(id, %{customer: _} = params, opts \\ []) do
     endpoint = params |> plural_endpoint()
 
@@ -83,13 +84,14 @@ defmodule Stripe.BankAccount do
   @doc """
   Update a bank account.
   """
-  @spec update(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec update(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              :customer => Stripe.id() | Stripe.Customer.t(),
-              optional(:metadata) => Stripe.Types.metadata(),
-              optional(:account_holder_name) => String.t(),
-              optional(:account_holder_type) => String.t()
-            }
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
+               optional(:metadata) => StripeFork.Types.metadata(),
+               optional(:account_holder_name) => String.t(),
+               optional(:account_holder_type) => String.t()
+             }
   def update(id, %{customer: _} = params, opts \\ []) do
     endpoint = params |> plural_endpoint()
 
@@ -103,7 +105,8 @@ defmodule Stripe.BankAccount do
   @doc """
   Delete a bank account.
   """
-  @spec delete(Stripe.id() | t, map, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec delete(StripeFork.id() | t, map, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
   def delete(id, %{customer: _} = params, opts \\ []) do
     endpoint = params |> plural_endpoint()
 
@@ -116,12 +119,13 @@ defmodule Stripe.BankAccount do
   @doc """
   Verify a bank account.
   """
-  @spec verify(Stripe.id() | t, params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
+  @spec verify(StripeFork.id() | t, params, StripeFork.options()) ::
+          {:ok, t} | {:error, StripeFork.Error.t()}
         when params: %{
-              :customer => Stripe.id() | Stripe.Customer.t(),
-              optional(:amounts) => list(integer),
-              optional(:verification_method) => String.t()
-            }
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
+               optional(:amounts) => list(integer),
+               optional(:verification_method) => String.t()
+             }
   def verify(id, %{customer: _} = params, opts \\ []) do
     endpoint = params |> plural_endpoint()
 
@@ -135,13 +139,14 @@ defmodule Stripe.BankAccount do
   @doc """
   List all bank accounts.
   """
-  @spec list(params, Stripe.options()) :: {:ok, Stripe.List.t(t)} | {:error, Stripe.Error.t()}
+  @spec list(params, StripeFork.options()) ::
+          {:ok, StripeFork.List.t(t)} | {:error, StripeFork.Error.t()}
         when params: %{
-              :customer => Stripe.id() | Stripe.Customer.t(),
-              optional(:ending_before) => t | Stripe.id(),
-              optional(:limit) => 1..100,
-              optional(:starting_after) => t | Stripe.id(),
-            }
+               :customer => StripeFork.id() | StripeFork.Customer.t(),
+               optional(:ending_before) => t | StripeFork.id(),
+               optional(:limit) => 1..100,
+               optional(:starting_after) => t | StripeFork.id()
+             }
   def list(%{customer: _} = params, opts \\ []) do
     endpoint = params |> plural_endpoint()
     params = params |> Map.put(:object, "card")
